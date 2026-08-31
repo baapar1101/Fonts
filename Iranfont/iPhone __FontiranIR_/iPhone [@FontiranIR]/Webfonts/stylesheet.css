@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'SF Arabic';
+    src: url('SFArabic-Regular.eot');
+    src: local('SF Arabic'), local('SFArabic-Regular'),
+        url('SFArabic-Regular.eot?#iefix') format('embedded-opentype'),
+        url('SFArabic-Regular.woff2') format('woff2'),
+        url('SFArabic-Regular.woff') format('woff'),
+        url('SFArabic-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SF Arabic Rounded';
+    src: url('SFArabicRounded-Regular.eot');
+    src: local('SF Arabic Rounded'), local('SFArabicRounded-Regular'),
+        url('SFArabicRounded-Regular.eot?#iefix') format('embedded-opentype'),
+        url('SFArabicRounded-Regular.woff2') format('woff2'),
+        url('SFArabicRounded-Regular.woff') format('woff'),
+        url('SFArabicRounded-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

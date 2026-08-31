@@ -1,0 +1,78 @@
+/**
+*	Name:			Bon
+*	Version:		1.0
+*	Author:			M.Javad Jalilian
+*	Vendor:			http://fontiran.com
+*	Copyright:		Commercial/Proprietary Software
+**/
+
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 50;
+	src: url('woff/bon-Numerals-Hairline.woff') format('woff'),   
+	url('woff2/bon-Numerals-Hairline.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 100;
+	src: url('woff/bon-Numerals-Thin.woff') format('woff'),   
+	url('woff2/bon-Numerals-Thin.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 200;
+	src: url('woff/bon-Numerals-Extralight.woff') format('woff'),   
+	url('woff2/bon-Numerals-Extralight.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 300;
+	src: url('woff/bon-Numerals-Light.woff') format('woff'),   
+	url('woff2/bon-Numerals-Light.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 400;
+	src: url('woff/bon-Numerals-Regular.woff') format('woff'),   
+	url('woff2/bon-Numerals-Regular.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 500;
+	src: url('woff/bon-Numerals-Medium.woff') format('woff'),   
+	url('woff2/bon-Numerals-Medium.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 600;
+	src: url('woff/bon-Numerals-SemiBold.woff') format('woff'),   
+	url('woff2/bon-Numerals-SemiBold.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 700;
+	src: url('woff/bon-Numerals-Bold.woff') format('woff'),   
+	url('woff2/bon-Numerals-Bold.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 800;
+	src: url('woff/bon-Numerals-Extrabold.woff') format('woff'),   
+	url('woff2/bon-Numerals-Extrabold.woff2') format('woff2');		
+}
+@font-face {
+	font-family: Bon;
+	font-style: normal;
+	font-weight: 900;
+	src: url('woff/bon-Numerals-Black.woff') format('woff'),   
+	url('woff2/bon-Numerals-Black.woff2') format('woff2');		
+}

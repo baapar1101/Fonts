@@ -1,0 +1,83 @@
+/**
+*
+*	Name:			FarhangDot1FaNum Fonts
+*	Version:			2.1
+*	Author:			Moslem Ebrahimi (moslemebrahimi.com)
+*	Created on:		May 11, 2022
+*	Updated on:		May 22, 2022
+*	Website:			http://fontiran.com
+*	Copyright:		Commercial/Proprietary Software
+--------------------------------------------------------------------------------------
+فونت فرهنگ یک نرم افزار مالکیتی محسوب می شود. جهت آگاهی از قوانین استفاده از این فونت ها لطفا به وب سایت (فونت ایران دات کام) مراجعه نمایید
+--------------------------------------------------------------------------------------
+FarhangDot1FaNum fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com 
+--------------------------------------------------------------------------------------
+This set of fonts are used in this project under the license: (.....)
+------------------------------------------------------------------------------------- fonts/-
+*	
+**/
+
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 100;
+	src: url('fonts/woff2/FarhangDot1FaNum-thin.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-thin.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 200;
+	src: url('fonts/woff2/FarhangDot1FaNum-extralight.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-extralight.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 300;
+	src: url('fonts/woff2/FarhangDot1FaNum-light.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-light.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 500;
+	src: url('fonts/woff2/FarhangDot1FaNum-medium.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-medium.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 600;
+	src: url('fonts/woff2/FarhangDot1FaNum-demibold.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-demibold.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 800;
+	src: url('fonts/woff2/FarhangDot1FaNum-extrabold.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-extrabold.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: 900;
+	src: url('fonts/woff2/FarhangDot1FaNum-black.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-black.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: bold;
+	src: url('fonts/woff2/FarhangDot1FaNum-bold.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-bold.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: FarhangDot1FaNum;
+	font-style: normal;
+	font-weight: normal;
+	src: url('fonts/woff2/FarhangDot1FaNum-regular.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/FarhangDot1FaNum-regular.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}

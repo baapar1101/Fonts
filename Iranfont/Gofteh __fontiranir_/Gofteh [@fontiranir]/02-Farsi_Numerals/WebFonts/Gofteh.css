@@ -1,0 +1,10 @@
+/* Webfont: GoftehWeb-Heavy */
+@font-face {
+    font-family: 'Gofteh';
+         src: url('GoftehFaNumWeb-Heavy.woff') format('woff'),
+               url('GoftehFaNumWeb-Heavy.woff2') format('woff2');
+             font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+

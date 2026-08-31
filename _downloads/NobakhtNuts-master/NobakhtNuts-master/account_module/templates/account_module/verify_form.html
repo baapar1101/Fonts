@@ -1,0 +1,233 @@
+{% load static %}
+{% load poll_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'include/head_refrence.html' %}
+    <title>برنج و خشکبار نوبخت | اعتبار سنجی</title>
+</head>
+<body onscroll="HeaderManage()" onload="StartIntervals(false)">
+    {% include 'loader.html' %}
+    {% include 'message.html' %}
+    <div class="centerbox min-h-[100vh] items-center">
+        <div class="form-default account-form login-register-box">
+            <div class="w-[100%]">
+
+
+                <div class="centerbox">
+                    <div class="verify-code-titlebar mt-5">
+                        <div class="code-star mt-[2px] relative hidden" style="animation: load8 400ms">*</div>
+                        <div class="code-star mt-[2px] relative hidden" style="animation: load8 400ms">*</div>
+                        <div class="code-star mt-[2px] relative hidden" style="animation: load8 400ms">*</div>
+                        <i id="ver-icon-approve" class="fa fa-check-square text-xl mt-1 relative mr-1" style="animation: load5 500ms; display: none"></i>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <h1 class="text-5xl font-bold relative">کد تایید</h1>
+                    <p class="relative">کد تایید که برایتان پیامک شده را وارد کنید</p>
+                </div>
+
+                <form method="post" class="mt-5" id="verify_form">
+                    {% csrf_token %}
+                    <div class="verify-otp-inputrow" dir="ltr">
+                        <input type="text" maxlength="1" class="otp-input">
+                        <input type="text" maxlength="1" class="otp-input">
+                        <input type="text" maxlength="1" class="otp-input">
+                        <input type="text" maxlength="1" class="otp-input">
+                        <input type="text" maxlength="1" class="otp-input">
+                        <input type="text" maxlength="1" class="otp-input">
+                    </div>
+                    <div class="">
+                        <input type="hidden" name="verify_code" id="verify_code">
+                    </div>
+                    <div style="color: var(--color5); opacity: 0;" class="account-error hidden gap-1 mt-1" id="ver-err">
+                            <svg id="Danger Circle" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M12.25 2.78467C5.052 2.78467 2.5 5.33667 2.5 12.5347C2.5 19.7327 5.052 22.2847 12.25 22.2847C19.448 22.2847 22 19.7327 22 12.5347C22 5.33667 19.448 2.78467 12.25 2.78467Z" fill="#f97e7e"></path>
+                            <path d="M11.499 16.0346C11.499 16.4486 11.84 16.7846 12.254 16.7846C12.668 16.7846 13.004 16.4486 13.004 16.0346C13.004 15.6206 12.668 15.2846 12.254 15.2846H12.245C11.831 15.2846 11.499 15.6206 11.499 16.0346Z" fill="#f97e7e"></path>
+                            <path d="M12.25 7.88965C11.836 7.88965 11.5 8.22565 11.5 8.63965V12.5346C11.5 12.9486 11.836 13.2846 12.25 13.2846C12.664 13.2846 13 12.9486 13 12.5346V8.63965C13 8.22565 12.664 7.88965 12.25 7.88965Z" fill="#f97e7e"></path>
+                            </svg>
+                            <div id="ver-errtext" class="mt-0.5">
+
+                            </div>
+                        </div>
+                </form>
+
+                <div class="flex items-start justify-between mt-5 w-[100%] border-t border-[var(--color11)] pt-3 ">
+                    <div class="flex gap-1">
+                        <div class="timer-stage">
+                          <div class="timer-ring-wrap" id="timerRingWrap">
+                            <svg viewBox="0 0 120 120">
+                              <circle class="timer-track" cx="60" cy="60" r="52"></circle>
+                              <circle class="timer-progress" id="timerProgress" cx="60" cy="60" r="52"></circle>
+                            </svg>
+                            <div class="timer-count" style="font-size: 15px" id="timerCount">-</div>
+                          </div>
+                        </div>
+                        <div class="pt-2">
+                            <h1 class="text-xl font-semibold">انقضا کد تایید</h1>
+                            <a id="reset_verify_code" href="{% url 'reset_verify_code' %}" class="disabled text-[var(--color6)] mt-[-4px] hover:underline">دریافت دوباره کد <i class="fa fa-external-link text-xs mr-1 mt-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="mt-1.5 rounded-xl bg-[var(--color11)] pt-2 px-3">
+                        <a class="mt-[-5px]" href="{% url 'reset_phone_number' %}"><i class="fa fa-edit text-xs ml-2 mt-1"></i>ویرایش شماره</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+
+
+    let verify_form = document.getElementById('verify_form')
+
+    let code_star = document.querySelectorAll('.code-star')
+    code_star.forEach((item ,index) => {
+        setTimeout(() => {
+            item.className = 'flex code-star mt-[-8px] relative'
+        } ,index * 400)
+    })
+
+    setTimeout(()=> {
+        code_star.forEach((item) => {
+            item.className = 'hidden code-star mt-[-8px] relative '
+        })
+        code_star.forEach((item ,index) => {
+            setTimeout(() => {
+                item.className = 'flex code-star mt-[-8px] relative'
+            } ,index * 400)
+        })
+    } ,4000)
+
+    setTimeout(()=> {
+        document.getElementById('ver-icon-approve').style.display = 'flex'
+    },5500)
+
+    const inputs = document.querySelectorAll(".otp-input");
+    const hiddenInput = document.getElementById("verify_code");
+
+    window.onload = ()=>{
+        inputs[0].focus();
+    }
+
+    inputs.forEach((input,index)=>{
+
+        input.addEventListener("input",(e)=>{
+
+            input.value = input.value.replace(/\D/g,'');
+
+            if(input.value && index < inputs.length-1){
+                inputs[index+1].focus();
+            }
+            updateHidden();
+        });
+
+        input.addEventListener("keydown",(e)=>{
+            if(e.key==="Backspace" && !input.value && index>0){
+                inputs[index-1].focus();
+            }
+        })
+
+        input.addEventListener("paste", (e) => {
+
+            e.preventDefault();
+
+            const text = e.clipboardData.getData("text")
+                .replace(/\D/g, "")
+                .slice(0, 6);
+
+            text.split("").forEach((char, index) => {
+                if (inputs[index]) {
+                    inputs[index].value = char;
+                }
+            });
+            updateHidden();
+        })
+    })
+
+    function updateHidden(){
+        hiddenInput.value =
+            [...inputs].map(i=>i.value).join('');
+
+        if(hiddenInput.value.length === 6){
+            Showloader(3000);
+            verify_form.submit();
+        }
+        console.log(hiddenInput.value)
+    }
+
+    function to_fanum_timer(num) {
+      const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+
+      return num.toString().replace(/[0-9]/g, (d) => persianDigits[d]);
+    }
+
+
+    const EXPIRE_AT = {{ expire_time }} * 1000;
+    const R = 52;
+    const CIRC = 2 * Math.PI * R;
+
+    const progress = document.getElementById('timerProgress');
+    const ringWrap = document.getElementById('timerRingWrap');
+    const countEl = document.getElementById('timerCount');
+    const resendBtn = document.getElementById('reset_verify_code');
+
+    progress.style.strokeDasharray = CIRC;
+
+    let DURATION = 0;
+    let intervalId = null;
+
+    function getRemaining(){
+      return Math.round((EXPIRE_AT - Date.now()) / 1000);
+    }
+
+    function renderExpired(){
+      clearInterval(intervalId);
+      progress.style.strokeDashoffset = CIRC;
+      countEl.textContent = to_fanum_timer(0);
+      ringWrap.classList.remove('timer-warn');
+      resendBtn.classList.remove('disabled');
+    }
+
+    function render(remaining){
+      const ratio = remaining / DURATION;
+      progress.style.strokeDashoffset = CIRC * (1 - ratio);
+      countEl.textContent = to_fanum_timer(remaining);
+      ringWrap.classList.toggle('timer-warn', remaining <= 15);
+    }
+
+    function tick(){
+      const remaining = getRemaining();
+
+      if(remaining <= 0){
+        renderExpired();
+        return;
+      }
+
+      render(remaining);
+    }
+
+    function startTimer(){
+      const remainingNow = getRemaining();
+
+      clearInterval(intervalId);
+      resendBtn.classList.add('disabled');
+
+      if(remainingNow <= 0){
+        renderExpired();
+        return;
+      }
+
+      DURATION = remainingNow;
+      render(remainingNow);
+      intervalId = setInterval(tick, 1000);
+    }
+
+    startTimer();
+
+
+</script>
+<script src="{% static 'scripts/main.js' %}"></script>
+<script src="{% static 'scripts/verfiy.js' %}"></script>
+</html>

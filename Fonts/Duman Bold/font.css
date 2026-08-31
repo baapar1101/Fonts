@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Duman Bold';
+  src: url('Duman Bold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Duman-Bold';
+  src: url('Duman-Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+

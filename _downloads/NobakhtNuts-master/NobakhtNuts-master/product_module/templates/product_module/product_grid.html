@@ -1,0 +1,243 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load poll_extras %}
+{% load render_partial %}
+
+{% block page_title %}
+    | {{ title_prd }}
+{% endblock %}
+
+{% block topbar_title %}
+    {{ title_prd }}
+{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+{% endblock %}
+
+{% block page_content %}
+    <div class="prd-grid mt-35">
+        <div class="centerbox">
+            <div class="w-[90%] text-center">
+                <div class="centerbox">
+                    {% if request.GET.q %}
+                        <div class="home-pill" style="gap: 10px; animation: none">
+                            <svg id="Search" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M11.5139 2.20227C6.51788 2.20227 2.45288 6.26727 2.45288 11.2643C2.45288 16.2603 6.51788 20.3243 11.5139 20.3243C16.5099 20.3243 20.5749 16.2603 20.5749 11.2643C20.5749 6.26727 16.5099 2.20227 11.5139 2.20227Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.1373 17.9767C19.0833 17.9767 18.2253 18.8327 18.2253 19.8867C18.2253 20.9407 19.0833 21.7977 20.1373 21.7977C21.1903 21.7977 22.0473 20.9407 22.0473 19.8867C22.0473 18.8327 21.1903 17.9767 20.1373 17.9767Z" fill="#674d45"></path>
+                            </svg>
+                            جستجو
+                        </div>
+                        {% else %}
+                        <div class="home-pill" style="gap: 10px; animation: none">
+                            <img style="width: 24px" alt="products" src="{% static 'media/icons/package.webp' %}">
+                            محصولات
+                        </div>
+                    {% endif %}
+                </div>
+                <h1 class="productgrid-title text-6xl relative font-semibold mt-5" style="animation: load8 500ms">
+                    {% if request.GET.q %}
+                        <span class="">
+                            {{ title_prd }}
+                        </span>
+                        {% elif request.GET.offer %}
+                        <div class="home-carousel-title centerbox gap-2">
+                                <div class="w-15 h-10 bg-[#B21002] rounded-xl centerbox items-center">
+                                    <svg class="" id="Discount" width="30px" height="30px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                        <g id="Iconly/Light-Outline/Discount" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                            <g id="Discount" transform="translate(2.000000, 2.000000)" fill="#ffffff">
+                                                <path d="M12.1239,0.8755 L12.8549,1.6065 C13.1379,1.8875 13.5159,2.0435 13.9179,2.0435 L14.9459,2.0435 C16.6069,2.0435 17.9579,3.3945 17.9579,5.0555 L17.9579,6.0825 C17.9579,6.4835 18.1139,6.8625 18.3969,7.1475 L19.1149,7.8665 C19.6839,8.4315 19.9999,9.1865 20.0029215,9.9915 C20.0059,10.7965 19.6949,11.5535 19.1279,12.1245 L18.3949,12.8555 C18.1139,13.1385 17.9579,13.5155 17.9579,13.9175 L17.9579,14.9465 C17.9579,16.6065 16.6069,17.9575 14.9469,17.9575 L13.9159,17.9575 C13.5199,17.9575 13.1329,18.1175 12.8519,18.3965 L12.1339,19.1145 C11.5469,19.7055 10.7729,20.0015 9.9989,20.0015 C9.2319,20.0015 8.4649,19.7115 7.8779,19.1295 C7.8699,19.1215 7.8619,19.1135 7.8539,19.1045 L7.1439,18.3955 C6.8609,18.1145 6.4829,17.9585 6.0809,17.9575 L5.0549,17.9575 C3.3939,17.9575 2.0439,16.6065 2.0439,14.9465 L2.0439,13.9155 C2.0439,13.5135 1.8869,13.1365 1.6049,12.8525 L0.8859,12.1345 C-0.2821,10.9725 -0.2961,9.0805 0.8509,7.9005 L0.8779,7.8735 L0.8779,7.8735 L1.6059,7.1435 C1.8869,6.8605 2.0439,6.4815 2.0439,6.0805 L2.0439,5.0555 C2.0439,3.3955 3.3939,2.0445 5.0539,2.0435 L6.0839,2.0435 C6.4849,2.0435 6.8629,1.8865 7.1499,1.6035 L7.8649,0.8865 C9.0339,-0.2905 10.9449,-0.2965 12.1239,0.8755 Z M8.9279,1.9455 L8.2089,2.6665 C7.6349,3.2335 6.8819,3.5435 6.0839,3.5435 L5.0549,3.5435 C4.2219,3.5445 3.5439,4.2225 3.5439,5.0555 L3.5439,6.0805 C3.5439,6.8815 3.2329,7.6345 2.6689,8.2025 L1.9589,8.9135 C1.9519,8.9215 1.9449,8.9275 1.9379,8.9345 C1.3509,9.5255 1.3539,10.4845 1.9449,11.0715 L2.6669,11.7935 C3.2329,12.3615 3.5439,13.1145 3.5439,13.9155 L3.5439,14.9465 C3.5439,15.7795 4.2209,16.4575 5.0549,16.4575 L6.0819,16.4575 C6.8839,16.4585 7.6369,16.7695 8.2039,17.3345 L8.9249,18.0535 L8.9449,18.0755 L8.9449,18.0755 C9.5349,18.6515 10.4849,18.6445 11.0709,18.0555 L11.7929,17.3355 C12.3529,16.7765 13.1269,16.4575 13.9159,16.4575 L14.9459,16.4575 C15.7799,16.4575 16.4579,15.7795 16.4579,14.9465 L16.4579,13.9175 C16.4579,13.1165 16.7679,12.3635 17.3339,11.7965 L18.0539,11.0755 C18.3469,10.7815 18.5039,10.4005 18.5029047,9.9965 C18.5019,9.5935 18.3429,9.2145 18.0559,8.9285 L17.3349,8.2065 C16.7679,7.6355 16.4579,6.8835 16.4579,6.0825 L16.4579,5.0555 C16.4579,4.2215 15.7799,3.5435 14.9459,3.5435 L13.9179,3.5435 C13.1169,3.5435 12.3639,3.2325 11.7969,2.6695 L11.0749,1.9465 C10.4739,1.3515 9.5149,1.3545 8.9279,1.9455 Z M12.5035,11.4992 C13.0565,11.4992 13.5035,11.9462 13.5035,12.4992 C13.5035,13.0522 13.0565,13.4992 12.5035,13.4992 C11.9505,13.4992 11.4985,13.0522 11.4985,12.4992 C11.4985,11.9462 11.9415,11.4992 12.4945,11.4992 L12.5035,11.4992 Z M13.1013,6.9005 C13.3943,7.1935 13.3943,7.6685 13.1013,7.9615 L7.9603,13.1015 C7.8143,13.2485 7.6223,13.3215 7.4303,13.3215 C7.2383,13.3215 7.0463,13.2485 6.9003,13.1015 C6.6073,12.8085 6.6073,12.3345 6.9003,12.0415 L12.0403,6.9005 C12.3333,6.6075 12.8083,6.6075 13.1013,6.9005 Z M7.5035,6.4992 C8.0565,6.4992 8.5035,6.9462 8.5035,7.4992 C8.5035,8.0522 8.0565,8.4992 7.5035,8.4992 C6.9505,8.4992 6.4985,8.0522 6.4985,7.4992 C6.4985,6.9462 6.9415,6.4992 7.4945,6.4992 L7.5035,6.4992 Z" id="Combined-Shape"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </div>
+                                <span class="text-4xl mt-0.5">
+                                    <span class="flex ">
+                                        <span>تخفیف های</span>
+                                        <span class="text-[#B21002]  font-semibold">ویـــــژه</span>
+                                    </span>
+                                    <span class="text-center sr-only">خرید خشکبار نوبخت با تخفیف‌های ویژه</span>
+                                </span>
+                            </div>
+
+                        {% else %}
+                        {{ title_prd }}
+                        <span class="sr-only">خرید {{ title_prd }} از برنج و خشکبار نوبخت</span>
+                    {% endif %}
+                </h1>
+                {% if products %}
+                    <h2 class=" text-[var(--color10)]">{{ page_obj.paginator.count|to_fanum }} محصول</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if not request.GET.q %}
+        <div class="centerbox">
+
+                <div class="centerbox w-[97%] gap-2 mt-5">
+                        <button class="btn-slider btn-slider-cat mt-4" id="swiper-button-prev">
+                            <svg id="Arrow - Left" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="Iconly/Bulk/Arrow---Left" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                    <g id="Arrow---Left" transform="translate(12.000000, 12.000000) rotate(-90.000000) translate(-12.000000, -12.000000) translate(6.000000, 3.000000)" fill="#674d45" fill-rule="nonzero">
+                                        <path d="M4.80969341,5.20248239 L4.48254085,1.50325451 C4.48254085,0.673082751 5.16218102,1.37667655e-14 6.00044061,1.37667655e-14 C6.8387002,1.37667655e-14 7.51834037,0.673082751 7.51834037,1.50325451 L7.19118781,5.20248239 C7.19118781,5.85374723 6.6580503,6.38174083 6.00044061,6.38174083 C5.34172939,6.38174083 4.80969341,5.85374723 4.80969341,5.20248239" id="Fill-1" opacity="0.400000006"></path>
+                                        <path d="M4.86983661,17.6247318 C4.81145585,17.5669143 4.56471452,17.350917 4.3598311,17.1480103 C3.0765559,15.9643883 0.978153112,12.8738803 0.335964751,11.2571726 C0.23352304,11.0117211 0.0154213328,10.3910013 1.27897692e-13,10.0582781 C1.27897692e-13,9.74082738 0.0738020929,9.43755833 0.219203231,9.14847093 C0.422985129,8.7873844 0.744630072,8.49938789 1.12355425,8.34011709 C1.38571691,8.23866377 2.17330641,8.07939298 2.18762622,8.07939298 C3.04791628,7.92121308 4.44685148,7.8350323 5.99339086,7.8350323 C7.46502662,7.8350323 8.80668258,7.92121308 9.68129245,8.05102968 C9.69671379,8.06521133 10.6737654,8.22448213 11.0086286,8.39793457 C11.6210758,8.71538527 12,9.33610502 12,10.0004606 L12,10.0582781 C11.9856802,10.4913637 11.6056545,11.4011709 11.5924362,11.4011709 C10.9502478,12.9316978 8.95318524,15.9491158 7.62584909,17.162192 C7.62584909,17.162192 7.28437672,17.5047333 7.07178263,17.6530951 C6.76555902,17.884365 6.38663484,18 6.00771067,18 C5.58472554,18 5.19148155,17.8701834 4.86983661,17.6247318" id="Fill-4"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </button>
+                        <div class="swiper swiper-category" style="height: auto;">
+                            <div class="swiper-wrapper items-start" style="">
+
+                                <a href="{% url 'all_products_page' %}" class="{% if request.resolver_match.url_name == 'all_products_page' %}active-category{% else %} {% endif %} flex-nowrap p-2 rounded-xl bg-[var(--color12)] swiper-slide relative" style="animation: load3 {% widthratio forloop.counter 1 100 %}ms;">
+                                    <div class="flex gap-2">
+                                        <div class="emoji-card text-2xl bg-[var(--color13)] centerbox items-center  w-15 h-15 rounded-xl">
+                                            <svg id="Category" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                <g id="Iconly/Bulk/Category" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                                    <g id="Category" transform="translate(2.000000, 2.000000)" fill="#674d45" fill-rule="nonzero">
+                                                        <path d="M14.0755097,2.66453526e-15 L17.4614756,2.66453526e-15 C18.8637443,2.66453526e-15 20,1.1458518 20,2.55996321 L20,5.97452492 C20,7.38863633 18.8637443,8.53448813 17.4614756,8.53448813 L14.0755097,8.53448813 C12.673241,8.53448813 11.5369853,7.38863633 11.5369853,5.97452492 L11.5369853,2.55996321 C11.5369853,1.1458518 12.673241,2.66453526e-15 14.0755097,2.66453526e-15" id="Fill-1" opacity="0.400000006"></path>
+                                                        <path d="M5.9244903,11.4655119 C7.32675901,11.4655119 8.46301469,12.6113637 8.46301469,14.0254751 L8.46301469,17.4400368 C8.46301469,18.8531901 7.32675901,20 5.9244903,20 L2.53852439,20 C1.13625568,20 8.8817842e-16,18.8531901 8.8817842e-16,17.4400368 L8.8817842e-16,14.0254751 C8.8817842e-16,12.6113637 1.13625568,11.4655119 2.53852439,11.4655119 L5.9244903,11.4655119 Z M17.4614756,11.4655119 C18.8637443,11.4655119 20,12.6113637 20,14.0254751 L20,17.4400368 C20,18.8531901 18.8637443,20 17.4614756,20 L14.0755097,20 C12.673241,20 11.5369853,18.8531901 11.5369853,17.4400368 L11.5369853,14.0254751 C11.5369853,12.6113637 12.673241,11.4655119 14.0755097,11.4655119 L17.4614756,11.4655119 Z M5.9244903,7.99360578e-15 C7.32675901,7.99360578e-15 8.46301469,1.1458518 8.46301469,2.55996321 L8.46301469,5.97452492 C8.46301469,7.38863633 7.32675901,8.53448813 5.9244903,8.53448813 L2.53852439,8.53448813 C1.13625568,8.53448813 8.8817842e-16,7.38863633 8.8817842e-16,5.97452492 L8.8817842e-16,2.55996321 C8.8817842e-16,1.1458518 1.13625568,7.99360578e-15 2.53852439,7.99360578e-15 L5.9244903,7.99360578e-15 Z" id="Combined-Shape"></path>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                        <div class="mt-2 text-nowrap">
+                                            <div class="text-xl">همه محصولات</div>
+                                            <div class="cat-sub flex gap-1 text-sm text-[var(--color10)] mt-[-3px]"><div class="text-">{{ category_grid.count|to_fanum }}</div>دسته بندی</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% for cat in category_grid %}
+                                    {% include 'product_module/include/category_option.html' %}
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                        <button class="btn-slider btn-slider-cat mt-4" id="swiper-button-next">
+                            <svg id="Arrow - Left" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="Iconly/Bulk/Arrow---Left" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                    <g id="Arrow---Left" transform="translate(12.000000, 12.000000) rotate(90.000000) translate(-12.000000, -12.000000) translate(6.000000, 3.000000)" fill="#674d45" fill-rule="nonzero">
+                                        <path d="M4.80969341,5.20248239 L4.48254085,1.50325451 C4.48254085,0.673082751 5.16218102,1.37667655e-14 6.00044061,1.37667655e-14 C6.8387002,1.37667655e-14 7.51834037,0.673082751 7.51834037,1.50325451 L7.19118781,5.20248239 C7.19118781,5.85374723 6.6580503,6.38174083 6.00044061,6.38174083 C5.34172939,6.38174083 4.80969341,5.85374723 4.80969341,5.20248239" id="Fill-1" opacity="0.400000006"></path>
+                                        <path d="M4.86983661,17.6247318 C4.81145585,17.5669143 4.56471452,17.350917 4.3598311,17.1480103 C3.0765559,15.9643883 0.978153112,12.8738803 0.335964751,11.2571726 C0.23352304,11.0117211 0.0154213328,10.3910013 1.27897692e-13,10.0582781 C1.27897692e-13,9.74082738 0.0738020929,9.43755833 0.219203231,9.14847093 C0.422985129,8.7873844 0.744630072,8.49938789 1.12355425,8.34011709 C1.38571691,8.23866377 2.17330641,8.07939298 2.18762622,8.07939298 C3.04791628,7.92121308 4.44685148,7.8350323 5.99339086,7.8350323 C7.46502662,7.8350323 8.80668258,7.92121308 9.68129245,8.05102968 C9.69671379,8.06521133 10.6737654,8.22448213 11.0086286,8.39793457 C11.6210758,8.71538527 12,9.33610502 12,10.0004606 L12,10.0582781 C11.9856802,10.4913637 11.6056545,11.4011709 11.5924362,11.4011709 C10.9502478,12.9316978 8.95318524,15.9491158 7.62584909,17.162192 C7.62584909,17.162192 7.28437672,17.5047333 7.07178263,17.6530951 C6.76555902,17.884365 6.38663484,18 6.00771067,18 C5.58472554,18 5.19148155,17.8701834 4.86983661,17.6247318" id="Fill-4"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </button>
+                </div>
+            </div>
+    {% endif %}
+
+    <div id="product_grid" class="centerbox w-[100%] relative mt-20">
+        <div class="product-grid flex w-[100%] gap-5">
+            <div class="relative pr-5">
+                {% if not request.GET.q %}{% include 'include/filter_side.html' %}{% endif %}
+            </div>
+            <div class="w-[100%]">
+                <div class="flex gap-1 w-[100%] items-start flex-wrap mt-2">
+                    {% for sub in subcats %}
+                        <a onclick="Showloader(3000)" class="{% if sub.id == current_subcategory.id %}active-category{% endif %} bg-[var(--color12)] p-2 rounded-xl text-[var(--color6)]" href="{{ sub.get_absolute_url }}">{{ sub.title }}</a>
+                    {% endfor%}
+                </div>
+                {% if products.count > 0 %}
+                <div style="{% if products.count < 3 %} grid-template-columns: repeat(3, minmax(0, 1fr)); {% endif %}" class="{% if not request.GET.q %} product-grid-grid {% else %} search-grid {% endif %} gap-3 mt-2">
+                    {% for p in products %}
+                        {% include 'product_module/include/product_card.html' %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                    <div class="centerbox mt-30">
+                        <div class=" text-center w-[100%]">
+                            <div class="centerbox">
+                            <img loading="eager" class="w-[200px]" alt="محصولی پیدا نشد" src="{% static 'media/icons/package.webp' %}">
+                        </div>
+                        <div class="text-4xl mt-4">
+                            ای بــــابــــا !
+                        </div>
+                        <div class="text-[var(--color6)]">
+                            محصولی پیدا نشد
+                        </div>
+                        <div class="centerbox mt-2">
+                            <a href="{% url 'all_products_page' %}">
+                                <button class="btn-defIconFlex">
+                                    <svg id="Search" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M11.5139 2.20227C6.51788 2.20227 2.45288 6.26727 2.45288 11.2643C2.45288 16.2603 6.51788 20.3243 11.5139 20.3243C16.5099 20.3243 20.5749 16.2603 20.5749 11.2643C20.5749 6.26727 16.5099 2.20227 11.5139 2.20227Z" fill="#c5b8b4"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20.1373 17.9767C19.0833 17.9767 18.2253 18.8327 18.2253 19.8867C18.2253 20.9407 19.0833 21.7977 20.1373 21.7977C21.1903 21.7977 22.0473 20.9407 22.0473 19.8867C22.0473 18.8327 21.1903 17.9767 20.1373 17.9767Z" fill="#c5b8b4"></path>
+                                    </svg>
+                                    <div>
+                                        گشتن دیگر دسته بندی ها
+                                    </div>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        <ul class="centerbox gap-2 mt-10 flex-wrap">
+            {% if page_obj.has_previous %}<a href="?{% query_transform page=page_obj.previous_page_number %}"><button class="rounded-xl bg-[var(--color12)] w-8 h-8 m-1 cursor-pointer text-[var(--color6)]"><i class="fa fa-arrow-right text-sm mt-1"></i></button></a>{% endif %}
+            <div class="flex gap-2">
+                {% for page_index in paginator.page_range %}
+                    <a class="" href="?{% query_transform page=page_index %}"><li class="{% if page_index == page_obj.number %}bg-[var(--color6)] text-[var(--color3)]{% endif %} pt-2 cursor-pointer transition-all px-4 rounded-lg hover:bg-[var(--color12)] hover:text-[var(--color2)]">{{ page_index|to_fanum }}</li></a>
+                {% endfor %}
+            </div>
+            {% if page_obj.has_next %}<a href="?{% query_transform page=page_obj.next_page_number %}"><button class="rounded-xl bg-[var(--color12)] w-8 h-8 m-1 cursor-pointer text-[var(--color6)]"><i class="fa fa-arrow-left text-sm mt-1"></i></button></a>{% endif %}
+        </ul>
+    {% endif %}
+
+
+    
+    <script>
+
+
+    const swiper = new Swiper(".swiper-category", {
+        slidesPerView: {{ category.count }},
+        spaceBetween: 10,
+
+        navigation: {
+            nextEl: "#swiper-button-next",
+            prevEl: "#swiper-button-prev",
+        },
+
+        autoplay: {
+            pauseOnMouseEnter: true
+        },
+        speed: 500,
+
+
+        breakpoints: {
+            320: {
+                slidesPerView: 2.2
+            },
+            600: {
+                slidesPerView: 3.5
+            },
+            800: {
+                slidesPerView: 4.5
+            },
+            990: {
+                slidesPerView: 5.5
+            },
+            1300: {
+                slidesPerView: 6.5,
+            }
+        },
+    });
+
+    const activeSlide = document.querySelector(".swiper-category .swiper-slide.active-category");
+
+    if (activeSlide) {
+        const index = [...activeSlide.parentNode.children].indexOf(activeSlide);
+        swiper.slideTo(index, 0);
+        swiper.autoplay = false
+    }
+
+
+
+    </script>
+{% endblock %}

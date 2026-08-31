@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block page_title %}
+    | فروشگاه تخصصی برنج ،آجیل و خشکبار
+{% endblock %}
+
+{% block schema %}
+    {% include 'home_module/home_schema.html' %}
+{% endblock %}
+
+{% block topbar_title %}
+    <a href="{% url 'home' %}" class="flex gap-2">
+        <img class="w-[45px] max-w-[45px] min-w-[45px]" loading="eager" alt="برنج و خشکبار نوبخت" src="{% static 'media/logo/favicon-32x32.webp' %}">
+        <h2 class="text-xl mt-2.5 font-bold text-nowrap">برنج و خشکبار نوبخت</h2>
+    </a>
+{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+{% endblock %}
+
+{% block page_content %}
+    <div class="home-inner-container w-[100%]">
+        <div class="centerbox">
+            {% include 'home_module/components/home_landing.html' %}
+        </div>
+        <div class="centerbox">
+            {% include 'home_module/components/home_carousel_category.html' %}
+        </div>
+        <div class="centerbox">
+            {% include 'home_module/components/special_carousels/home_carousel_special.html' %}
+        </div>
+        <div class=centerbox>
+            {% include 'home_module/components/home_cards_block.html' %}
+        </div>
+        <div class="centerbox mt-35 border-t border-b border-[var(--color12)] " style="background-color: var(--color19)">
+            {% include 'home_module/components/home_why_nobakht.html' %}
+        </div>
+        <div class="centerbox">
+            {% include 'home_module/components/home_recent_articles.html' %}
+        </div>
+    </div>
+    {% include 'include/event_bar.html' %}
+    <script src="{% static 'scripts/home.js' %}"></script>
+{% endblock %}

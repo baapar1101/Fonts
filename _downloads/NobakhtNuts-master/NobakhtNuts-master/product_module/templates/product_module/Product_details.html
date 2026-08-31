@@ -1,0 +1,279 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load poll_extras %}
+
+{% block page_title %}
+    | {{ product.title }}
+{% endblock %}
+
+{% block schema %}
+    {% include 'product_module/product_schema.html' %}
+{% endblock %}
+
+{% block topbar_title %}
+    <h1 class="truncate">{{ product.title }}</h1>
+{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+{% endblock %}
+
+{% block page_content %}
+    {% include 'product_module/include/popup_comment.html' %}
+    {% include 'product_module/include/popup-choose-weight.html' %}
+    {% include 'message_cart_json.html' %}
+    {% include 'include/photo_gallery.html' %}
+    {% include 'product_module/include/popup-guide.html' %}
+
+    <div class="product-details-box w-[100%] mt-30 centerbox">
+
+        <div class="product-details w-[90%] justify-between gap-5 flex" style="direction: ltr">
+
+            <div class="prd-photo-gallery" style="direction: rtl">
+                <div onclick="PhotoGallery(false ,0)" class="pg-mainphoto">
+                    <img loading="lazy" alt="{{ product.title }}" onclick="" src="{{ product.product_image.first.image.url }}">
+                </div>
+                <div id="swiper-prd" class="swiper mt-2">
+                    <div class="swiper-wrapper">
+                        {% for img in product.product_image.all %}
+                            {% if not img.is_Main %}
+                                <div onclick="PhotoGallery(false ,{{ forloop.counter0 }})" class="swiper-slide pg-img-card">
+                                    <img loading="lazy" alt="{{ product.title }}" src="{{ img.image.url }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-detail-details w-[100%]" style="direction: rtl">
+                <div class="product-titlebar relative">
+                    <div class="flex text-[var(--color7)] gap-1 relative" style="animation: load8 150ms">
+                        <a href="{% url 'all_products_page' %}" class="" style="">محصولات</a>
+                        <i class="fa fa-angle-left mt-1 text-xs text-[var(--color11)]"></i>
+                        <a href="{{ product.category.main_category.get_absolute_url }}" class="" style="">{{ product.category.main_category }}</a>
+                        <i class="fa fa-angle-left mt-1 text-xs text-[var(--color11)]" ></i>
+                        <a href="{{ product.category.get_absolute_url }}" class="" style="">{{ product.category }}</a>
+                    </div>
+
+                    <div class="product-titlebar flex gap-2 mt-3 relative" style="animation: load8 200ms">
+                        <h1 class="product-title text-5xl font-bold">{{ product.title|to_fanum }}</h1>
+                    </div>
+
+                    <div class="flex codeandcomment gap-2 mt-3 text-nowrap flex-wrap">
+                        <div class="flex gap-1 items-start">
+                            <svg id="Star" width="20px" height="20px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="Iconly/Bold/Star" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                    <g id="Star" transform="translate(1.999624, 2.500100)" fill="#C2B8B5" fill-rule="nonzero">
+                                        <path d="M15.9188758,11.82 C15.6598758,12.071 15.5408758,12.434 15.5998758,12.79 L16.4888758,17.71 C16.5638758,18.127 16.3878758,18.549 16.0388758,18.79 C15.6968758,19.04 15.2418758,19.07 14.8688758,18.87 L10.4398758,16.56 C10.2858758,16.478 10.1148758,16.434 9.93987581,16.429 L9.66887581,16.429 C9.57487581,16.443 9.48287581,16.473 9.39887581,16.519 L4.96887581,18.84 C4.74987581,18.95 4.50187581,18.989 4.25887581,18.95 C3.66687581,18.838 3.27187581,18.274 3.36887581,17.679 L4.25887581,12.759 C4.31787581,12.4 4.19887581,12.035 3.93987581,11.78 L0.32887581,8.28 C0.0268758104,7.987 -0.0781241896,7.547 0.0598758104,7.15 C0.19387581,6.754 0.53587581,6.465 0.94887581,6.4 L5.91887581,5.679 C6.29687581,5.64 6.62887581,5.41 6.79887581,5.07 L8.98887581,0.58 C9.04087581,0.48 9.10787581,0.388 9.18887581,0.31 L9.27887581,0.24 C9.32587581,0.188 9.37987581,0.145 9.43987581,0.11 L9.54887581,0.07 L9.71887581,5.32907052e-15 L10.1398758,5.32907052e-15 C10.5158758,0.039 10.8468758,0.264 11.0198758,0.6 L13.2388758,5.07 C13.3988758,5.397 13.7098758,5.624 14.0688758,5.679 L19.0388758,6.4 C19.4588758,6.46 19.8098758,6.75 19.9488758,7.15 C20.0798758,7.551 19.9668758,7.991 19.6588758,8.28 L15.9188758,11.82 Z"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <div>{{ product.average_rating|to_fanum }} از {{ product.comments_count|to_fanum }} نظر</div>
+                            <button onclick="ScrollTo('comments')" class="rounded-lg text-xs border border-[var(--color11)] pt-1 mt-[-2px] mr-1 cursor-pointer h-7 w-7 bg-[var(--color12)] text-[var(--color6)]">
+                                <i class="fa fa-arrow-down"></i>
+                            </button>
+                        </div>
+                        <div class="border-l border-[var(--color11)]"></div>
+                        <div class="flex gap-1">
+                            <svg id="QR code" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.14976 18.279H7.64976V16.689H6.14976V18.279ZM2.74976 21.639H11.0598V13.329H2.74976V21.639Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14.9441 4.13818H17.3751V2.63818H13.4441V8.25718H14.9441V4.13818Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.4448 10.943H17.1648V9.44298H13.4448V10.943Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M18.5481 2.63818V4.13818H20.2501V5.83918H21.7501V2.63818H18.5481Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.2498 9.44277H18.5478V10.9428H21.7498V7.01277H20.2498V9.44277Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.7674 5.00288V8.72188H19.0964V7.22188H17.2674V5.00288H15.7674Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.6932 4.99307L18.1932 5.00307V6.50307H19.6932V4.99307Z" fill="#674d45"></path>
+                            <g opacity="0.4">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.8498 18.2792H18.3498V16.6892H16.8498V18.2792ZM13.4398 21.6392H21.7498V13.3292H13.4398V21.6392Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.14976 7.58916H7.64976V5.98916H6.14976V7.58916ZM2.74976 10.9392H11.0598V2.63916H2.74976V10.9392Z" fill="#674d45"></path>
+                            </g>
+                            </svg>
+                            <div class="flex gap-1">
+                                <p>کد محصول:</p>
+                                <a href="{{ product.get_absolute_url }}" class="text-[var(--color10)] hover-underline">{{ product.slug }}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-features flex mt-2 gap-2" style="animation: load8 200ms">
+                        {% for spec in product.features.all|slice:3 %}
+                            <div class="prd-feature overflow-hidden w-[100%] h-14 rounded-2xl p-2 border-2 border-[var(--color13)] relative" style="background-color: var(--color19)">
+                                <div class="text-[var(--color10)] px-1 text-sm">{{ spec.title }}</div>
+                                <div class="text-m truncate text-[var(--color6)] mt-[-3px] text-nowrap">{{ spec.desc|to_fanum }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if product.brand %}
+                        <a href="/products/?brand={{ product.brand.pk }}&brandgrid=1" class="flex justify-between w-[100%] p-2 mt-2 rounded-2xl gap-3" style="background-color: var(--color19); border: 2px solid var(--color13); animation: load8 400ms">
+                            <div class="flex gap-3">
+                                {% if product.brand.logo %}
+                                <div class="bg-[var(--color13)] p-2 rounded-lg">
+                                    <img loading="lazy" alt="{{ product.brand.title }}" class="w-10 h-10" src="{{ product.brand.logo.url }}">
+                                </div>
+                                {% endif %}
+                                <div class="pt-2 mr-1">
+                                    <div class="text-sm text-[var(--color7)]">برند</div>
+                                    <div class="text-lg mt-[-3px]">{{ product.brand.title }}</div>
+                                </div>
+                            </div>
+                            <button class="btn-defIconFlex2 gap-2 mt-2 ml-2" style="background-color: var(--color12)">
+                                <p id="btn-showbrand-title">مشاهده محصولات این برند</p>
+                                <i class="fa fa-arrow-left mt-1"></i>
+                            </button>
+                        </a>
+                    {% endif %}
+                </div>
+
+
+                {% include 'product_module/include/product_managecard_desktop.html' %}
+
+                <div class="home-landing-stats stats-details gap-4 centerbox p-5 border-2 border-[var(--color13)] rounded-2xl mt-2.5" style="animation: load8 500ms; background-color: var(--color19)">
+                    <div class="home-landing-stat flex gap-2 w-[100%]">
+                        <div class="w-10 h-10 centerbox items-center rounded-xl bg-[var(--color11)]"><img class="w-6" alt="fast-delivery" src="{% static 'media/icons/truck.png' %}"></div>
+                        <div class="">
+                            <strong>ارسال سریع</strong>
+                            <p class="mt-[-5px] text-sm text-[var(--color10)]">به سراسر ایران </p>
+                        </div>
+                    </div>
+                    <span class="seprator w-1 border-l border-[var(--color9)]"></span>
+                    <div class="home-landing-stat details-stat flex gap-2 w-[100%]">
+                        <div class="w-10 h-10 centerbox items-center rounded-xl bg-[var(--color11)]">
+                            <svg id="Shield Done" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M19.9377 5.42951C19.3317 4.82251 16.0037 2.67651 12.2497 2.67651C8.49369 2.67651 5.16769 4.82251 4.56169 5.42951C3.98069 6.01151 3.98969 6.46451 4.03369 8.97851C4.05269 9.99851 4.07769 11.3865 4.07769 13.3045C4.07769 19.8245 9.39969 22.5315 12.2497 22.5315C15.0987 22.5315 20.4217 19.8245 20.4217 13.3045C20.4217 11.3855 20.4467 9.99651 20.4657 8.97751C20.5107 6.46351 20.5187 6.01151 19.9377 5.42951Z" fill="#674d45"></path>
+                            <path d="M12.073 14.7244L15.971 10.8254C16.264 10.5324 16.264 10.0574 15.971 9.76443C15.678 9.47143 15.203 9.47143 14.91 9.76443L11.543 13.1334L10.181 11.7694C9.88802 11.4764 9.41302 11.4764 9.12102 11.7694C8.82702 12.0614 8.82702 12.5374 9.12002 12.8304L11.012 14.7244C11.153 14.8654 11.344 14.9444 11.543 14.9444C11.742 14.9444 11.932 14.8654 12.073 14.7244Z" fill="#674d45"></path>
+                            </svg>
+                        </div>
+                        <div class="">
+                            <strong>کیفیت بالا</strong>
+                            <p class="mt-[-5px] text-sm text-[var(--color10)]">و تضمین شده</p>
+                        </div>
+                    </div>
+                    <span class="seprator w-1 border-l border-[var(--color9)]"></span>
+                    <div class="details-stat flex gap-2 w-[100%]">
+                        <div class="w-10 h-10 centerbox items-center rounded-xl bg-[var(--color11)]">
+                            <svg id="Bag 3" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M2.5 6.95215V12.3921C2.5 17.7721 6.87 22.1421 12.25 22.1421C17.63 22.1421 22 17.7721 22 12.3921V6.95215H2.5Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.48048 6.87493C7.49183 4.24547 9.63258 2.12481 12.2611 2.13529C14.8891 2.13617 17.0194 4.26727 17.0194 6.89625V10.8695H15.5194V6.89625C15.5194 5.0949 14.0595 3.63529 12.2595 3.63529H12.2563C10.4552 3.62751 8.98907 5.07973 8.98047 6.87988V10.8695H7.48047L7.48048 6.87493Z" fill="#674d45"></path>
+                            </svg>
+                        </div>
+                        <div class="">
+                            <strong>امکان مرجوعی</strong>
+                            <p class="mt-[-5px] text-sm text-[var(--color10)]">تا هفت روز پس از تحویل</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="prd-detail-row1 flex mt-3 gap-1">
+                    <div>
+                    <svg id="Info Square" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M12.25 2.78467C5.052 2.78467 2.5 5.33667 2.5 12.5347C2.5 19.7327 5.052 22.2847 12.25 22.2847C19.448 22.2847 22 19.7327 22 12.5347C22 5.33667 19.448 2.78467 12.25 2.78467Z" fill="#674d45"></path>
+                    <path d="M12.2461 9.78467H12.2551C12.6691 9.78467 13.0011 9.44867 13.0011 9.03467C13.0011 8.62067 12.6601 8.28467 12.2461 8.28467C11.8321 8.28467 11.4961 8.62067 11.4961 9.03467C11.4961 9.44867 11.8321 9.78467 12.2461 9.78467Z" fill="#674d45"></path>
+                    <path d="M12.2501 17.1797C12.6641 17.1797 13.0001 16.8437 13.0001 16.4297V12.5347C13.0001 12.1207 12.6641 11.7847 12.2501 11.7847C11.8361 11.7847 11.5001 12.1207 11.5001 12.5347V16.4297C11.5001 16.8437 11.8361 17.1797 12.2501 17.1797Z" fill="#674d45"></path>
+                    </svg>
+                    </div>
+                    <div class="text-[var(--color10)]">
+                        مرجوع کردن محصول در صورت عدم رضایت یا دلایل همانند خرابی و ایراد در کالا امکان پذیر است. جهت کسب اطلاعات بیشتر درباره شرایط مرجوع کردن بار در بخش
+                        <a target="_blank" style="display: inline" class="font-black text-[var(--color6)] hover:underline" href="{% url 'faq' %}"> سوالات متداول <i class="fa fa-external-link text-xs ml-1"></i></a>
+                        منوی مرجوعی سفارشات یا در بخش
+                        <a target="_blank" style="display: inline" class="font-black text-[var(--color6)] hover:underline" href="{% url 'policies' %}">قوانین و شرایط</a>
+                        شرایط بازگشت و مرجوعی را مطالعه کنید.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="w-[100%] centerbox">
+        <div class="w-[90%]">
+            {% include 'product_module/include/product_desc.html' %}
+            {% include 'product_module/include/product_features.html' %}
+            {% include 'product_module/product_comment_section.html' %}
+            {% include 'product_module/include/product_suggestion.html' %}
+        </div>
+    </div>
+
+
+    {% include 'product_module/include/product_managecard_mobile.html' %}
+
+
+    <script>
+    const swiper = new Swiper("#swiper-prd", {
+        slidesPerView: 'auto',
+        spaceBetween: 10,
+
+        navigation: {
+            nextEl: "#swiper-button-next",
+            prevEl: "#swiper-button-prev",
+        },
+
+
+        breakpoints: {
+            100: {
+                slidesPerView: 2.5
+            },
+            400: {
+                slidesPerView: 2.5
+            },
+            520: {
+                slidesPerView: 2.5
+            },
+            800: {
+                slidesPerView: 3.5
+            },
+            1300: {
+                slidesPerView: 4.5,
+            }
+        },
+    });
+
+    let PhotoGallery = (action ,slide) => {
+        let parent = document.getElementById('popup-parent')
+
+        if (action) {
+            parent.style = "display: none;"
+        }
+        else {
+            parent.style = 'display: flex;'
+            swipe.slideTo(slide);
+        }
+    }
+
+    const popupClickHandlerGuide = (e) => {
+        let popup = document.getElementById('popup-form-guide')
+
+        if (!popup.contains(e.target)) {
+            PopUpGuide('none', 'close')
+        }
+    }
+
+    let PopUpGuide = (type ,action) => {
+        PopUpWeight('none' ,'close')
+        let parent = document.getElementById('popup-parent-guide')
+        let popup = document.getElementById('popup-form-guide')
+
+            if (action === 'open') {
+                window.innerWidth > 1130 ? parent.style = 'display: flex; align-items:center;' :parent.style = 'display: flex; align-items:end;'
+                document.body.style.overflowY = 'hidden'
+                window.innerWidth < 1130 ? popup.style = 'animation: popup-mobile 300ms': null
+                setTimeout(() => {
+                    document.addEventListener('click', popupClickHandlerGuide)
+                }, 200)
+            } else {
+                window.innerWidth < 1130 ? popup.style = 'animation: popup-mobile-close 300ms' : popup.style = 'animation: unload4 200ms'
+                setTimeout(()=> {
+                    parent.style = 'display: none'
+                    popup.style = 'animation: load5 300ms;'
+                    document.body.style.overflowY = 'scroll'
+                    document.removeEventListener('click', popupClickHandlerGuide)
+                } ,100)
+            }
+    }
+
+
+    </script>
+{% endblock %}

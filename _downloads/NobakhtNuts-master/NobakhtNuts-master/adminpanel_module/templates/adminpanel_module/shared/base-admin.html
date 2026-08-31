@@ -1,0 +1,49 @@
+{% load static %}
+{% load poll_extras %}
+{% load render_partial %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    {% include 'include/head_refrence.html' %}
+    {% block extra_head %}
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    {% endblock %}
+    <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
+  <title>
+       ادمین خشکبار نوبخت |
+      {% block admin_title %}
+      {% endblock %}
+  </title>
+</head>
+<body class="admin-body">
+    {% include 'loader.html' %}
+    {% include 'yesno_dialog.html' %}
+    {% include 'message.html' %}
+    {% include 'message_json.html' %}
+    {% include 'adminpanel_module/categories/include/popup_delete_category.html' %}
+    {% include 'adminpanel_module/orders/order_receipt_gallery.html' %}
+    {% include 'adminpanel_module/carousels/carousel_product_menu.html' %}
+    <div id="overlay" class="overlay"></div>
+    {% render_partial 'adminpanel_module.views.admin_user_card_component' %}
+    {% render_partial 'adminpanel_module.views.admin_popup_user_component' %}
+    {% render_partial 'adminpanel_module.views.admin_popup_notif_component' %}
+    <div class="flex">
+        {% render_partial 'adminpanel_module.views.admin_sidebar_component' %}
+        <div class="w-[100%] admin-content" id="admin-content">
+            {% render_partial 'adminpanel_module.views.admin_header_component' %}
+            <div class="admin-inner-content rounded-[20px] mt-18 p-[10px] bg-[var(--color3)] w-[100%]">
+                {% block admin_content %}
+
+                {% endblock %}
+                <br>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="{% static 'scripts/main.js' %}"></script>
+<script src="{% static 'scripts/admin.js' %}"></script>
+</html>

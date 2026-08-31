@@ -1,0 +1,90 @@
+﻿/**
+*
+*	Name:			ahang Fonts
+*	Version:			1.0
+*	Author:			Moslem Ebrahimi (moslemebrahimi.com)
+*	Created on:		January 01, 2021
+*	Updated on:		January 01, 2021
+*	Website:			http://fontiran.com
+*	Copyright:		Commercial/Proprietary Software
+--------------------------------------------------------------------------------------
+فونت آهنگ یک نرم افزار مالکیتی محسوب می شود. جهت آگاهی از قوانین استفاده از این فونت ها لطفا به وب سایت (فونت ایران دات کام) مراجعه نمایید
+--------------------------------------------------------------------------------------
+ahang fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com
+--------------------------------------------------------------------------------------
+This set of fonts are used in this project under the license: (.....)
+------------------------------------------------------------------------------------- fonts/-
+*
+**/
+
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 100;
+	src: url('fonts/woff2/ahang-thinsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-thinsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 200;
+	src: url('fonts/woff2/ahang-ultralightsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-ultralightsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 300;
+	src: url('fonts/woff2/ahang-lightsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-lightsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 500;
+	src: url('fonts/woff2/ahang-mediumsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-mediumsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 600;
+	src: url('fonts/woff2/ahang-demiboldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-demiboldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 800;
+	src: url('fonts/woff2/ahang-extraboldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-extraboldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 850;
+	src: url('fonts/woff2/ahang-ultraboldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-ultraboldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: 900;
+	src: url('fonts/woff2/ahang-blacksharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-blacksharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: bold;
+	src: url('fonts/woff2/ahang-boldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-boldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: ahangsharp;
+	font-style: normal;
+	font-weight: normal;
+	src: url('fonts/woff2/ahang-regularsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/ahang-regularsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}

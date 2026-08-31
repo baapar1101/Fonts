@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fa" >
+<head>
+  <meta charset="utf-8">
+  <title>فونت آذرمهر</title>
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body dir="rtl" class="bg-white">
+  <div class="toolbar" align="center">
+    <div class="row">
+      <div class="column1">
+        <div id="svglogo" class="svglogo-white">
+          <a href="https://www.fontamin.com" target="_blank">
+          <svg
+             width="38"
+             height="38"
+             viewBox="0 0 42 43"
+             version="1.1">
+             <path
+                d="M 31.725209,1.4784625 C 39.361403,6.014049 41.1,14.484526 41.1,23.53265 41.1,38.294231 35.839505,42.100001 19.917434,42.100001 9.6582688,42.100001 0.89999998,39.772905 0.89999998,28.71112 M 34.26842,26.206609 c -2.42125,0.857544 -4.969631,1.300447 -7.538015,1.310092 -5.1514,0 -8.672533,-2.330266 -8.672533,-9.727433 0,-5.537563 1.562388,-10.9865753 4.653229,-14.0713564 0.445083,-0.4550962 0.9227,-0.8771406 1.42906,-1.262783 L 23.471084,1.154741 C 21.837767,0.99097732 20.197525,0.90596564 18.556042,0.90000098 4.8848304,0.9084923 1.1709734,7.6918568 0.9758262,17.663111 v 0.186811 l 6.1113795,1.397431 c -0.4833496,1.953348 -0.7275609,3.95827 -0.7272568,5.970622 0,5.279185 7.1877191,6.238706 13.1827381,6.238706 5.064498,0.07957 10.124269,-0.347526 15.103905,-1.274913 z M 27.399005,10.367153 c 3.084781,0 5.443462,3.523423 5.442249,6.987889 -1.642887,0.442876 -3.333424,0.686416 -5.034384,0.727015 -2.502977,0 -3.869637,-0.843795 -3.869637,-2.619697 0,-2.735422 1.133339,-5.095207 3.461772,-5.095207 z"
+               sodipodi:nodetypes="csscccscccccccccccsccss" />
+           </svg>
+         </a>
+        </div>
+      </div>
+      <div class="column2">
+        <h1 class="h11">فونت آذرمهر<sup style="font-size: 12px;">نسخۀ ۲٫۳۲</sup></h1>
+      </div>
+      <div class="column3">
+            <input autocomplete="off" type="range" min="10" max="90" value="16" step="1" oninput="changeFontSizeOldNick(this.value)" onchange="changeFontSizeOldNick(this.value)" id="input1" class="input-slider-1" style="width: 80%; max-width: 300px; background:transparent;">
+            <input autocomplete="off" type="range" min="1" max="2" value="1.6" step="0.01" oninput="changeLineHeigthOldNick(this.value)" onchange="changeLineHeigthOldNick(this.value)" id="input2" class="input-slider-1" style="width: 80%; max-width: 200px; background:transparent;">
+            <script type="text/javascript">
+              function changeFontSizeOldNick(newValue) {
+              document.getElementById("changedfontsizeOldNick").innerHTML=newValue;
+              $('.changesizeOldNick').css('font-size',newValue + 'px');
+              };
+              function changeLineHeigthOldNick(newValue) {
+              document.getElementById("changedlineheigthOldNick").innerHTML=newValue;
+              $('.changesizeOldNick').css('line-height',newValue);
+              };
+            </script>
+      </div>
+      <div class="column4">
+        <p class="sizelabel" align="center">
+          <span id="changedlineheigthOldNick" >1.6</span>em / <span id="changedfontsizeOldNick">16</span>px
+        </p>
+      </div>
+    <div class="column5">
+      <ul class="font-selection">
+        <li>
+          <button class="button-white" onclick="myFunction1()"></button>
+          <script>
+    function myFunction1() {
+    $('body').removeClass('bg-black').addClass('bg-white')
+    $('table').removeClass('t2').addClass('t1')
+    $('td').removeClass('td2').addClass('td1')
+    $(".toolbar").css('background-color', '#efefef')
+    $(".toolbar").css('color', '#000')
+    $('hr').removeClass('hr2').addClass('hr1')
+    $('h1').removeClass('h12').addClass('h11')
+    $("p.sizelabel").css('color', '#333')
+    $(".fontname").css('color', '#222')
+    $("sup").css('color', '#222')
+    $(".font-selection a").css('color', '#ff3a3a')
+    $('#input1').removeClass('input-slider-2').addClass('input-slider-1')
+    $('#input2').removeClass('input-slider-2').addClass('input-slider-1')
+    $("footer").css('background-color', '#222')
+    $("footer").css('color', '#888')
+    $("footer a").css('color', '#efefef')
+    $('#svglogo').removeClass('svglogo-black').addClass('svglogo-white')
+    }
+    </script>
+        </li>
+        <li>
+          <button class="button-black" onclick="myFunction2()"></button>
+          <script>
+    function myFunction2() {
+    $('body').removeClass('bg-white').addClass('bg-black')
+    $('table').removeClass('t1').addClass('t2')
+    $('td').removeClass('td1').addClass('td2')
+    $(".toolbar").css('background-color', '#222222')
+    $(".toolbar").css('color', '#efefef')
+    $('hr').removeClass('hr1').addClass('hr2')
+    $('h1').removeClass('h11').addClass('h12')
+    $("p.sizelabel").css('color', '#eee')
+    $(".fontname").css('color', 'white')
+    $("sup").css('color', 'white')
+    $(".font-selection a").css('color', 'white')
+    $('#input1').removeClass('input-slider-1').addClass('input-slider-2')
+    $('#input2').removeClass('input-slider-1').addClass('input-slider-2')
+    $("footer").css('background-color', '#000')
+    $("footer").css('color', '#888')
+    $("footer a").css('color', '#efefef')
+    $('#svglogo').removeClass('svglogo-white').addClass('svglogo-black')
+    }
+    </script>
+        </li>
+      </ul>
+    </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<section class="changesizeOldNick" class="changesizeOldNick" style="font-size: 16px; line-height: 1.75em;">
+  <table class="t1">
+      <tr>
+        <td class="w100" class="td1">
+          آذرمهر-نازک
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+        <td class="w200" class="td1">
+          آذرمهر-خیلی سبک
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+        <td class="w300" class="td1">
+          آذرمهر- سبک
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="w400" class="td1">
+          آذرمهر-متوسط
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+        <td class="w500" class="td1">
+          آذرمهر-معمولی
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+        <td class="w600" class="td1">
+          آذرمهر-نیمه ضخیم
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="w700" class="td1">
+          آذرمهر- ضخیم
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+        </td>
+        <td class="w800" class="td1">
+          آذرمهر- خیلی ضخیم
+          <hr class="hr1">
+          <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+          </div>
+         </td>
+         <td class="w900" class="td1">
+          آذرمهر- سیاه
+          <hr class="hr1">
+           <div contenteditable="true">
+            حروف‌چینی بر خلاف خطاطی، ماهیت خود
+            را به نظام یکپارچه و یکنواخت فرم و اندازۀ
+            حروف یک شکل متصل می‌یابد. چنانکه تا
+            قبل از تولد حروف چاپی توسط گوتنبرگ در
+            قرن ۱۵ میلادی، حروف‌چینی معنا نداشت.
+           </div>
+         </td>
+       </tr>
+   </table>
+ </section>
+</body>
+</html>

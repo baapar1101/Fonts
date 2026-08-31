@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load poll_extras %}
+
+{% block page_title %}
+	پرداخت
+{% endblock %}
+
+{% block topbar_title %}
+    پرداخت
+{% endblock %}
+
+{% block page_content %}
+    {% include 'order_module/include/payment_popup_discount_code.html' %}
+    {% include 'message_json.html' %}
+    <div class="w-[100%] order-grid centerbox mt-35">
+            <div class="w-[90%] justify-start">
+                <div class="w-[50%] flex text-nowrap items-center gap-2">
+                    <div class="flex gap-1 gap-2 items-start">
+                        <div class="w-9 h-9 mt-1 centerbox items-center font-bold text-white bg-[var(--color6)] rounded-xl"><i class="fa fa-check text-xs"></i></div>
+                        <p class="mt-2 font-semibold disabled">سبد خرید</p>
+                    </div>
+                    <div class="w-[100%] bg-[var(--color11)]" style="height: 1px">
+                    </div>
+                    <div class="flex gap-1 gap-2 items-start">
+                        <div class="w-9 h-9 mt-1 centerbox items-center font-bold bg-[var(--color6)] rounded-xl text-white"><i class="fa fa-check text-xs"></i></div>
+                        <p class="mt-2 font-semibold disabled">بررسی سفارش</p>
+                    </div>
+                    <div class="w-[100%] bg-[var(--color11)]" style="height: 1px">
+                    </div>
+                    <div class="flex gap-1 gap-2 items-start">
+                        <div class="w-9 h-9 mt-1 centerbox items-center font-bold bg-[var(--color12)] rounded-xl border-2 border-[var(--color12)]" style="background-color: var(--color19)">{{ 3|to_fanum }}</div>
+                        <p class="mt-2 font-semibold">پرداخت</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <form method="post" class="checkout centerbox mb-60">
+        {% csrf_token %}
+        <div class="w-[90%] flex items-start gap-3">
+
+            <div class="w-[100%]">
+                <div class="mt-3">
+                    <div class="flex justify-between">
+                        <div class="flex gap-1">
+                            <svg id="Wallet" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M17.5207 15.1719C15.6937 15.1719 14.2077 13.6859 14.2077 11.8599C14.2077 10.0329 15.6937 8.54594 17.5207 8.54594H21.7307C20.8527 4.49194 18.0597 2.96094 12.2507 2.96094C5.01471 2.96094 2.44971 5.32694 2.44971 11.9999C2.44971 18.6739 5.01471 21.0389 12.2507 21.0389C18.1927 21.0389 20.9807 19.4389 21.7887 15.1719H17.5207Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9017 8.64099H7.84167C7.42767 8.64099 7.09167 8.30499 7.09167 7.89099C7.09167 7.47699 7.42767 7.14099 7.84167 7.14099H11.9017C12.3157 7.14099 12.6517 7.47699 12.6517 7.89099C12.6517 8.30499 12.3157 8.64099 11.9017 8.64099Z" fill="#674d45"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5205 13.6719C16.5215 13.6719 15.7075 12.8589 15.7075 11.8599C15.7075 10.8599 16.5215 10.0459 17.5205 10.0459H21.9565C22.0155 10.6549 22.0505 11.2979 22.0505 11.9999C22.0505 12.5949 22.0225 13.1439 21.9805 13.6719H17.5205ZM18.4106 11.7998C18.4106 12.2138 18.0746 12.5498 17.6606 12.5498C17.2466 12.5498 16.9106 12.2138 16.9106 11.7998C16.9106 11.3858 17.2466 11.0498 17.6606 11.0498C18.0746 11.0498 18.4106 11.3858 18.4106 11.7998Z" fill="#674d45"></path>
+                            </svg>
+                            <div class="text-xl font-bold">
+                                روش های پرداخت
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-[100%] flex-wrap justify-between py-2 px-3 border-2 border-[var(--color12)] mt-2 flex rounded-xl" style="background-color: var(--color19)">
+                        <p class="text-[var(--color7)]"><i class="fa fa-info-circle text-[var(--color14)] ml-2 relative top-[1px]"></i>ثبت نهایی سفارش به منزله پذیرفتن قوانین و شرایط برنج و خشکبار نوبخت است.</p>
+                        <a href="{% url 'policies' %}" class="text-[var(--color2)] hover:underline">
+                            مطالعه شرایط <i class="fa fa-external-link text-xs mt-1 mr-2"></i>
+                        </a>
+                    </div>
+
+                    {% include 'order_module/include/payment_methods.html' %}
+
+
+                </div>
+            </div>
+
+        {% include 'order_module/include/payment_totalbox_desktop.html' %}
+
+        </div>
+        {% include 'order_module/include/payment_totalbox_mobile.html' %}
+    </form>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'include/head_refrence.html' %}
+    <title>
+        برنج و خشکبار نوبخت | ورود
+    </title>
+</head>
+<body onscroll="HeaderManage()" onload="StartIntervals(false)">
+    {% include 'loader.html' %}
+    {% include 'message.html' %}
+    <div class="centerbox min-h-[100vh] items-center">
+        <div class="form-default account-form login-register-box">
+            <div class="w-[100%] mr5">
+                <div class="flex gap-2 login-back">
+                    <div onclick="history.back()" class="fa fa-arrow-right cursor-pointer"></div>
+                    <div class=" relative text-center centerbox gap-2">
+                        <img src="{% static 'media/logo/favicon-32x32.webp' %}" loading="eager" alt="برنج و خشکبار نوبخت" class="mt-[-5px] w-7 h-7">
+                        <div class=" font-semibold mt-[-3px]">ورود / ثبت نام</div>
+                    </div>
+                </div>
+                <div class="centerbox mt-5">
+                    <div class="login-animation">
+                        <div class="login-titlebar opacity-0 bg-[var(--color9)]" style="background-color: var(--color13)" id="phone-titlebar">09XXXXXXXXX</div>
+                        <div class="flex justify-end w-[100%] opacity-0 relative" id="loading-code">
+                            <div class="wrapper mr-20">
+                              <div class="blue ball"></div>
+                              <div class="red ball"></div>
+                              <div class="yellow ball"></div>
+                            </div>
+
+                            <div class="login-titlebar opacity-0 mt-2 bg-[var(--color14)]" style="font-size: 20px; width: 80px; font-family: sans-serif">******</div>
+                        </div>
+                        <div class="flex justify-end">
+                            <div id="code" class="login-titlebar code opacity-0 mt-2 bg-[var(--color14)]" style="font-size: 20px; width: 80px; font-family: sans-serif">******</div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="text-center text-4xl font-bold">
+                    شماره تلفن خود را وارد کنید
+                </h1>
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <div class="input-icon-def1 relative" style="animation: load 650ms">
+                        <svg id="Call" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="Iconly/Bulk/Call" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                <g id="Call" transform="translate(2.500000, 2.500000)" fill="#a89995">
+                                    <path d="M9.03174073,9.97238745 C13.0208243,13.9603606 13.9257751,9.34671782 16.4656491,11.8848116 C18.9142765,14.3327574 20.32162,14.8232052 17.2192381,17.9247236 C16.8306352,18.2370218 14.3616115,21.9942591 5.68460336,13.3196663 C-2.99347825,4.64400029 0.761584769,2.17244427 1.07396994,1.78394958 C4.18386634,-1.32615434 4.6658627,0.0893829491 7.11449014,2.53732879 C9.6543641,5.07649576 5.04265719,5.9844143 9.03174073,9.97238745 Z" id="Stroke-1"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        <input onblur="PlaceHolderHandle('login-phone' ,'phone-plc' ,'bl')" onfocus="PlaceHolderHandle('login-phone' ,'phone-plc' ,'fc')" oninput="CheckPhone('login-phone' ,'phone-err' ,'btn-login')" type="number" name="phone" value="{{ phone|default_if_none:'' }}" id="login-phone">
+                        <div class="input-placeholder" id="phone-plc">شماره تلفن</div>
+                    </div>
+                    <div style="color: var(--color5);" class="account-error hidden gap-1 mt-1 text-sm" id="phone-err">
+                        <svg id="Danger Circle" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M12.25 2.78467C5.052 2.78467 2.5 5.33667 2.5 12.5347C2.5 19.7327 5.052 22.2847 12.25 22.2847C19.448 22.2847 22 19.7327 22 12.5347C22 5.33667 19.448 2.78467 12.25 2.78467Z" fill="#f97e7e"></path>
+                        <path d="M11.499 16.0346C11.499 16.4486 11.84 16.7846 12.254 16.7846C12.668 16.7846 13.004 16.4486 13.004 16.0346C13.004 15.6206 12.668 15.2846 12.254 15.2846H12.245C11.831 15.2846 11.499 15.6206 11.499 16.0346Z" fill="#f97e7e"></path>
+                        <path d="M12.25 7.88965C11.836 7.88965 11.5 8.22565 11.5 8.63965V12.5346C11.5 12.9486 11.836 13.2846 12.25 13.2846C12.664 13.2846 13 12.9486 13 12.5346V8.63965C13 8.22565 12.664 7.88965 12.25 7.88965Z" fill="#f97e7e"></path>
+                        </svg>
+                        <div id="phone-errtext" class="mt-0.5">
+                            -
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button onclick="Showloader(3000)" id="btn-login" type="submit" class="btn-defIconFlex disabled w-[100%] justify-center gap-1" style="height: 55px; padding-top: 15px;">
+                            <svg id="Login" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="Iconly/Bulk/Login" stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                                    <g id="Login" transform="translate(2.500000, 2.000000)" fill="#e5e5e5" fill-rule="nonzero">
+                                        <path d="M4.7961874,4.446 C4.7961874,1.995 6.85598286,0 9.38762119,0 L14.4199235,0 C16.9453669,0 19,1.99 19,4.436 L19,15.552 C19,18.004 16.941237,20 14.4095987,20 L9.3772964,20 C6.85185294,20 4.7961874,18.009 4.7961874,15.562 L4.7961874,14.622 L4.7961874,4.446 Z" id="Fill-1" opacity="0.400000006"></path>
+                                        <path d="M13.5373964,9.4538 L10.5694888,6.5448 C10.2627441,6.2448 9.76910851,6.2448 9.4633795,6.5468 C9.1586662,6.8488 9.15968191,7.3358 9.46541092,7.6358 L11.0905485,9.2288 L0.782097479,9.2288 C0.350420299,9.2288 8.97060204e-14,9.5738 8.97060204e-14,9.9998 C8.97060204e-14,10.4248 0.350420299,10.7688 0.782097479,10.7688 L11.0905485,10.7688 L9.46541092,12.3628 C9.15968191,12.6628 9.1586662,13.1498 9.4633795,13.4518 C9.61675186,13.6028 9.81684693,13.6788 10.0179577,13.6788 C10.2170371,13.6788 10.4171321,13.6028 10.5694888,13.4538 L13.5373964,10.5448 C13.6846745,10.3998 13.7679628,10.2038 13.7679628,9.9998 C13.7679628,9.7948 13.6846745,9.5988 13.5373964,9.4538" id="Fill-4"></path>
+                                    </g>
+                                </g>
+                            </svg>
+                            <div>
+                                تایید و ادامه
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="{% static 'scripts/main.js' %}"></script>
+<script src="{% static 'scripts/account.js' %}"></script>
+<script>
+
+    let phone = document.getElementById('phone-titlebar')
+    let loading = document.getElementById('loading-code')
+    let code = document.getElementById('code')
+    setTimeout(()=> {
+        phone.style = 'opacity: 1; animation: load8 300ms'
+    } ,500)
+
+    setTimeout(()=> {
+        loading.style = 'opacity: 1; animation: load8 300ms'
+    } ,800)
+
+    setTimeout(()=> {
+        loading.style = 'display: none'
+        code.style = 'opacity: 1; animation: load8 300ms; font-size: 20px; font-family: sans-serif; padding-top: -2px; border-radius: 20px 5px 20px 5px; margin-bottom: 27.5px;'
+    } ,2500)
+
+    {% if phone %}
+        PlaceHolderHandle('login-phone' ,'phone-plc' ,'fc')
+        CheckPhone('login-phone' ,'phone-err' ,'btn-login')
+    {% endif %}
+
+</script>
+</html>

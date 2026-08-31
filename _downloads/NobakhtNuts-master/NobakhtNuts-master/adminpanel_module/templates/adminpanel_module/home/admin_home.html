@@ -1,0 +1,30 @@
+{% extends 'adminpanel_module/shared/base-admin.html' %}
+{% load static %}
+{% load poll_extras %}
+
+{% block admin_title %}
+    داشبورد
+{% endblock %}
+
+{% block admin_content %}
+    <div class="admin-home-widget-row flex justify-start gap-2">
+
+        {% include 'adminpanel_module/home/components/Week_sales_chart.html' %}
+
+        <div class="w-[50%]">
+            {% include 'adminpanel_module/home/components/daily_sales_chart_component.html' %}
+            <div class="flex gap-2 mt-2 w-[100%]">
+                {% include 'adminpanel_module/home/components/order_growth_today.html' %}
+                {% include 'adminpanel_module/home/components/user_growth.html' %}
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'adminpanel_module/home/components/recent_orders.html' %}
+
+    {% include 'adminpanel_module/home/components/product_stocks.html' %}
+
+{#    {% components 'adminpanel_module/home/components/recent_tickets.html' %}#}
+
+{% endblock %}

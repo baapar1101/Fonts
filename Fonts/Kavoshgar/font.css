@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Kavoshgar';
+  src: url('Kavoshgar.eot');
+  src: url('Kavoshgar.eot?#iefix') format('embedded-opentype'),
+       url('Kavoshgar.svg#Kavoshgar') format('svg'),
+       url('Kavoshgar.ttf') format('truetype'),
+       url('Kavoshgar.woff') format('woff'),
+       url('Kavoshgar.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+

@@ -1,0 +1,33 @@
+{% load poll_extras %}
+
+<div id="popup-parent-pop" class="popup-parent">
+    <div id="popup-form" class="popup-form-inventory form-default">
+        <div class="hidden popup-closer">
+            <div class="h-1 mt-1 w-10 bg-[var(--color14)] rounded-2xl">
+            </div>
+        </div>
+        <div class="flex justify-between p-5">
+            <div class="flex gap-2 ">
+                <svg class="mt-[-5px]" id="Edit Square" width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M12.25 2.854C5.05 2.854 2.5 5.404 2.5 12.604C2.5 19.804 5.05 22.354 12.25 22.354C19.45 22.354 22 19.804 22 12.604C22 5.404 19.45 2.854 12.25 2.854Z" fill="#674d45"></path>
+                <path d="M16.46 11.3442L17.02 10.7142C17.42 10.2642 17.61 9.71416 17.61 9.16416C17.61 8.52416 17.34 7.87416 16.82 7.41416C15.86 6.56416 14.38 6.65416 13.52 7.61416L12.96 8.24416C13 8.26416 16.44 11.3142 16.46 11.3442Z" fill="#674d45"></path>
+                <path d="M9.06997 17.8742C9.85997 17.8742 10.86 17.6742 11.6 16.8442L15.48 12.4542C15.45 12.4342 12.01 9.38416 11.98 9.35416L8.09997 13.7442C6.66997 15.3642 7.69997 17.6142 7.70997 17.6342C7.71997 17.6642 7.74997 17.6942 7.77997 17.7042C7.78997 17.7042 8.34997 17.8742 9.06997 17.8742Z" fill="#674d45"></path>
+                </svg>
+                <div id="form-title" class=" text-4xl mt-1 font-semibold">
+                    اصلاح موجودی
+                </div>
+            </div>
+            <button onclick="PopUpOrder('none' ,'close')" class="btn-icon2" style="color: #d1c1bd; width: 40px; height: 40px; padding-right: 8px">
+                <svg id="Close Square" width="24" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" d="M12.25 2.78467C5.052 2.78467 2.5 5.33667 2.5 12.5347C2.5 19.7327 5.052 22.2847 12.25 22.2847C19.449 22.2847 22 19.7327 22 12.5347C22 5.33667 19.449 2.78467 12.25 2.78467Z" fill="#c5b8b4"></path>
+                <path d="M14.6504 15.6777C14.8424 15.6777 15.0344 15.6037 15.1804 15.4577C15.4734 15.1647 15.4734 14.6897 15.1804 14.3967L13.3064 12.5237L15.1694 10.6597C15.4624 10.3667 15.4624 9.89268 15.1694 9.59968C14.8764 9.30668 14.4024 9.30668 14.1094 9.59968L12.2454 11.4637L10.3794 9.59768C10.0864 9.30468 9.61236 9.30468 9.31936 9.59768C9.02636 9.89068 9.02636 10.3647 9.31936 10.6577L11.1854 12.5237L9.31936 14.3917C9.02636 14.6847 9.02636 15.1587 9.31936 15.4517C9.46536 15.5987 9.65836 15.6717 9.84936 15.6717C10.0414 15.6717 10.2334 15.5987 10.3794 15.4517L12.2464 13.5847L14.1194 15.4577C14.2664 15.6037 14.4574 15.6777 14.6504 15.6777Z" fill="#c5b8b4"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="px-5 mt-[-10px] mb-6" id="basket-inventory-partial">
+            {% include 'order_module/include/basket_popup_edit_inventory_partial.html' %}
+        </div>
+
+    </div>
+</div>

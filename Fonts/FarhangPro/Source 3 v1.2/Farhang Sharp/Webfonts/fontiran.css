@@ -1,0 +1,101 @@
+﻿/**
+*
+*	Name:			farhang Fonts
+*	Version:			1.0
+*	Author:			Moslem Ebrahimi (moslemebrahimi.com)
+*	Created on:		March 11, 2020
+*	Updated on:		March 22, 2020
+*	Website:			http://fontiran.com
+*	Copyright:		Commercial/Proprietary Software
+--------------------------------------------------------------------------------------
+فونت فرهنگ یک نرم افزار مالکیتی محسوب می شود. جهت آگاهی از قوانین استفاده از این فونت ها لطفا به وب سایت (فونت ایران دات کام) مراجعه نمایید
+--------------------------------------------------------------------------------------
+farhang fonts are considered a proprietary software. To gain information about the laws regarding the use of these fonts, please visit www.fontiran.com 
+--------------------------------------------------------------------------------------
+This set of fonts are used in this project under the license: (.....)
+------------------------------------------------------------------------------------- fonts/-
+*	
+**/
+
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 100;
+	src: url('fonts/eot/farhang-thinsharp.eot');
+	src: url('fonts/eot/farhang-thinsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-thinsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-thinsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 200;
+	src: url('fonts/eot/farhang-extralightsharp.eot');
+	src: url('fonts/eot/farhang-extralightsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-extralightsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-extralightsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 300;
+	src: url('fonts/eot/farhang-lightsharp.eot');
+	src: url('fonts/eot/farhang-lightsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-lightsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-lightsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 500;
+	src: url('fonts/eot/farhang-mediumsharp.eot');
+	src: url('fonts/eot/farhang-mediumsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-mediumsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-mediumsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 600;
+	src: url('fonts/eot/farhang-demiboldsharp.eot');
+	src: url('fonts/eot/farhang-demiboldsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-demiboldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-demiboldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 800;
+	src: url('fonts/eot/farhang-extraboldsharp.eot');
+	src: url('fonts/eot/farhang-extraboldsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-extraboldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-extraboldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: 900;
+	src: url('fonts/eot/farhang-blacksharp.eot');
+	src: url('fonts/eot/farhang-blacksharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-blacksharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-blacksharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: bold;
+	src: url('fonts/eot/farhang-boldsharp.eot');
+	src: url('fonts/eot/farhang-boldsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-boldsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-boldsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}
+@font-face {
+	font-family: farhangsharp;
+	font-style: normal;
+	font-weight: normal;
+	src: url('fonts/eot/farhang-regularsharp.eot');
+	src: url('fonts/eot/farhang-regularsharp.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('fonts/woff2/farhang-regularsharp.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('fonts/woff/farhang-regularsharp.woff') format('woff');  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+}

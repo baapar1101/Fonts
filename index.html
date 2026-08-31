@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarkFont — Browse, Preview & Download Fonts</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="ms-header" id="msHeader">
+  <div class="nav-shell">
+    <a href="#" class="logo-link">
+      <img src="markstreet-logo-white.png" alt="MarkStreet">
+      <span class="logo-divider"></span>
+      <span class="logo-word">Mark<b>Font</b></span>
+    </a>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" type="text" placeholder="Search fonts by name…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<section class="hero section compact">
+  <div class="container">
+    <div class="eyebrow">TYPEFACE LIBRARY</div>
+    <h1 class="section-title">Every font in one place.</h1>
+    <p class="section-intro">Search, preview, and download Farsi and English typefaces from your own collection — then grab the <code>@font-face</code> code, just like Google Fonts.</p>
+  </div>
+</section>
+
+<div class="controls-bar">
+  <div class="container controls-inner">
+    <div class="filters">
+      <div class="seg" data-role="lang">
+        <button class="active" data-lang="all">All</button>
+        <button data-lang="fa">فارسی</button>
+        <button data-lang="en">English</button>
+      </div>
+      <select id="sortSelect">
+        <option value="name">Sort: Name A–Z</option>
+        <option value="styles">Sort: Most styles</option>
+      </select>
+    </div>
+    <div class="preview-input-wrap">
+      <label for="previewInput">Preview text</label>
+      <input id="previewInput" type="text" placeholder="Type to preview…">
+    </div>
+    <div class="size-control">
+      <label for="sizeRange">Size</label>
+      <input id="sizeRange" type="range" min="14" max="72" value="34">
+      <span id="sizeLabel">34px</span>
+    </div>
+  </div>
+  <div class="stats-line container" id="statsLine">Loading…</div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty-state hidden" id="emptyState">No fonts match your search.</div>
+  <div id="sentinel" style="height:1px"></div>
+</main>
+
+<footer class="sitefoot">
+  <img src="markstreet-logo-white.png" alt="MarkStreet" class="footer-logo">
+  <span>MarkFont · local font library · files served from your own collection</span>
+</footer>
+
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Font</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

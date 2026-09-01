@@ -249,6 +249,8 @@
     if (w.startsWith("ای")) { out = "i"; i = 2; }
     else if (w.startsWith("او")) { out = "u"; i = 2; }
     else if (w.startsWith("ا")) { out = "a"; i = 1; }
+    // Word-initial ی is the consonant "y" (یکان = Yekan), not the vowel "i".
+    else if (w.startsWith("ی")) { out = "y"; i = 1; }
     for (; i < w.length; i++) {
       const c = w[i];
       out += (c in FA_TO_LATIN) ? FA_TO_LATIN[c] : c;
@@ -261,9 +263,12 @@
   // Drop vowels and semi-vowels, collapse doubles. Applied to both sides.
   // "gh" and "q" fold together first: ق romanises as either, so Persian
   // "نستعلیق" (nastaligh) still reaches the Latin "Nastaliq".
+  // Separators are dropped too, so a prefix typed without a space
+  // ("بنازنین") still lines up with "B Nazanin".
   const skeleton = s => s
     .replace(/gh/g, "q")
     .replace(/[aeiouywv']/g, "")
+    .replace(/[^a-z0-9؀-ۿ]/g, "")
     .replace(/(.)\1+/g, "$1");
 
   function levenshtein(a, b, max) {
@@ -296,8 +301,16 @@
   function searchFamilies(list, rawQuery) {
     const q0 = normalizeText(rawQuery);
     if (!q0) return { list, approx: false };
-    const q = ARABIC_RE.test(q0) ? translit(q0) : q0;
+    const faQuery = ARABIC_RE.test(q0);
+    const q = faQuery ? translit(q0) : q0;
     const qSk = skeleton(q);
+
+    // A romanised Persian query is an approximation, so a literal substring
+    // hit is weak evidence ("هما" -> "hma" sits inside "ba-hma-n"). For those
+    // queries the vowel-insensitive comparison is the trustworthy one, so it
+    // outranks `includes`. For Latin queries a substring means what it says.
+    const INCLUDES_SCORE = faQuery ? 640 : 700;
+    const SKELETON_BASE = faQuery ? 700 : 600;
 
     const scores = new Map();
     const put = (fam, s) => {
@@ -309,22 +322,26 @@
 
     for (const fam of list) {
       const n = fam._n;
-      if (n === q) put(fam, 1000);
-      else if (n.startsWith(q)) put(fam, 900 - brevity(fam));
-      else if (fam._w.some(w => w.startsWith(q))) put(fam, 800 - brevity(fam));
-      else if (n.includes(q)) put(fam, 700 - brevity(fam));
-      else if (qSk.length >= 2 && fam._sk.includes(qSk)) {
-        // Skeletons are lossy on purpose, so several names collapse to the
-        // same one ("وزیر" -> zr matches both Vazir and Zar). Rank by how
-        // close the romanised query is to the real name, not by name length.
-        let d = 99;
-        for (const cand of [n, ...fam._w]) {
-          const dd = levenshtein(q, cand, 8);
-          if (dd < d) d = dd;
-          if (d === 0) break;
+      let s = -1;
+      if (n === q) s = 1000;
+      else if (n.startsWith(q)) s = 900 - brevity(fam);
+      else if (fam._w.some(w => w.startsWith(q))) s = 800 - brevity(fam);
+      else {
+        if (n.includes(q)) s = INCLUDES_SCORE - brevity(fam);
+        if (qSk.length >= 2 && fam._sk.includes(qSk)) {
+          // Skeletons are lossy on purpose, so several names collapse to the
+          // same one ("وزیر" -> zr matches both Vazir and Zar). Rank by how
+          // close the romanised query is to the real name, not by length.
+          let d = 99;
+          for (const cand of [n, ...fam._w]) {
+            const dd = levenshtein(q, cand, 8);
+            if (dd < d) d = dd;
+            if (d === 0) break;
+          }
+          s = Math.max(s, SKELETON_BASE - d * 20 - brevity(fam));
         }
-        put(fam, 600 - d * 20 - brevity(fam));
       }
+      if (s >= 0) put(fam, s);
     }
 
     // Only reach for fuzzy matching when the exact tiers came up thin.

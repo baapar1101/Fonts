@@ -6,6 +6,8 @@
     filtered: [],
     lang: "all",       // all | fa | en
     style: "all",       // all | Sans | Serif | Handwriting | Monospace | Display | General
+    collection: "all",  // all | one of the ids in fonts.json -> collections
+    collections: [],
     query: "",
     sort: "name",
     previewText: "",
@@ -28,6 +30,7 @@
   const statsLine = document.getElementById("statsLine");
   const sortSelect = document.getElementById("sortSelect");
   const styleSelect = document.getElementById("styleSelect");
+  const collectionChips = document.getElementById("collectionChips");
   const langButtons = document.querySelectorAll(".seg[data-role=lang] button");
   const emptyState = document.getElementById("emptyState");
   const sentinel = document.getElementById("sentinel");
@@ -211,6 +214,7 @@
     let list = state.all.filter(f => {
       if (state.lang !== "all" && !f.langs.includes(state.lang)) return false;
       if (state.style !== "all" && !(f.styles || []).includes(state.style)) return false;
+      if (state.collection !== "all" && !(f.collections || []).includes(state.collection)) return false;
       if (q && !f.family.toLowerCase().includes(q) && !f.slug.includes(q)) return false;
       return true;
     });
@@ -274,6 +278,59 @@
     state.style = styleSelect.value;
     applyFilters();
   });
+
+  function makeChip(c) {
+    const chip = document.createElement("button");
+    chip.className = "chip" + (state.collection === c.id ? " active" : "");
+    chip.dataset.id = c.id;
+    chip.innerHTML = `<span class="chip-name">${c.label}</span>` +
+      (c.labelFa ? `<span class="chip-fa">${c.labelFa}</span>` : "") +
+      `<span class="chip-count">${c.count}</span>`;
+    chip.addEventListener("click", () => {
+      // Clicking the active chip clears the filter.
+      state.collection = state.collection === c.id ? "all" : c.id;
+      renderCollectionChips();
+      applyFilters();
+    });
+    return chip;
+  }
+
+  function renderCollectionChips() {
+    collectionChips.innerHTML = "";
+
+    // Group order follows first appearance in fonts.json, so the backend
+    // controls how collections are presented.
+    const groups = [];
+    const byGroup = new Map();
+    state.collections.forEach(c => {
+      const key = c.group || "other";
+      if (!byGroup.has(key)) {
+        byGroup.set(key, []);
+        groups.push({ key, label: c.groupLabel || "", labelFa: c.groupLabelFa || "" });
+      }
+      byGroup.get(key).push(c);
+    });
+
+    const allRow = document.createElement("div");
+    allRow.className = "chip-row";
+    allRow.appendChild(makeChip({
+      id: "all", label: "All", labelFa: "همه", count: state.all.length,
+    }));
+    collectionChips.appendChild(allRow);
+
+    groups.forEach(g => {
+      const row = document.createElement("div");
+      row.className = "chip-row";
+      if (g.label) {
+        const heading = document.createElement("span");
+        heading.className = "chip-group-label";
+        heading.innerHTML = `${g.label}<em>${g.labelFa || ""}</em>`;
+        row.appendChild(heading);
+      }
+      byGroup.get(g.key).forEach(c => row.appendChild(makeChip(c)));
+      collectionChips.appendChild(row);
+    });
+  }
 
   langButtons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -351,6 +408,8 @@
     const res = await fetch("fonts.json");
     const data = await res.json();
     state.all = data.families;
+    state.collections = data.collections || [];
+    renderCollectionChips();
     previewInput.placeholder = DEFAULT_TEXT_EN;
     applyFilters();
   }

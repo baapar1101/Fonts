@@ -34,6 +34,117 @@ STYLE_LABELS = {
     "06-General": "General",
 }
 
+# Source packs: the original folders fonts were imported from. Provenance
+# comes from SmartOrganizedPlus/INDEX.json, which records every raw folder a
+# font appears in (not just the de-duplicated canonical pick).
+SOURCE_COLLECTIONS = [
+    ("iranfont",   "Iran Font",     "ایران فونت",        "Iranfont"),
+    ("pack-fonts", "Fonts",         "مجموعه Fonts",      "Fonts"),
+    ("pack-farsi", "Farsi",         "مجموعه فارسی",      "Farsi"),
+    ("pack-english", "English",     "مجموعه انگلیسی",    "English"),
+    ("pack-mim",   "NEW",           "مجموعه NEW",        "NEW"),
+    ("pack-500",   "500 Collection", "مجموعه ۵۰۰",       "500.Font.Collection"),
+    ("pack-384",   "384 Farsi",     "۳۸۴ فونت فارسی",    "384.Font.Farsi"),
+    ("pack-mixed", "Mixed",         "ترکیبی",            "+Mixed Fonts"),
+    ("pack-unsorted", "Unsorted",   "دسته‌بندی‌نشده",     "+Unsorted"),
+    ("pack-arabic", "Arabic",       "مجموعه عربی",       "Arabic"),
+    ("pack-incoming", "New Imports", "واردات جدید",      "_Incoming"),
+    ("pack-downloads", "Downloads",  "دانلودها",          "downloads"),
+]
+
+# Named collections shown as chips on the site. Each entry is
+# (id, English label, Persian label, predicate over the lowercased family name).
+# A family can belong to several collections; order here is display order.
+_MODERN_WEB = (
+    "vazir", "sahel", "shabnam", "samim", "yekan", "estedad", "dana", "peyda",
+    "anjoman", "gandom", "parastoo", "tanha", "nahid", "behdad", "mikhak",
+    "morabba", "rezvan", "ganjname", "qomashi", "sarbaz", "shahab",
+)
+_CALLIGRAPHY = (
+    "nastaliq", "nastaleeq", "naskh", "thuluth", "sols", "diwani", "kufi",
+    "koufi", "reqa", "ruqa", "tahrir", "shekaste", "khodkar", "moalla",
+)
+_LATIN_POPULAR = (
+    "roboto", "open sans", "lato", "montserrat", "poppins", "raleway",
+    "oswald", "nunito", "bebas", "playfair", "merriweather", "din",
+)
+
+# Name-pattern collections: publisher/series prefixes ("B Nazanin", "Mj_...")
+# and thematic groupings, all inferred from the family name.
+NAME_COLLECTIONS = [
+    ("b-series",  "B Series",      "فونت‌های B",       "series", lambda n: bool(re.match(r"^b[\s_-]", n)) or n.startswith("btahoma")),
+    ("a-series",  "A Series",      "فونت‌های A",       "series", lambda n: bool(re.match(r"^a[\s_-]", n))),
+    ("mj",        "Mj",            "مجموعه Mj",        "series", lambda n: n.startswith("mj_")),
+    ("mrt",       "MRT",           "مجموعه MRT",       "series", lambda n: "mrt_" in n),
+    ("w-series",  "W Series",      "مجموعه W",         "series", lambda n: n.startswith("w_")),
+    ("ipt",       "IPT",           "مجموعه IPT",       "series", lambda n: n.startswith("ipt ")),
+    ("series-2",  "2 Series",      "سری ۲",            "series", lambda n: bool(re.match(r"^2\s", n))),
+    ("iran-sans", "IRAN Sans",     "خانواده ایران‌سنس", "series", lambda n: n.startswith("iran")),
+    ("far",       "Far",           "مجموعه Far",       "series", lambda n: n.startswith("far.")),
+    ("max",       "Max",           "مجموعه Max",       "series", lambda n: n.startswith("max-")),
+    ("f-series",  "F Series",      "مجموعه F",         "series", lambda n: n.startswith("f_")),
+    ("modern-web", "Modern Web",   "وب‌فونت مدرن",     "theme",  lambda n: any(k in n for k in _MODERN_WEB)),
+    ("calligraphy", "Calligraphy", "خوشنویسی",         "theme",  lambda n: any(k in n for k in _CALLIGRAPHY)),
+    ("latin-popular", "Latin",     "لاتین محبوب",      "theme",  lambda n: any(k in n for k in _LATIN_POPULAR)),
+]
+
+GROUP_LABELS = {
+    "source": ("Collections", "مجموعه‌ها"),
+    "series": ("Series", "سری‌ها"),
+    "theme":  ("Themes", "موضوعی"),
+}
+
+
+def load_source_folder_map():
+    """Map each organized font file -> the raw folders it came from.
+
+    Reads SmartOrganizedPlus/INDEX.json, written by organize_all_fonts.py.
+    Returns {} when provenance is unavailable, in which case source-pack
+    collections are simply skipped rather than silently wrong.
+    """
+    index_path = os.path.join(ROOT, SCAN_DIRS[0], "INDEX.json")
+    if not os.path.isfile(index_path):
+        return {}
+    with open(index_path, encoding="utf-8") as f:
+        rows = json.load(f)
+    mapping = {}
+    for r in rows:
+        folders = r.get("source_folders")
+        if not folders:
+            # Older INDEX.json without multi-folder provenance.
+            src = r.get("source", "").replace("\\", "/")
+            folders = [src.split("/")[0]] if src else []
+        key = f"{SCAN_DIRS[0]}/" + r["file"].replace("\\", "/")
+        mapping[key] = folders
+    return mapping
+
+
+def collections_for(family, source_folders=()):
+    low = family.strip().lower()
+    found = [cid for cid, _e, _f, _g, match in NAME_COLLECTIONS if match(low)]
+    folders = set(source_folders)
+    found += [cid for cid, _e, _f, folder in SOURCE_COLLECTIONS if folder in folders]
+    return found
+
+
+def collections_meta(families):
+    """Collection chips with live counts, dropping any that matched nothing."""
+    order = (
+        [(cid, en, fa, "source") for cid, en, fa, _folder in SOURCE_COLLECTIONS]
+        + [(cid, en, fa, grp) for cid, en, fa, grp, _m in NAME_COLLECTIONS]
+    )
+    counts = {cid: 0 for cid, _e, _f, _g in order}
+    for fam in families:
+        for cid in fam.get("collections", []):
+            counts[cid] = counts.get(cid, 0) + 1
+    return [
+        {"id": cid, "label": en, "labelFa": fa, "group": grp,
+         "groupLabel": GROUP_LABELS[grp][0], "groupLabelFa": GROUP_LABELS[grp][1],
+         "count": counts[cid]}
+        for cid, en, fa, grp in order
+        if counts.get(cid)
+    ]
+
 # OS/2 ulUnicodeRange1 bit 13 = Arabic block (U+0600-06FF)
 ARABIC_BIT = 13
 # bit 0 = Basic Latin
@@ -256,6 +367,8 @@ def main():
                 if fmt not in variant["files"] or os.path.getsize(full) > variant["files"][fmt]["size"]:
                     variant["files"][fmt] = {"path": rel, "size": os.path.getsize(full)}
 
+    source_map = load_source_folder_map()
+
     # Build output structure + per-family zips. Wipe stale zips first so
     # renamed/removed families don't leave orphaned archives behind.
     if os.path.isdir(DOWNLOADS_DIR):
@@ -296,17 +409,23 @@ def main():
             except Exception as e:
                 skipped.append((slug, f"zip error: {e}"))
 
+        fam_folders = set()
+        for f in all_files:
+            fam_folders.update(source_map.get(f["path"], ()))
+
         out.append({
             "slug": slug,
             "family": fam["family"],
             "langs": sorted(fam["langs"]),
             "styles": sorted(fam["styles"]),
+            "collections": collections_for(fam["family"], fam_folders),
             "variants": variants_out,
             "zip": zip_rel,
         })
 
     with open(os.path.join(ROOT, "fonts.json"), "w", encoding="utf-8") as f:
-        json.dump({"families": out}, f, ensure_ascii=False, indent=0)
+        json.dump({"families": out, "collections": collections_meta(out)},
+                  f, ensure_ascii=False, indent=0)
 
     print(f"Scanned files: {total}")
     print(f"Families indexed: {len(out)}")
@@ -318,5 +437,27 @@ def main():
         print("See build_index_skipped.log for details")
 
 
+def retag_collections():
+    """Re-apply COLLECTIONS to an existing fonts.json.
+
+    Skips the font scan and the zip rebuild entirely, so collection rules can
+    be tweaked and re-applied in a second instead of a full re-index.
+    """
+    path = os.path.join(ROOT, "fonts.json")
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    families = data["families"]
+    for fam in families:
+        fam["collections"] = collections_for(fam["family"])
+    data["collections"] = collections_meta(families)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=0)
+    print(f"Retagged {len(families)} families")
+    for c in data["collections"]:
+        print(f"  {c['id']:<15} {c['count']:>5}  {c['label']}")
+
+
 if __name__ == "__main__":
+    if "--collections-only" in sys.argv:
+        sys.exit(retag_collections())
     sys.exit(main())

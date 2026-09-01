@@ -200,10 +200,15 @@ def main() -> None:
             dest.hardlink_to(src)
         except OSError:
             shutil.copy2(src, dest)
+        # Every raw folder this exact file appears in, not just the canonical
+        # pick — a font living in both Iranfont and Fonts belongs to both, and
+        # attributing it to only one would undercount the source collections.
+        source_folders = sorted({p.relative_to(ROOT).parts[0] for p in paths})
         rows.append({
             "script": script, "style": style, "weight": weight, "family": family,
             "subfamily": subfamily, "variant": variant, "format": fmt,
             "file": str(dest.relative_to(OUT)), "source": str(src.relative_to(ROOT)),
+            "source_folders": source_folders,
             "duplicate_count": len(paths) - 1,
             "sha256": digest,
         })
@@ -214,7 +219,8 @@ def main() -> None:
     with (OUT / "INDEX.csv").open("w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.DictWriter(fh, fieldnames=fields)
         writer.writeheader()
-        writer.writerows(rows)
+        # CSV wants a scalar; JSON keeps the real list.
+        writer.writerows([{**r, "source_folders": " | ".join(r["source_folders"])} for r in rows])
     (OUT / "INDEX.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
     (OUT / "README.txt").write_text(
         "SmartOrganizedPlus\n\n"

@@ -259,7 +259,12 @@
   const translit = s => s.split(" ").map(translitWord).join(" ");
 
   // Drop vowels and semi-vowels, collapse doubles. Applied to both sides.
-  const skeleton = s => s.replace(/[aeiouywv']/g, "").replace(/(.)\1+/g, "$1");
+  // "gh" and "q" fold together first: ق romanises as either, so Persian
+  // "نستعلیق" (nastaligh) still reaches the Latin "Nastaliq".
+  const skeleton = s => s
+    .replace(/gh/g, "q")
+    .replace(/[aeiouywv']/g, "")
+    .replace(/(.)\1+/g, "$1");
 
   function levenshtein(a, b, max) {
     if (Math.abs(a.length - b.length) > max) return max + 1;
@@ -318,7 +323,7 @@
           if (dd < d) d = dd;
           if (d === 0) break;
         }
-        put(fam, 600 - d * 12 - Math.floor(brevity(fam) / 10));
+        put(fam, 600 - d * 20 - brevity(fam));
       }
     }
 

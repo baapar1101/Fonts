@@ -209,25 +209,172 @@
     return card;
   }
 
+  /* ---------------- Search: Persian-aware + typo tolerant ----------------
+     No font in this library carries a Persian name record, so a Persian
+     query is romanised and matched against the Latin family names. Because
+     Persian script omits short vowels ("لوتوس" -> l-v-t-v-s vs "Lotus"), an
+     additional consonant-skeleton pass drops vowels from BOTH sides so the
+     two forms line up. Levenshtein then absorbs ordinary typos.          */
+
+  const ARABIC_RE = /[؀-ۿ]/;
+
+  function normalizeText(s) {
+    return s
+      .replace(/[ً-ٰٟ]/g, "")            // harakat
+      .replace(/ـ/g, "")                            // tatweel
+      .replace(/[​-‏]/g, " ")                  // ZWNJ & friends
+      .replace(/[آأإٱ]/g, "ا")  // آ أ إ ٱ -> ا
+      .replace(/[ىي]/g, "ی")              // ى ي -> ی
+      .replace(/ك/g, "ک")                      // ك -> ک
+      .replace(/ة/g, "ه")                      // ة -> ه
+      .replace(/ؤ/g, "و")                      // ؤ -> و
+      .replace(/ئ/g, "ی")                      // ئ -> ی
+      .replace(/[۰-۹]/g, d => String.fromCharCode(d.charCodeAt(0) - 0x06F0 + 48))
+      .replace(/[٠-٩]/g, d => String.fromCharCode(d.charCodeAt(0) - 0x0660 + 48))
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  const FA_TO_LATIN = {
+    "ا":"a","ب":"b","پ":"p","ت":"t","ث":"s","ج":"j","چ":"ch","ح":"h","خ":"kh",
+    "د":"d","ذ":"z","ر":"r","ز":"z","ژ":"zh","س":"s","ش":"sh","ص":"s","ض":"z",
+    "ط":"t","ظ":"z","ع":"a","غ":"gh","ف":"f","ق":"gh","ک":"k","گ":"g","ل":"l",
+    "م":"m","ن":"n","و":"v","ه":"h","ی":"i","ء":"",
+  };
+
+  function translitWord(w) {
+    // Word-initial alef carries the vowel: ایران -> iran, نه a-iran.
+    let out = "", i = 0;
+    if (w.startsWith("ای")) { out = "i"; i = 2; }
+    else if (w.startsWith("او")) { out = "u"; i = 2; }
+    else if (w.startsWith("ا")) { out = "a"; i = 1; }
+    for (; i < w.length; i++) {
+      const c = w[i];
+      out += (c in FA_TO_LATIN) ? FA_TO_LATIN[c] : c;
+    }
+    return out;
+  }
+
+  const translit = s => s.split(" ").map(translitWord).join(" ");
+
+  // Drop vowels and semi-vowels, collapse doubles. Applied to both sides.
+  const skeleton = s => s.replace(/[aeiouywv']/g, "").replace(/(.)\1+/g, "$1");
+
+  function levenshtein(a, b, max) {
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    const n = b.length;
+    let prev = new Array(n + 1), cur = new Array(n + 1);
+    for (let j = 0; j <= n; j++) prev[j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      cur[0] = i;
+      let rowBest = i;
+      for (let j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1,
+                          prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (cur[j] < rowBest) rowBest = cur[j];
+      }
+      if (rowBest > max) return max + 1;   // whole row already too far
+      const swap = prev; prev = cur; cur = swap;
+    }
+    return prev[n];
+  }
+
+  function prepareSearchIndex(families) {
+    families.forEach(f => {
+      f._n = normalizeText(f.family);
+      f._w = f._n.split(/[^a-z0-9؀-ۿ]+/).filter(Boolean);
+      f._sk = skeleton(f._n);
+    });
+  }
+
+  function searchFamilies(list, rawQuery) {
+    const q0 = normalizeText(rawQuery);
+    if (!q0) return { list, approx: false };
+    const q = ARABIC_RE.test(q0) ? translit(q0) : q0;
+    const qSk = skeleton(q);
+
+    const scores = new Map();
+    const put = (fam, s) => {
+      const prev = scores.get(fam);
+      if (prev === undefined || s > prev) scores.set(fam, s);
+    };
+    // Shorter names rank first among equally good matches.
+    const brevity = fam => Math.min(fam._n.length, 99);
+
+    for (const fam of list) {
+      const n = fam._n;
+      if (n === q) put(fam, 1000);
+      else if (n.startsWith(q)) put(fam, 900 - brevity(fam));
+      else if (fam._w.some(w => w.startsWith(q))) put(fam, 800 - brevity(fam));
+      else if (n.includes(q)) put(fam, 700 - brevity(fam));
+      else if (qSk.length >= 2 && fam._sk.includes(qSk)) {
+        // Skeletons are lossy on purpose, so several names collapse to the
+        // same one ("وزیر" -> zr matches both Vazir and Zar). Rank by how
+        // close the romanised query is to the real name, not by name length.
+        let d = 99;
+        for (const cand of [n, ...fam._w]) {
+          const dd = levenshtein(q, cand, 8);
+          if (dd < d) d = dd;
+          if (d === 0) break;
+        }
+        put(fam, 600 - d * 12 - Math.floor(brevity(fam) / 10));
+      }
+    }
+
+    // Only reach for fuzzy matching when the exact tiers came up thin.
+    let approx = false;
+    if (scores.size < 40 && q.length >= 3) {
+      const maxD = q.length <= 4 ? 1 : q.length <= 7 ? 2 : 3;
+      for (const fam of list) {
+        if (scores.has(fam)) continue;
+        let best = maxD + 1;
+        for (const cand of [fam._n, ...fam._w]) {
+          const d = levenshtein(q, cand, maxD);
+          if (d < best) best = d;
+          if (best === 0) break;
+        }
+        if (best > maxD && qSk.length >= 3 && fam._sk) {
+          const d = levenshtein(qSk, fam._sk, maxD);
+          if (d < best) best = d;
+        }
+        if (best <= maxD) { put(fam, 500 - best * 100 - brevity(fam)); approx = true; }
+      }
+    }
+
+    const ranked = [...scores.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].family.localeCompare(b[0].family))
+      .map(e => e[0]);
+    return { list: ranked, approx };
+  }
+
   function applyFilters() {
-    const q = state.query.trim().toLowerCase();
+    const raw = state.query.trim();
     let list = state.all.filter(f => {
       if (state.lang !== "all" && !f.langs.includes(state.lang)) return false;
       if (state.style !== "all" && !(f.styles || []).includes(state.style)) return false;
       if (state.collection !== "all" && !(f.collections || []).includes(state.collection)) return false;
-      if (q && !f.family.toLowerCase().includes(q) && !f.slug.includes(q)) return false;
       return true;
     });
-    if (state.sort === "name") {
+
+    let approx = false;
+    if (raw) {
+      // A query ranks by relevance; the sort dropdown applies to browsing.
+      const res = searchFamilies(list, raw);
+      list = res.list;
+      approx = res.approx;
+    } else if (state.sort === "name") {
       list = list.slice().sort((a, b) => a.family.localeCompare(b.family));
     } else if (state.sort === "styles") {
       list = list.slice().sort((a, b) => b.variants.length - a.variants.length);
     }
+
     state.filtered = list;
     state.rendered = 0;
     grid.innerHTML = "";
     renderMore();
-    statsLine.textContent = `${state.filtered.length} of ${state.all.length} families`;
+    statsLine.textContent = `${state.filtered.length} of ${state.all.length} families` +
+      (approx ? " · including approximate matches" : "");
     emptyState.classList.toggle("hidden", state.filtered.length !== 0);
   }
 
@@ -408,6 +555,7 @@
     const res = await fetch("fonts.json");
     const data = await res.json();
     state.all = data.families;
+    prepareSearchIndex(state.all);
     state.collections = data.collections || [];
     renderCollectionChips();
     previewInput.placeholder = DEFAULT_TEXT_EN;

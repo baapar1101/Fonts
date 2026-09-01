@@ -5,6 +5,7 @@
     all: [],
     filtered: [],
     lang: "all",       // all | fa | en
+    style: "all",       // all | Sans | Serif | Handwriting | Monospace | Display | General
     query: "",
     sort: "name",
     previewText: "",
@@ -26,6 +27,7 @@
   const sizeLabel = document.getElementById("sizeLabel");
   const statsLine = document.getElementById("statsLine");
   const sortSelect = document.getElementById("sortSelect");
+  const styleSelect = document.getElementById("styleSelect");
   const langButtons = document.querySelectorAll(".seg[data-role=lang] button");
   const emptyState = document.getElementById("emptyState");
   const sentinel = document.getElementById("sentinel");
@@ -132,7 +134,8 @@
     const meta = document.createElement("div");
     meta.className = "card-meta";
     const fileCount = fam.variants.reduce((n, v) => n + v.files.length, 0);
-    meta.textContent = `${fam.variants.length} style${fam.variants.length>1?"s":""} · ${fileCount} file${fileCount>1?"s":""}`;
+    const categoryLabel = (fam.styles || []).join(" / ");
+    meta.textContent = `${categoryLabel ? categoryLabel + " · " : ""}${fam.variants.length} weight${fam.variants.length>1?"s":""} · ${fileCount} file${fileCount>1?"s":""}`;
 
     const actions = document.createElement("div");
     actions.className = "card-actions";
@@ -207,6 +210,7 @@
     const q = state.query.trim().toLowerCase();
     let list = state.all.filter(f => {
       if (state.lang !== "all" && !f.langs.includes(state.lang)) return false;
+      if (state.style !== "all" && !(f.styles || []).includes(state.style)) return false;
       if (q && !f.family.toLowerCase().includes(q) && !f.slug.includes(q)) return false;
       return true;
     });
@@ -263,6 +267,11 @@
 
   sortSelect.addEventListener("change", () => {
     state.sort = sortSelect.value;
+    applyFilters();
+  });
+
+  styleSelect.addEventListener("change", () => {
+    state.style = styleSelect.value;
     applyFilters();
   });
 

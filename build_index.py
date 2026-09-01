@@ -17,9 +17,22 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.ttFont import TTLibError
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-SCAN_DIRS = ["Arabic", "English", "Fonts", "+Mixed Fonts", "+Unsorted"]
+# SmartOrganizedPlus is the deduplicated, categorized catalog built by
+# organize_all_fonts.py from every raw source folder. It is the single
+# source of truth for the site — do not add the old raw folders back here,
+# they would just re-list the same fonts SmartOrganizedPlus already has.
+SCAN_DIRS = ["SmartOrganizedPlus"]
 EXTS = {".ttf", ".otf", ".woff", ".woff2"}
 DOWNLOADS_DIR = os.path.join(ROOT, "_downloads")
+
+STYLE_LABELS = {
+    "01-Sans-Modern": "Sans",
+    "02-Serif": "Serif",
+    "03-Handwriting": "Handwriting",
+    "04-Monospace": "Monospace",
+    "05-Display-Decorative": "Display",
+    "06-General": "General",
+}
 
 # OS/2 ulUnicodeRange1 bit 13 = Arabic block (U+0600-06FF)
 ARABIC_BIT = 13
@@ -62,7 +75,7 @@ def has_bit(ranges, bit):
     return bool(ranges[word] & (1 << (bit % 32)))
 
 
-def classify_languages(font, family_name, folder_hint):
+def classify_languages(font, family_name, script_hint):
     langs = set()
     try:
         os2 = font["OS/2"]
@@ -96,8 +109,13 @@ def classify_languages(font, family_name, folder_hint):
             pass
 
     if not langs:
-        if folder_hint == "Arabic":
+        # Fall back to the script bucket organize_all_fonts.py already sorted
+        # this file into (01-Persian-Arabic / 02-Arabic / 03-Mixed / 04-Latin).
+        if script_hint in ("01-Persian-Arabic", "02-Arabic"):
             langs.add("fa")
+        elif script_hint == "03-Mixed":
+            langs.add("fa")
+            langs.add("en")
         else:
             langs.add("en")
 
@@ -183,6 +201,11 @@ def main():
                 seen_files.add(rel)
                 total += 1
 
+                # SmartOrganizedPlus layout: script/style/weight/family/variant/format/file
+                rel_parts = os.path.relpath(full, base).replace("\\", "/").split("/")
+                script_hint = rel_parts[0] if len(rel_parts) > 0 else ""
+                style_hint = rel_parts[1] if len(rel_parts) > 1 else ""
+
                 try:
                     font = TTFont(full, fontNumber=0, lazy=True, checkChecksums=0)
                 except Exception as e:
@@ -197,7 +220,7 @@ def main():
                     stem = os.path.splitext(fn)[0]
                     family = clean_family(family, stem)
 
-                    langs = classify_languages(font, family, top)
+                    langs = classify_languages(font, family, script_hint)
                     weight = guess_weight(font, subfamily)
                     italic = guess_italic(font, subfamily)
                 except Exception as e:
@@ -214,10 +237,11 @@ def main():
                     "family": family,
                     "langs": set(),
                     "variants": {},
-                    "folders": set(),
+                    "styles": set(),
                 })
                 fam["langs"].update(langs)
-                fam["folders"].add(top)
+                if style_hint in STYLE_LABELS:
+                    fam["styles"].add(STYLE_LABELS[style_hint])
 
                 style_key = (weight, italic)
                 variant = fam["variants"].setdefault(style_key, {
@@ -232,7 +256,12 @@ def main():
                 if fmt not in variant["files"] or os.path.getsize(full) > variant["files"][fmt]["size"]:
                     variant["files"][fmt] = {"path": rel, "size": os.path.getsize(full)}
 
-    # Build output structure + per-family zips
+    # Build output structure + per-family zips. Wipe stale zips first so
+    # renamed/removed families don't leave orphaned archives behind.
+    if os.path.isdir(DOWNLOADS_DIR):
+        for fn in os.listdir(DOWNLOADS_DIR):
+            if fn.endswith(".zip"):
+                os.remove(os.path.join(DOWNLOADS_DIR, fn))
     os.makedirs(DOWNLOADS_DIR, exist_ok=True)
     out = []
     for fkey, fam in sorted(families.items(), key=lambda kv: kv[1]["family"].lower()):
@@ -271,9 +300,9 @@ def main():
             "slug": slug,
             "family": fam["family"],
             "langs": sorted(fam["langs"]),
+            "styles": sorted(fam["styles"]),
             "variants": variants_out,
             "zip": zip_rel,
-            "folders": sorted(fam["folders"]),
         })
 
     with open(os.path.join(ROOT, "fonts.json"), "w", encoding="utf-8") as f:

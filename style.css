@@ -128,7 +128,7 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 .seg button.active{background:var(--ms-blue); color:#fff}
 .seg button:hover:not(.active){background:rgba(255,255,255,.06); color:var(--ms-white)}
 
-select#sortSelect{
+select#sortSelect, select#styleSelect{
   padding:10px 12px; border-radius:0; border:1px solid var(--ms-line-soft);
   background:rgba(5,5,5,.45); color:var(--ms-muted-2); font-family:inherit;
   font-size:12px; font-weight:500; letter-spacing:.04em; text-transform:uppercase; cursor:pointer;

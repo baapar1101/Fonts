@@ -259,10 +259,27 @@ def guess_weight(font, subfamily):
     return 400
 
 
+# Style names that state an upright weight. When the typographic subfamily
+# says one of these, it outranks a contradictory italic flag bit.
+UPRIGHT_STYLE_NAMES = {
+    "regular", "normal", "book", "roman", "upright", "thin", "hairline",
+    "extralight", "ultralight", "light", "medium", "semibold", "demibold",
+    "demi", "bold", "extrabold", "ultrabold", "xbold", "black", "heavy",
+}
+
+
 def guess_italic(font, subfamily):
-    s = (subfamily or "").lower()
+    s = (subfamily or "").lower().strip()
     if "italic" in s or "oblique" in s:
         return True
+
+    # Some packages ship an upright file with the italic bit set by mistake
+    # (Nexa-Regular is a known case: subfamily "Regular", fsSelection italic).
+    # An explicit upright style name is the more trustworthy signal, so trust
+    # it and skip the flag check rather than filing the face as an italic.
+    if s.replace(" ", "").replace("-", "") in UPRIGHT_STYLE_NAMES:
+        return False
+
     try:
         os2 = font["OS/2"]
         if int(os2.fsSelection) & 0x01:
@@ -354,7 +371,12 @@ def main():
                 if style_hint in STYLE_LABELS:
                     fam["styles"].add(STYLE_LABELS[style_hint])
 
-                style_key = (weight, italic)
+                # Keying on (weight, italic) alone loses faces: a family can
+                # ship two distinct styles at one numeric weight (Nexa has both
+                # Book and Regular at 400, Black and Heavy at 900). Including
+                # the style name keeps them apart; the ttf/woff/woff2 copies of
+                # one face share a subfamily, so they still group together.
+                style_key = (weight, italic, subfamily.strip().lower())
                 variant = fam["variants"].setdefault(style_key, {
                     "weight": weight,
                     "italic": italic,
@@ -381,7 +403,7 @@ def main():
         slug = slugify(fam["family"])
         variants_out = []
         all_files = []
-        for (weight, italic), v in sorted(fam["variants"].items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        for _key, v in sorted(fam["variants"].items(), key=lambda kv: (kv[0][0], kv[0][1], kv[0][2])):
             files_list = [{"format": fmt, "path": info["path"], "size": info["size"]} for fmt, info in v["files"].items()]
             variants_out.append({
                 "weight": v["weight"],

@@ -6,8 +6,11 @@
     filtered: [],
     lang: "all",       // all | fa | en
     style: "all",       // all | Sans | Serif | Handwriting | Monospace | Display | General
-    collection: "all",  // all | one of the ids in fonts.json -> collections
+    collection: "all",  // all | a fonts.json collection id | mine:likes | mine:<id>
     collections: [],
+    user: null,          // {phone} once signed in
+    likes: new Set(),    // slugs this user liked
+    myCollections: [],   // [{id, name, items:[slug]}]
     query: "",
     sort: "name",
     previewText: "",
@@ -87,8 +90,12 @@
 
   function variantLabel(v) {
     const weightNames = {100:"Thin",200:"ExtraLight",300:"Light",400:"Regular",500:"Medium",600:"SemiBold",700:"Bold",800:"ExtraBold",900:"Black"};
-    const w = weightNames[v.weight] || v.weight;
-    return `${w}${v.italic ? " Italic" : ""} (${v.weight})`;
+    // Prefer the font's own style name: it is what separates two faces that
+    // share a weight (Nexa ships Book and Regular at 400, Black and Heavy
+    // at 900), which a generic weight label would render identically.
+    const own = (v.subfamily || "").trim();
+    const fallback = `${weightNames[v.weight] || v.weight}${v.italic ? " Italic" : ""}`;
+    return `${own || fallback} (${v.weight})`;
   }
 
   function humanSize(bytes) {
@@ -149,8 +156,25 @@
     const codeBtn = document.createElement("button");
     codeBtn.className = "btn";
     codeBtn.textContent = "Get code";
+
+    const likeBtn = document.createElement("button");
+    likeBtn.className = "icon-btn like-btn" + (state.likes.has(fam.slug) ? " is-on" : "");
+    likeBtn.type = "button";
+    likeBtn.title = "پسندیدن / Like";
+    likeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 5.6a5.1 5.1 0 0 0-7.2 0L12 7.2l-1.6-1.6a5.1 5.1 0 1 0-7.2 7.2l8.8 8.8 8.8-8.8a5.1 5.1 0 0 0 0-7.2z"/></svg>`;
+    likeBtn.addEventListener("click", () => toggleLike(fam.slug));
+
+    const bmBtn = document.createElement("button");
+    bmBtn.className = "icon-btn bm-btn" + (isBookmarked(fam.slug) ? " is-on" : "");
+    bmBtn.type = "button";
+    bmBtn.title = "ذخیره در دسته / Save to collection";
+    bmBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></svg>`;
+    bmBtn.addEventListener("click", e => { e.stopPropagation(); openBookmarkPopover(fam.slug, bmBtn); });
+
     actions.appendChild(dlBtn);
     actions.appendChild(codeBtn);
+    actions.appendChild(likeBtn);
+    actions.appendChild(bmBtn);
 
     let loaded = false;
     function currentVariant() {
@@ -375,7 +399,17 @@
     let list = state.all.filter(f => {
       if (state.lang !== "all" && !f.langs.includes(state.lang)) return false;
       if (state.style !== "all" && !(f.styles || []).includes(state.style)) return false;
-      if (state.collection !== "all" && !(f.collections || []).includes(state.collection)) return false;
+      if (state.collection !== "all") {
+        const sel = String(state.collection);
+        if (sel === "mine:likes") {
+          if (!state.likes.has(f.slug)) return false;
+        } else if (sel.startsWith("mine:")) {
+          const col = state.myCollections.find(c => String(c.id) === sel.slice(5));
+          if (!col || !col.items.includes(f.slug)) return false;
+        } else if (!(f.collections || []).includes(sel)) {
+          return false;
+        }
+      }
       return true;
     });
 
@@ -499,6 +533,28 @@
       byGroup.get(g.key).forEach(c => row.appendChild(makeChip(c)));
       collectionChips.appendChild(row);
     });
+
+    // The signed-in user's own shelf, kept separate from the catalog's.
+    if (state.user && (state.likes.size || state.myCollections.length)) {
+      const row = document.createElement("div");
+      row.className = "chip-row";
+      const heading = document.createElement("span");
+      heading.className = "chip-group-label";
+      heading.innerHTML = `Mine<em>من</em>`;
+      row.appendChild(heading);
+
+      if (state.likes.size) {
+        row.appendChild(makeChip({
+          id: "mine:likes", label: "Liked", labelFa: "پسندیده‌ها", count: state.likes.size,
+        }));
+      }
+      state.myCollections.forEach(c => {
+        row.appendChild(makeChip({
+          id: `mine:${c.id}`, label: c.name, labelFa: "", count: c.items.length,
+        }));
+      });
+      collectionChips.appendChild(row);
+    }
   }
 
   langButtons.forEach(btn => {
@@ -565,6 +621,250 @@
   modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) modalOverlay.classList.add("hidden"); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") modalOverlay.classList.add("hidden"); });
 
+  /* ------------------------- Accounts ------------------------------ */
+
+  async function api(path, options = {}) {
+    const res = await fetch(path, {
+      credentials: "same-origin",
+      headers: options.body ? { "Content-Type": "application/json" } : {},
+      ...options,
+    });
+    let data = {};
+    try { data = await res.json(); } catch { /* empty body is fine */ }
+    if (!res.ok) throw new Error(data.error || `request failed (${res.status})`);
+    return data;
+  }
+
+  /** Adopt the likes/collections snapshot the server returns with every write. */
+  function adoptUserData(data) {
+    if (Array.isArray(data.likes)) state.likes = new Set(data.likes);
+    if (Array.isArray(data.collections)) state.myCollections = data.collections;
+    refreshCardStates();
+    renderCollectionChips();
+  }
+
+  const accountBtn = document.getElementById("accountBtn");
+  const authOverlay = document.getElementById("authOverlay");
+  const authClose = document.getElementById("authClose");
+  const authStepPhone = document.getElementById("authStepPhone");
+  const authStepCode = document.getElementById("authStepCode");
+  const authPhone = document.getElementById("authPhone");
+  const authCode = document.getElementById("authCode");
+  const authSend = document.getElementById("authSend");
+  const authVerify = document.getElementById("authVerify");
+  const authBack = document.getElementById("authBack");
+  const authMsg = document.getElementById("authMsg");
+  const authPhoneEcho = document.getElementById("authPhoneEcho");
+
+  function setAuthMsg(text, kind) {
+    authMsg.hidden = !text;
+    authMsg.className = "auth-msg" + (kind ? ` is-${kind}` : "");
+    authMsg.innerHTML = text || "";
+  }
+
+  function showAuthStep(step) {
+    authStepPhone.hidden = step !== "phone";
+    authStepCode.hidden = step !== "code";
+    setAuthMsg("");
+  }
+
+  function openAuth() {
+    showAuthStep("phone");
+    authOverlay.classList.remove("hidden");
+    authPhone.focus();
+  }
+  const closeAuth = () => authOverlay.classList.add("hidden");
+
+  function renderAccount() {
+    if (state.user) {
+      accountBtn.textContent = state.user.phone;
+      accountBtn.title = "خروج از حساب / Sign out";
+    } else {
+      accountBtn.textContent = "ورود / Sign in";
+      accountBtn.title = "ورود با شماره موبایل";
+    }
+  }
+
+  accountBtn.addEventListener("click", async () => {
+    if (!state.user) return openAuth();
+    if (!confirm("از حساب خارج می‌شوید؟")) return;
+    try { await api("/api/auth/logout", { method: "POST" }); } catch { /* sign out locally anyway */ }
+    state.user = null;
+    state.likes = new Set();
+    state.myCollections = [];
+    if (String(state.collection).startsWith("mine:")) state.collection = "all";
+    renderAccount();
+    refreshCardStates();
+    renderCollectionChips();
+    applyFilters();
+  });
+
+  authClose.addEventListener("click", closeAuth);
+  authOverlay.addEventListener("click", e => { if (e.target === authOverlay) closeAuth(); });
+  authBack.addEventListener("click", () => showAuthStep("phone"));
+
+  async function requestCode() {
+    const phone = authPhone.value.trim();
+    if (!phone) return setAuthMsg("شماره موبایل را وارد کنید", "error");
+    authSend.disabled = true;
+    setAuthMsg("در حال ارسال…");
+    try {
+      const r = await api("/api/auth/request-otp", {
+        method: "POST", body: JSON.stringify({ phone }),
+      });
+      authPhoneEcho.textContent = phone;
+      showAuthStep("code");
+      authCode.value = "";
+      authCode.focus();
+      if (r.dev) {
+        setAuthMsg("حالت توسعه: کد در کنسول سرور چاپ شد (پیامکی ارسال نشد).", "ok");
+      }
+    } catch (e) {
+      setAuthMsg(e.message, "error");
+    } finally {
+      authSend.disabled = false;
+    }
+  }
+
+  async function verifyCode() {
+    const code = authCode.value.trim();
+    if (!/^\d{6}$/.test(code)) return setAuthMsg("کد ۶ رقمی را وارد کنید", "error");
+    authVerify.disabled = true;
+    setAuthMsg("در حال بررسی…");
+    try {
+      const r = await api("/api/auth/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({ phone: authPhone.value.trim(), code }),
+      });
+      state.user = r.user;
+      closeAuth();
+      renderAccount();
+      const me = await api("/api/me");
+      adoptUserData(me);
+    } catch (e) {
+      setAuthMsg(e.message, "error");
+    } finally {
+      authVerify.disabled = false;
+    }
+  }
+
+  authSend.addEventListener("click", requestCode);
+  authVerify.addEventListener("click", verifyCode);
+  authPhone.addEventListener("keydown", e => { if (e.key === "Enter") requestCode(); });
+  authCode.addEventListener("keydown", e => { if (e.key === "Enter") verifyCode(); });
+
+  /* --------------------- Likes & bookmarks ------------------------- */
+
+  async function toggleLike(slug) {
+    if (!state.user) return openAuth();
+    const liked = !state.likes.has(slug);
+    try {
+      adoptUserData(await api("/api/likes", {
+        method: "POST", body: JSON.stringify({ slug, liked }),
+      }));
+    } catch (e) { alert(e.message); }
+  }
+
+  let openPopover = null;
+  function closePopover() {
+    if (openPopover) { openPopover.remove(); openPopover = null; }
+  }
+  document.addEventListener("click", e => {
+    if (openPopover && !openPopover.contains(e.target) && !e.target.closest(".bm-btn")) closePopover();
+  });
+
+  function openBookmarkPopover(slug, anchor) {
+    if (!state.user) return openAuth();
+    closePopover();
+
+    const pop = document.createElement("div");
+    pop.className = "bm-pop";
+    pop.innerHTML = `<h4>ذخیره در دسته</h4>`;
+
+    if (!state.myCollections.length) {
+      pop.insertAdjacentHTML("beforeend", `<div class="bm-empty">هنوز دسته‌ای نساخته‌اید.</div>`);
+    }
+    state.myCollections.forEach(col => {
+      const row = document.createElement("label");
+      row.className = "bm-row";
+      const checked = col.items.includes(slug);
+      row.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""}><span></span>`;
+      row.querySelector("span").textContent = col.name;
+      row.querySelector("input").addEventListener("change", async ev => {
+        try {
+          adoptUserData(await api(`/api/collections/${col.id}/items`, {
+            method: "POST",
+            body: JSON.stringify({ slug, remove: !ev.target.checked }),
+          }));
+        } catch (err) { alert(err.message); }
+      });
+      pop.appendChild(row);
+    });
+
+    const nw = document.createElement("div");
+    nw.className = "bm-new";
+    nw.innerHTML = `<input type="text" placeholder="دسته جدید…" maxlength="60"><button type="button">+</button>`;
+    const nwInput = nw.querySelector("input");
+    const addCollection = async () => {
+      const name = nwInput.value.trim();
+      if (!name) return;
+      try {
+        adoptUserData(await api("/api/collections", {
+          method: "POST", body: JSON.stringify({ name }),
+        }));
+        const created = state.myCollections.find(c => c.name === name);
+        if (created) {
+          adoptUserData(await api(`/api/collections/${created.id}/items`, {
+            method: "POST", body: JSON.stringify({ slug }),
+          }));
+        }
+        closePopover();
+      } catch (err) { alert(err.message); }
+    };
+    nw.querySelector("button").addEventListener("click", addCollection);
+    nwInput.addEventListener("keydown", e => { if (e.key === "Enter") addCollection(); });
+    pop.appendChild(nw);
+
+    document.body.appendChild(pop);
+    const r = anchor.getBoundingClientRect();
+    // Keep the panel inside the viewport on narrow screens.
+    const left = Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - pop.offsetWidth - 12);
+    pop.style.left = Math.max(window.scrollX + 8, left) + "px";
+    pop.style.top = (r.bottom + window.scrollY + 6) + "px";
+    openPopover = pop;
+  }
+
+  const isBookmarked = slug => state.myCollections.some(c => c.items.includes(slug));
+
+  /** Re-sync every rendered card's like/bookmark buttons with current state. */
+  function refreshCardStates() {
+    document.querySelectorAll(".card").forEach(card => {
+      const slug = card.dataset.slug;
+      const like = card.querySelector(".like-btn");
+      const bm = card.querySelector(".bm-btn");
+      if (like) like.classList.toggle("is-on", state.likes.has(slug));
+      if (bm) bm.classList.toggle("is-on", isBookmarked(slug));
+    });
+  }
+
+  /* --------------------------- Theme ------------------------------- */
+
+  const themeToggle = document.getElementById("themeToggle");
+  const systemPrefersLight = () =>
+    window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+
+  // With no explicit choice the page follows the OS, so read that to decide
+  // which way the next click should flip.
+  const effectiveTheme = () =>
+    document.documentElement.getAttribute("data-theme") ||
+    (systemPrefersLight() ? "light" : "dark");
+
+  themeToggle.addEventListener("click", () => {
+    const next = effectiveTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("markfont-theme", next); } catch { /* private mode */ }
+  });
+
   const msHeader = document.getElementById("msHeader");
   function onScroll() {
     msHeader.classList.toggle("is-scrolled", window.scrollY > 8);
@@ -579,6 +879,18 @@
     state.all = data.families;
     prepareSearchIndex(state.all);
     state.collections = data.collections || [];
+
+    // Restore an existing session, if the cookie is still good.
+    try {
+      const me = await api("/api/me");
+      if (me.user) {
+        state.user = me.user;
+        if (Array.isArray(me.likes)) state.likes = new Set(me.likes);
+        if (Array.isArray(me.collections)) state.myCollections = me.collections;
+      }
+    } catch { /* offline or static hosting: browsing still works */ }
+    renderAccount();
+
     renderCollectionChips();
     previewInput.placeholder = DEFAULT_TEXT_EN;
     applyFilters();

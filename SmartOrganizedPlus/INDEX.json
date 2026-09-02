@@ -4404,6 +4404,22 @@
     "sha256": "0568c97b68bc83aca3b5eb63ecfebb796f87d90877c0ece75873cebc534931b0"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-XBoldItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-XBoldItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-XBoldItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "056b48a95debcc1171a02665a2a7cbc09846735f985ff4bc29bf5f037cf56ecb"
+  },
+  {
     "script": "01-Persian-Arabic",
     "style": "06-General",
     "weight": "02-Light",
@@ -4814,6 +4830,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "05ebeed121d94e360f8f7b8c16d9310cbc26428885274a26b59f356a7ca58375"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Heavy Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-HeavyItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-HeavyItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "05ed999ed220f15b18eaa4a66245b30c7edc689ab489e1162dea771b89a208ff"
   },
   {
     "script": "03-Mixed",
@@ -11146,6 +11178,22 @@
     "sha256": "0d36140d29b8527cae939e55f56e8a730b03d8c5d309037dfe1de5b1a2cffeed"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Black Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-BlackItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-BlackItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "0d37be705eab939cede023dd77876abe1ac09b7651ea2e6fcf7b1ee0dc99a911"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "03-Regular",
@@ -12302,6 +12350,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "0e92c1ca447d5b662d6251e61064ea08137fee4b9358306e5cd7641f05613276"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "XBold Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-XBoldItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-XBoldItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "0e9753bf64820a4783c1739cdb07a3602a81b3f755426b7212185215e056f1b4"
   },
   {
     "script": "03-Mixed",
@@ -16021,6 +16085,22 @@
     "sha256": "12dc6bb8570a489a4c6a09a131c39e6f21290c881cbd89dcb6f2d74ae3c62087"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Book",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\03-WOFF\\Nexa-Book.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Book.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "12dc8b21afc0526e4674bd3956dce8d5f62525f60c061aff0acc048dd31124b7"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "05-SemiBold",
@@ -16786,6 +16866,22 @@
     "sha256": "139f9e5e65c5737fecd7100a1cfc545bc3b5363c7b48daba0ca2cb9633773764"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light",
+    "family": "Nexa",
+    "subfamily": "Light",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\02-Light\\Nexa\\02-Static\\01-TrueType\\Nexa-Light.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Light.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "13a4cbedefaae54502144f31155910529846c4736f20fa738aabbdd1382832e3"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "08-Black",
@@ -17145,6 +17241,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "13fb84f4d9799c06b7f773b6ee60b74038b7034ebab1ee0fdf97263663fd107d"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "Bold Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-BoldItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-BoldItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "13feecf0ef01d72e78dabf4300b989e2e8d087cf63d11654c808877eef05d32e"
   },
   {
     "script": "03-Mixed",
@@ -18925,6 +19037,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "15f11c34bafa788877005fe8e13f4c617a931d53400fcc88cec42d8c0b5387a8"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "XBold",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\01-TrueType\\Nexa-XBold.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-XBold.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "15f64bc1fc6fa675c128ded0f33e502992d050ee8760689c7037386b5438a75c"
   },
   {
     "script": "03-Mixed",
@@ -28401,6 +28529,22 @@
     "sha256": "1fe93351dad3d39f8a7e5d37a337ec10dbf5eac250e40f679deeba47ee7f64cf"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light-Italic",
+    "family": "Nexa",
+    "subfamily": "Light Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\02-Light-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-LightItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-LightItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "1fe96a58c1ac0f39f32c8887878187e3b21fe37f4880bcb77fb08e74b85dfb1b"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "02-Light",
@@ -29934,6 +30078,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "218f2926919c641331218f07cbad9d32cb726a2d5156dca8885073ebe21b58d8"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-HeavyItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-HeavyItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-HeavyItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "219ae5b56392f278efa0a49bd3b8799ef509f06d8adb0558e46cc35aff9056f4"
   },
   {
     "script": "03-Mixed",
@@ -37229,6 +37389,22 @@
     "sha256": "29f6c75c0ccd95fd57ca1611f61718c3cc5922722b22e82c68d2a695786b28db"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "Bold Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-BoldItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-BoldItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "29f7adfc4b66976a4f58238a2e34d2615f318f253864b218f619b700d682c0fb"
+  },
+  {
     "script": "01-Persian-Arabic",
     "style": "06-General",
     "weight": "03-Regular",
@@ -38366,6 +38542,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "2b14e1245378bca80f03c9b17f68349555de4838d59b061351413e5bc7f553ae"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Black",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\04-WOFF2\\Nexa-Black.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Black.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "2b1889d596c03386a80c6f48009e036855fc6288bc026e98a7b25926791738fe"
   },
   {
     "script": "03-Mixed",
@@ -40061,6 +40253,22 @@
     "sha256": "2d17303600e2da2241faf54fd00687ed64f1d0dc9efa8034ea088aaf4148d65b"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin-Italic",
+    "family": "Nexa",
+    "subfamily": "Thin Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\01-Thin-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-ThinItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-ThinItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "2d218656427d924ba865664313fd8b1a2c45c31b24e1a281d7d7a2966fb30c48"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "09-Other",
@@ -40405,6 +40613,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "2d8f8980ec0127861c79f19e1a484f3e42d62ee1aa7725ae0fdd31e88ee7c2b3"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-BoldItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-BoldItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-BoldItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "2d9579a5a1c68ca80453338088831cb1bba21e13e1a68de435837857e31560d4"
   },
   {
     "script": "04-Latin",
@@ -41639,6 +41863,22 @@
   {
     "script": "04-Latin",
     "style": "06-General",
+    "weight": "09-Other-Italic",
+    "family": "Nexa",
+    "subfamily": "Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\09-Other-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-Italic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Italic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "2f13b336035ae7e7bc3e5b759dce147e65273db03655ab2208024a33bef7ce81"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
     "weight": "06-Bold",
     "family": "WebFonts[NoEng]",
     "subfamily": "RokhNoEng-UltraBold",
@@ -42163,6 +42403,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "2fcc8ac9a9f5ea0b66488b5af3885cb28815b024d3e5fda282ee943912703678"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Heavy Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-HeavyItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-HeavyItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "2fccc77775ef5a6e1a2866b2d0586226a476913c52a30154478cd35d24188691"
   },
   {
     "script": "04-Latin",
@@ -45839,6 +46095,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "335176b10510fb7d3886f1ba60e76fe66bd0bfc07a28c09edeae97a614fb161f"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular-Italic",
+    "family": "Nexa",
+    "subfamily": "Book Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\03-Regular-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-BookItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-BookItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "3353fd5308eed3e820281bc61e97b7d49dc7800945644f8a16695bc6ade7160e"
   },
   {
     "script": "03-Mixed",
@@ -61119,6 +61391,22 @@
     "sha256": "4403b10213cf81e5acdd88ec19a32a94fb941ec6831927a62d76240d95f8b92b"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Thin",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\01-Thin\\NEXA font\\02-Static\\05-EOT\\Nexa-Thin.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Thin.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "4407b34c5f9adc781f78e0c54ed8d5fe74c70472bd2677768f6bb03897fdd43f"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "09-Other",
@@ -67365,6 +67653,22 @@
   {
     "script": "04-Latin",
     "style": "06-General",
+    "weight": "02-Light",
+    "family": "Nexa",
+    "subfamily": "Light",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\02-Light\\Nexa\\02-Static\\03-WOFF\\Nexa-Light.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Light.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "4a3ea6f9854ff51a54bd3852c127b1ec6bba7a79ee09a333b5e4e7d2109fdb70"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
     "weight": "03-Regular",
     "family": "Liant",
     "subfamily": "Regular",
@@ -70140,6 +70444,22 @@
     "sha256": "4d3dd4d5e7d470e79f3b70ff96fa4e4b276cc8d66b766cbe8bb82e4a0c1b1c3d"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin-Italic",
+    "family": "Nexa",
+    "subfamily": "Thin Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\01-Thin-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-ThinItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-ThinItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "4d40b0107524cbc0ddc497fbac2985ad27c278a2a8643829ee7fdf98eb0d1aaf"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "05-SemiBold",
@@ -71214,6 +71534,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "4e765474144af0dacc5dc3713da5476ba06ea1bfcee7d1ee066e0dd775b58fab"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin",
+    "family": "Nexa",
+    "subfamily": "Thin",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\01-Thin\\Nexa\\02-Static\\04-WOFF2\\Nexa-Thin.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Thin.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "4e78058da441dd48c35ac93c2b7ed977b8c68d050584d4b9cb45958333f82648"
   },
   {
     "script": "03-Mixed",
@@ -77078,6 +77414,22 @@
     "sha256": "5501d0fc4066f68616809410da7cd6c0b7bc99d856b7653681bcddfdfc5c3a93"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "XBold Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-XBoldItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-XBoldItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "55035d4606a346be174043d78f92625e75a305e58f499b333461c096757303c6"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -81875,6 +82227,22 @@
     "sha256": "5a49fe4f7b2b270d9efd7cb7684a42afc12b09ea198b81fb8b4743ae6f6d8a51"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Heavy",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\01-TrueType\\Nexa-Heavy.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Heavy.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "5a4e12f2e993112d97d3acb69eeeea5d736fea80b0a0f202b5b26c0cf752e404"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -82715,6 +83083,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "5b370d1fa81c259a4b26a230f809868b08b671cd6be5f79eea0b3ef8391ddf00"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "09-Other-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Italic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\09-Other-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-Italic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Italic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "5b3ed3f12c3a9d528f2ece438956ecb5b5b0b7458d8ae6547d9d77926ab9ae4f"
   },
   {
     "script": "03-Mixed",
@@ -84058,6 +84442,22 @@
     "sha256": "5c944d6c0791a6a44f35c198a8eb6ea3dcc5162488d84ad9738f2fc83a027594"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Heavy",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\04-WOFF2\\Nexa-Heavy.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Heavy.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "5c94ea077c7a69d90c3dd5517db5f09842383a3b9c73e04f257d811bcb27d245"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -84679,6 +85079,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "5d50678f24c871b7f7a832fad6eb65208052b4789f8243aa1d45832db4df2d7f"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "XBold",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\04-WOFF2\\Nexa-XBold.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-XBold.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "5d519c18aeba4edc0ea6194013ecf1c3f83ee8a945a60f801191e1f1312ccb33"
   },
   {
     "script": "03-Mixed",
@@ -89460,6 +89876,22 @@
     "script": "04-Latin",
     "style": "06-General",
     "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Regular",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\04-WOFF2\\Nexa-Regular.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Regular.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "627241a7c2ffaf580a05268777b711b4388b05fb21c295cface974cb61d90b8d"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
     "family": "Jigger-AngledBackExp",
     "subfamily": "Regular",
     "variant": "02-Static",
@@ -89539,6 +89971,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "628648cb3de052606df64095935a0976a940e1c15435f574a782ba3430a009a8"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light-Italic",
+    "family": "Nexa",
+    "subfamily": "Light Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\02-Light-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-LightItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-LightItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "6288a9bf9ac41062ddb7163c0cd04c4a4f3e5b32f8a1e820287c43040a0b09ed"
   },
   {
     "script": "01-Persian-Arabic",
@@ -89930,6 +90378,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "62fee31dde0eef078368393e63ae18a451f97025e06116f138c58bab3bf9114a"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "XBold",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\03-WOFF\\Nexa-XBold.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-XBold.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "6307f026508936d09cdaebf909883708e8bcda601a6b7ad927f7a241475bdca5"
   },
   {
     "script": "03-Mixed",
@@ -91677,6 +92141,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "64c67222f995504c39a95a4b2748aeb7b5e4af52c141ca8dc156995f8f7dd588"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Black",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\03-WOFF\\Nexa-Black.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Black.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "64c739230c0ff0a92beab394b86ec4ca19bdf5c04cca93e96a3ec6c3c6a52fe8"
   },
   {
     "script": "03-Mixed",
@@ -94736,6 +95216,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "688ddb2613b7a36312d881a0f568f32599f12252518f80174d30a78d9590fc73"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Black",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\01-TrueType\\Nexa-Black.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Black.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "688f4681c3f75c7cc895311d86b3d37acba521baf036a66623310d98ecfb020c"
   },
   {
     "script": "03-Mixed",
@@ -98795,6 +99291,22 @@
     "sha256": "6cc920be10a8ecea07c77fab555daf9f7d838fa089c0136f7496b0829ddd44c0"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Heavy",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\08-Black\\NEXA font\\02-Static\\05-EOT\\Nexa-Heavy.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Heavy.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "6ccb7fb4a0ac157b44daa3935279a72b03ed4b75603582d8d8d960ad69416e20"
+  },
+  {
     "script": "01-Persian-Arabic",
     "style": "06-General",
     "weight": "09-Other",
@@ -99250,6 +99762,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "6d6a582e7346225ea9b996298531839bec71033a8b4b6bae273e9cae3933dfb4"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Black",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\08-Black\\NEXA font\\02-Static\\05-EOT\\Nexa-Black.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Black.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "6d6c8e8903b2b9ba562b6cd9218a50c6e9ceaa33a8db0afe9ed953e0b232d434"
   },
   {
     "script": "03-Mixed",
@@ -103410,6 +103938,22 @@
     "sha256": "71d75cd7fad9082c6ce8efeb25bd22768145791d7562fb5d12e94b7181f1a532"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Regular",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\03-Regular\\NEXA font\\02-Static\\05-EOT\\Nexa-Regular.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Regular.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "71da3bfa34fa9626096bf0fa719cb18f665a1e88538f8d476e99d44a2f4deead"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "02-Light",
@@ -105902,6 +106446,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "74db3869dc4bfc6f0d6c64b33bfbdda86f093ab7c5c2e6a0e5c064388a41af28"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Regular",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\01-TrueType\\Nexa-Regular.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Regular.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "74dc857e63697fdb396d4faf51bebe963bbb5ad96e93b3fc001d9586f4b07075"
   },
   {
     "script": "01-Persian-Arabic",
@@ -109509,6 +110069,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "7895dfcf2a902454e8b5662d44db50fdb276d976faeeb757b40ddc0fd7156ead"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "09-Other-Italic",
+    "family": "Nexa",
+    "subfamily": "Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\09-Other-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-Italic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Italic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "78986de684430af02f4e3f611d8fdc9bf2ee19a0ad2f585cc0beaabbad884da8"
   },
   {
     "script": "03-Mixed",
@@ -124623,6 +125199,22 @@
     "sha256": "893273238c322b3154c1d45cb2ea2cf03b9225684f55d16623fb9e9131d7c207"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-ThinItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\01-Thin-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-ThinItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-ThinItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "8932b82e1d6f104b2e9ef8adbda4bd1995c114ec30533db7013ff421fbe4b321"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "04-Medium",
@@ -127265,6 +127857,22 @@
     "sha256": "8bd414b81f3a59ebbe2c4a00fe18c415402f76de77c527d41555cc5ec8377220"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light-Italic",
+    "family": "Nexa",
+    "subfamily": "Light Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\02-Light-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-LightItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-LightItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "8bdc549ecbc4876d6cd2e5dfd6d07c9b8cd9627e1cf7be00eb54daff7b3b13a4"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "05-SemiBold",
@@ -129726,6 +130334,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "8e77240c6d8988e0b2e503b9c15cc96334455893d4c2fd56d21e2c1c01a15d95"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Black Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-BlackItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-BlackItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "8e783264a47be66c42e0498f33994ac6614720c5979379c38b6b59ac989802f1"
   },
   {
     "script": "01-Persian-Arabic",
@@ -140694,6 +141318,22 @@
     "sha256": "9a1e3ade0840da6ae6f15c5c4307611e1bfc6286d1ddbc896ec169bac69989c5"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Bold",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\06-Bold\\NEXA font\\02-Static\\05-EOT\\Nexa-Bold.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Bold.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "9a24363ac9c8d29bfd52f0e909199b99228d549c05d6e1c10106ba36767cb74e"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -148272,6 +148912,22 @@
     "sha256": "a2291e923bd311b2330461d43b0fe838edbc2a0a32bc7f115e126efd36432b59"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Book",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\03-Regular\\NEXA font\\02-Static\\05-EOT\\Nexa-Book.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Book.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "a22aa28f87e1c49289ff231ff4227ada35567ad5099e3f0d7ab02576f0079a36"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "01-Thin",
@@ -149513,6 +150169,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "a37057097025300ecdc3968b0ce7816645da0cb500bb3ccb4d4759dc9d71d825"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "09-Other-Italic",
+    "family": "Nexa",
+    "subfamily": "Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\09-Other-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-Italic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Italic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "a3716a9a9c498b9399def2c907a796a4d4e0cdf950724221f91a04c3922617d4"
   },
   {
     "script": "03-Mixed",
@@ -151838,6 +152510,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "a63dc8e99dca4ff6fb3c29bec6db2ff2bff4c6c718d23867ad7f89ce372c5246"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "Bold Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-BoldItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-BoldItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "a649ae2977afef42531b8dd06f7e1e84e267353224c9a6bfcf35fdc71444d62f"
   },
   {
     "script": "04-Latin",
@@ -156084,6 +156772,22 @@
     "sha256": "aaf7f375d644585a7ca3d7fc7cffcb1613d99163bc85e6ec9cfa10552dd5bfba"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Heavy Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-HeavyItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-HeavyItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "aafbc639c21457a8c6e09bd37c8e14d0c2ff001f302de970ef581d9769a53aa1"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -159518,6 +160222,22 @@
     "sha256": "ae482d385158e7b64434fa16e817a316dea3636ec8b09998a08eafd0de1c28de"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Book",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\01-TrueType\\Nexa-Book.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Book.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "ae4d42bdba939ef489c5a19e278c0cf0e3ba8c2fe4c67f9f0c31200f020065bf"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "09-Other",
@@ -159667,6 +160387,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "ae6b2e3b0d7ec48f3683a0f0dcce5cdcb727ada82a778599d48987039b118951"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular-Italic",
+    "family": "Nexa",
+    "subfamily": "Book Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\03-Regular-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-BookItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-BookItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "ae6c95ad10b3d4530bed73eb1cd6e28edd8e27d9542658a029c0413b27dc0a34"
   },
   {
     "script": "03-Mixed",
@@ -170578,6 +171314,22 @@
     "sha256": "ba4075318fd205cf7bc0929813a535463599732c4d93ef2accadbef927934959"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin",
+    "family": "Nexa",
+    "subfamily": "Thin",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\01-Thin\\Nexa\\02-Static\\01-TrueType\\Nexa-Thin.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Thin.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "ba43cb9ef7e75c8d521a3c31e3be89b0861080435b6d2eb047df8aed0114066d"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "02-Light",
@@ -173100,6 +173852,22 @@
     "sha256": "bd0d47e7b7a9b056abe36ba4a6c825eefc7d13f0aeb38a15c2b42c8ed57b5fba"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light",
+    "family": "Nexa",
+    "subfamily": "Light",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\02-Light\\Nexa\\02-Static\\04-WOFF2\\Nexa-Light.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Light.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "bd0d8a4af7cc86dfdcaba2e0b1f23313ba09c423553e9cf9b558f8e0530d4800"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -174061,6 +174829,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "be2159d724c9e9b50dfef2d0ae64248cb577644a76b21da670de6e049830268f"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-LightItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\02-Light-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-LightItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-LightItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "be256cb647e7c1b2f826d7adb2a9e4e9ae73196390a6fa8a451d0b93fdec61b7"
   },
   {
     "script": "03-Mixed",
@@ -180726,6 +181510,22 @@
     "sha256": "c527e06a01a25c492d4a88e74dc571f9ec1db42cd6d43544a0977fe15ca1a121"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin",
+    "family": "Nexa",
+    "subfamily": "Thin",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\01-Thin\\Nexa\\02-Static\\03-WOFF\\Nexa-Thin.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Thin.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "c53125b86d24b1af87f26d4c05210936b6339b11dedf6423bd0334c06c33c4e4"
+  },
+  {
     "script": "01-Persian-Arabic",
     "style": "06-General",
     "weight": "09-Other",
@@ -181971,6 +182771,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "c669a546ce88575b4870cbe540c570b72dcda9719012a43b55aa3d11a39b7e01"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular-Italic",
+    "family": "Nexa",
+    "subfamily": "Book Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\03-Regular-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-BookItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-BookItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "c66b5a13c4b54616ea6e0d34ee0ea44165a83f1bd598438f44f9084be702c848"
   },
   {
     "script": "03-Mixed",
@@ -185042,6 +185858,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "c9ac7f5e565fe6e5d23bbd1fca10a6f33ccd260aef394e2eb61d4e8655848f10"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "Nexa",
+    "subfamily": "Black Italic",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\Nexa\\02-Static\\03-WOFF\\Nexa-BlackItalic.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-BlackItalic.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "c9b2a3eeda27f65b3423ee6a644b26be4a3cee2e4f652504be2eaefc09d784e8"
   },
   {
     "script": "03-Mixed",
@@ -192263,6 +193095,22 @@
     "sha256": "d1adb68f76959794a23c40d6efcf2e8556fb63e5280b83a30dec415cfcad49e5"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold-Italic",
+    "family": "Nexa",
+    "subfamily": "XBold Italic",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\06-Bold-Italic\\Nexa\\02-Static\\04-WOFF2\\Nexa-XBoldItalic.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-XBoldItalic.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "d1b30ff396d1e57943efabc9c6a32fde893b79152fb311a03b745273d106fe5f"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold-Italic",
@@ -194512,6 +195360,22 @@
     ],
     "duplicate_count": 1,
     "sha256": "d3f89ac727560fbfc788d9ddc2799b670edb43e82a1fd7193fdaa3d4d77db8b9"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "01-Thin-Italic",
+    "family": "Nexa",
+    "subfamily": "Thin Italic",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\01-Thin-Italic\\Nexa\\02-Static\\01-TrueType\\Nexa-ThinItalic.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-ThinItalic.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "d3f903f2d7def21060c259bcd007b8191dd0a62aadb6fdae2816dbaecf304110"
   },
   {
     "script": "03-Mixed",
@@ -198930,6 +199794,22 @@
     "sha256": "d8905c2afafe1ecae288938493d7ee202ae6c1c1577093d28f4b370035125f1e"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-BookItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\03-Regular-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-BookItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-BookItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "d890d7e4d9d5c16133fffc84d6c6bbc289d96a9ecb215b86fd8e40c867f3e399"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "02-Light",
@@ -201389,6 +202269,22 @@
     "sha256": "db28a1bcba894ba508c7c406c161abacdeff12b87d977667a424ecdbb3160f2f"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black-Italic",
+    "family": "NEXA font",
+    "subfamily": "Nexa-BlackItalic",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\08-Black-Italic\\NEXA font\\02-Static\\05-EOT\\Nexa-BlackItalic.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-BlackItalic.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "db321198e16fe82ef3673f834449d6c9250958395259b54dfc6eb76808f4fa08"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "05-SemiBold",
@@ -202012,6 +202908,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "dbbcd65a294dc0aa81242764485e6cf7735364f8f17dd0970c1270fc9424eb92"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Regular",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\03-WOFF\\Nexa-Regular.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Regular.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "dbbda84fc981b381b71de92f84d39c500d48bd4596777cb51025e7092a9e8bdc"
   },
   {
     "script": "01-Persian-Arabic",
@@ -208973,6 +209885,22 @@
     "sha256": "e31cacdff1b9a487b4f06b9fe2e829b1da02e3db767816894cdd0ca58dd2d3ec"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "Bold",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\04-WOFF2\\Nexa-Bold.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Bold.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "e3203defe0081396f38cb9105b853dd4464386a2f4f1f2c82fda0dccd00c6b41"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -209629,6 +210557,22 @@
     "sha256": "e3cadebed7e0f320f9b46fbc5ef99ca99513685baa80190c97d7db4ab4b2669d"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "Bold",
+    "variant": "02-Static",
+    "format": "01-TrueType",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\01-TrueType\\Nexa-Bold.ttf",
+    "source": "_Incoming\\NEXA font\\Nexa-Bold.ttf",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "e3dc6b8cb4aab9e1ab31883ba6fc8a6044e8cd8cf338642360c9c3cb3230fca4"
+  },
+  {
     "script": "03-Mixed",
     "style": "06-General",
     "weight": "06-Bold",
@@ -210121,6 +211065,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "e45185f678d8b0a8cdac55cbdc57dac4180c474008e8ffad55dc570fd734c2cd"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "NEXA font",
+    "subfamily": "Nexa-XBold",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\06-Bold\\NEXA font\\02-Static\\05-EOT\\Nexa-XBold.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-XBold.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "e45434a9966ae3576aee9975681276953b71f51e64056e70c654f52eba0c308d"
   },
   {
     "script": "04-Latin",
@@ -212785,6 +213745,22 @@
     ],
     "duplicate_count": 3,
     "sha256": "e75392629e68250e6cefe23570361862b06e683ef04f74c14b42b540839d7cad"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "03-Regular",
+    "family": "Nexa",
+    "subfamily": "Book",
+    "variant": "02-Static",
+    "format": "04-WOFF2",
+    "file": "04-Latin\\06-General\\03-Regular\\Nexa\\02-Static\\04-WOFF2\\Nexa-Book.woff2",
+    "source": "_Incoming\\NEXA font\\Nexa-Book.woff2",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "e755c058fcf5a667a18c04ea6cce929f6559ed808ac514badd827cafe8176446"
   },
   {
     "script": "03-Mixed",
@@ -215530,6 +216506,22 @@
     ],
     "duplicate_count": 2,
     "sha256": "ea66ef3ad0f5bdc8246bae26cec779d543207c32ebcc6c843181f1641e6e2fd9"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "08-Black",
+    "family": "Nexa",
+    "subfamily": "Heavy",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\08-Black\\Nexa\\02-Static\\03-WOFF\\Nexa-Heavy.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Heavy.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "ea6961baee7186e53b02514f764a4dac96da43f0ab2998db1d04e49e2aed0259"
   },
   {
     "script": "04-Latin",
@@ -224813,6 +225805,22 @@
     "sha256": "f408e79879e9a03a4990afea5c207df37ce2e5392066c113faf94ad327cd07de"
   },
   {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "06-Bold",
+    "family": "Nexa",
+    "subfamily": "Bold",
+    "variant": "02-Static",
+    "format": "03-WOFF",
+    "file": "04-Latin\\06-General\\06-Bold\\Nexa\\02-Static\\03-WOFF\\Nexa-Bold.woff",
+    "source": "_Incoming\\NEXA font\\Nexa-Bold.woff",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "f40937ca89b16bd1582d88551c1421c79daebf67cb0cb50816477377b8761ba6"
+  },
+  {
     "script": "01-Persian-Arabic",
     "style": "06-General",
     "weight": "03-Regular",
@@ -226049,6 +227057,22 @@
     ],
     "duplicate_count": 0,
     "sha256": "f5548812e2e399a3a4fdf6779512f99d668fbe73e0fed3d0b0525153fdd17b47"
+  },
+  {
+    "script": "04-Latin",
+    "style": "06-General",
+    "weight": "02-Light",
+    "family": "NEXA font",
+    "subfamily": "Nexa-Light",
+    "variant": "02-Static",
+    "format": "05-EOT",
+    "file": "04-Latin\\06-General\\02-Light\\NEXA font\\02-Static\\05-EOT\\Nexa-Light.eot",
+    "source": "_Incoming\\NEXA font\\Nexa-Light.eot",
+    "source_folders": [
+      "_Incoming"
+    ],
+    "duplicate_count": 0,
+    "sha256": "f55ad12a4489d6e79d53f0bed1f5d35bf8e67b1819b596abcd8da8f55b831d3d"
   },
   {
     "script": "03-Mixed",

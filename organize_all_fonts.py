@@ -18,8 +18,10 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import re
 import shutil
+import time
 from collections import defaultdict
 from pathlib import Path
 
@@ -142,6 +144,42 @@ def read_font(path: Path) -> tuple[str, str, str, str, str, str, str]:
     return clean(script), clean(style), clean(weight), clean(family), ("01-Variable" if variable else "02-Static"), fmt, subfamily
 
 
+def robust_rmtree(target: Path, passes: int = 4) -> None:
+    """Delete a tree, tolerating Windows' transient locks.
+
+    Indexers and AV scanners routinely hold a brief handle on a font file
+    right after it is written, which makes a plain rmtree raise WinError 5
+    partway through and leave the tree half-deleted. Retry a few times,
+    clearing the read-only bit, before giving up.
+    """
+    import stat
+    import time
+
+    def on_error(func, path, exc_info):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception:
+            pass  # a later pass (or the final check) deals with it
+
+    for attempt in range(passes):
+        if not target.exists():
+            return
+        shutil.rmtree(target, onexc=lambda f, p, e: on_error(f, p, e))
+        if not target.exists():
+            return
+        time.sleep(1.5 * (attempt + 1))
+
+    if target.exists():
+        leftovers = [p for p in target.rglob("*") if p.is_file()]
+        raise SystemExit(
+            f"Could not fully remove {target.name} ({len(leftovers)} file(s) locked).\n"
+            "Close anything browsing that folder (Explorer, a preview server, an\n"
+            "editor) and re-run. First locked file:\n"
+            f"  {leftovers[0] if leftovers else target}"
+        )
+
+
 def canonical_key(path: Path) -> tuple:
     # Prefer real font files over macOS metadata, and shorter/shallower paths.
     return (
@@ -178,9 +216,14 @@ def main() -> None:
     exact_dupe_files = sum(len(v) - 1 for v in by_hash.values() if len(v) > 1)
     print(f"unique_by_hash={len(by_hash)} exact_duplicates_skipped={exact_dupe_files}")
 
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir()
+    # Build into a staging folder and swap it in at the end. Deleting the live
+    # tree up front is the fragile step on Windows: an indexer or AV scanner
+    # holds brief handles on freshly written font files, which aborts the
+    # delete halfway and leaves the library in a half-built state. Renaming a
+    # directory succeeds where deleting its contents does not.
+    stage = ROOT / "SmartOrganizedPlus.new"
+    robust_rmtree(stage)
+    stage.mkdir()
 
     rows = []
     used_paths: set[str] = set()
@@ -188,7 +231,7 @@ def main() -> None:
         paths.sort(key=canonical_key)
         src = paths[0]
         script, style, weight, family, variant, fmt, subfamily = read_font(src)
-        folder = OUT / script / style / weight / family / variant / fmt
+        folder = stage / script / style / weight / family / variant / fmt
         folder.mkdir(parents=True, exist_ok=True)
         dest = folder / src.name
         n = 1
@@ -207,7 +250,7 @@ def main() -> None:
         rows.append({
             "script": script, "style": style, "weight": weight, "family": family,
             "subfamily": subfamily, "variant": variant, "format": fmt,
-            "file": str(dest.relative_to(OUT)), "source": str(src.relative_to(ROOT)),
+            "file": str(dest.relative_to(stage)), "source": str(src.relative_to(ROOT)),
             "source_folders": source_folders,
             "duplicate_count": len(paths) - 1,
             "sha256": digest,
@@ -216,13 +259,13 @@ def main() -> None:
             print(f"organized {i}/{len(by_hash)}")
 
     fields = list(rows[0])
-    with (OUT / "INDEX.csv").open("w", newline="", encoding="utf-8-sig") as fh:
+    with (stage / "INDEX.csv").open("w", newline="", encoding="utf-8-sig") as fh:
         writer = csv.DictWriter(fh, fieldnames=fields)
         writer.writeheader()
         # CSV wants a scalar; JSON keeps the real list.
         writer.writerows([{**r, "source_folders": " | ".join(r["source_folders"])} for r in rows])
-    (OUT / "INDEX.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
-    (OUT / "README.txt").write_text(
+    (stage / "INDEX.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+    (stage / "README.txt").write_text(
         "SmartOrganizedPlus\n\n"
         "Hierarchy: script / style / weight / family / variable-or-static / format.\n"
         "Categories are inferred from font metadata, cmap coverage, and names.\n"
@@ -232,6 +275,22 @@ def main() -> None:
         "    python organize_all_fonts.py\n"
         "    python build_index.py\n",
         encoding="utf-8")
+
+    # Swap staging into place. Renaming a directory succeeds even when a
+    # scanner holds a handle on a file inside it, which is what makes this
+    # safer than deleting the live tree first.
+    retired = None
+    if OUT.exists():
+        retired = ROOT / f"SmartOrganizedPlus.old-{int(time.time())}"
+        os.replace(OUT, retired)
+    os.replace(stage, OUT)
+
+    if retired is not None:
+        try:
+            robust_rmtree(retired, passes=2)
+        except SystemExit:
+            print(f"NOTE: previous tree left at {retired.name} (files still locked).")
+            print("      It is safe to delete by hand once nothing is scanning it.")
 
     print(f"fonts={len(rows)}")
     for key in ("script", "style", "weight", "variant", "format", "family"):

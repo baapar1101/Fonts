@@ -10,3 +10,19 @@ _Incoming/*
 
 __pycache__/
 *.pyc
+
+# Secrets: SMS gateway credentials and the session secret. Never commit.
+.env
+
+# User accounts, likes and collections live here. Local data, not source.
+markfont.db
+markfont.db-wal
+markfont.db-shm
+
+# Build logs and the organizer's staging / retired trees.
+_organize.log
+_index.log
+SmartOrganizedPlus.new/
+SmartOrganizedPlus.old-*/
+
+node_modules/

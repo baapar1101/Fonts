@@ -709,16 +709,14 @@
     authSend.disabled = true;
     setAuthMsg("در حال ارسال…");
     try {
-      const r = await api("/api/auth/request-otp", {
+      await api("/api/auth/request-otp", {
         method: "POST", body: JSON.stringify({ phone }),
       });
       authPhoneEcho.textContent = phone;
       showAuthStep("code");
       authCode.value = "";
       authCode.focus();
-      if (r.dev) {
-        setAuthMsg("حالت توسعه: کد در کنسول سرور چاپ شد (پیامکی ارسال نشد).", "ok");
-      }
+      setAuthMsg("کد ورود پیامک شد.", "ok");
     } catch (e) {
       setAuthMsg(e.message, "error");
     } finally {

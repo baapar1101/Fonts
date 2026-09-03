@@ -1,3 +1,15 @@
+/* Vazirmatn (SIL OFL — see ui/vazirmatn-OFL.txt) as the interface face.
+   One variable file covers 100–900, and it carries both Persian and Latin,
+   so the bilingual chrome renders in a single consistent typeface instead
+   of falling back to Tahoma for the Persian half. */
+@font-face{
+  font-family:"Vazirmatn";
+  src:url("ui/vazirmatn.woff2") format("woff2");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   /* Brand + geometry: identical in both themes. */
   --ms-blue:#245cff;
@@ -5,7 +17,7 @@
   --ms-blue-soft:#eaf0ff;
   --ms-blue-hover:#3a6dff;
   --on-accent:#fff;            /* text sitting on a blue fill — never flips */
-  --ms-font:"Helvetica Neue",Arial,sans-serif;
+  --ms-font:"Vazirmatn","Helvetica Neue",Arial,sans-serif;
   --ms-ease:cubic-bezier(.19,1,.22,1);
   --ms-max:1400px;
   --ms-gutter:clamp(20px,4vw,48px);

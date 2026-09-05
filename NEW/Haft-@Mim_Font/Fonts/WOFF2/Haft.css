@@ -1,9 +1,0 @@
-/* Webfont: Haft */@font-face {
-    font-family: 'Haft';
-    src: url('Haft.woff2') format('woff2'), /* Modern Browsers */
-         url('Haft.otf') format('opentype'); /* Safari, Android, iOS */
-             font-style: normal;
-    font-weight: bold;
-    text-rendering: optimizeLegibility;
-}
-

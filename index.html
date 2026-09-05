@@ -39,6 +39,7 @@
         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/>
       </svg>
     </button>
+    <button id="adminBtn" class="btn account-btn" type="button" hidden>پنل مدیریت</button>
     <button id="accountBtn" class="btn account-btn" type="button">ورود / Sign in</button>
   </div>
 </header>
@@ -100,6 +101,31 @@
   <img src="markstreet-logo-white.png" alt="MarkStreet" class="footer-logo">
   <span>MarkFont · local font library · files served from your own collection</span>
 </footer>
+
+<div class="modal-overlay hidden" id="adminOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>پنل مدیریت — افزودن فونت</h3>
+      <button class="modal-close" id="adminClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint">فایل‌های فونت را انتخاب کنید. پشتیبانی از TTF، OTF، WOFF و WOFF2. فونت‌های تکراری خودکار نادیده گرفته می‌شوند.</p>
+
+      <label class="admin-label" for="adminBatch">نام دسته (اختیاری)</label>
+      <input id="adminBatch" class="auth-input" type="text" placeholder="مثلاً: Nexa" maxlength="60">
+
+      <label class="admin-drop" id="adminDrop">
+        <input id="adminFiles" type="file" multiple accept=".ttf,.otf,.woff,.woff2" hidden>
+        <span id="adminDropText">فایل‌ها را اینجا رها کنید یا کلیک کنید</span>
+      </label>
+
+      <ul id="adminList" class="admin-list"></ul>
+
+      <button id="adminUpload" class="btn primary auth-submit" type="button" disabled>افزودن به کتابخانه</button>
+      <p id="adminMsg" class="auth-msg" hidden></p>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay hidden" id="authOverlay">
   <div class="modal modal-narrow">

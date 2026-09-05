@@ -683,6 +683,8 @@
       accountBtn.textContent = "ورود / Sign in";
       accountBtn.title = "ورود با شماره موبایل";
     }
+    // The server decides who is an admin; this only reflects that answer.
+    adminBtn.hidden = !state.user?.admin;
   }
 
   accountBtn.addEventListener("click", async () => {
@@ -750,6 +752,128 @@
   authVerify.addEventListener("click", verifyCode);
   authPhone.addEventListener("keydown", e => { if (e.key === "Enter") requestCode(); });
   authCode.addEventListener("keydown", e => { if (e.key === "Enter") verifyCode(); });
+
+  /* -------------------------- Admin -------------------------------- */
+
+  const adminBtn = document.getElementById("adminBtn");
+  const adminOverlay = document.getElementById("adminOverlay");
+  const adminClose = document.getElementById("adminClose");
+  const adminDrop = document.getElementById("adminDrop");
+  const adminDropText = document.getElementById("adminDropText");
+  const adminFiles = document.getElementById("adminFiles");
+  const adminList = document.getElementById("adminList");
+  const adminUpload = document.getElementById("adminUpload");
+  const adminMsg = document.getElementById("adminMsg");
+  const adminBatch = document.getElementById("adminBatch");
+
+  const ADMIN_EXTS = ["ttf", "otf", "woff", "woff2"];
+  let adminQueue = [];
+
+  function setAdminMsg(html, kind) {
+    adminMsg.hidden = !html;
+    adminMsg.className = "auth-msg" + (kind ? ` is-${kind}` : "");
+    adminMsg.innerHTML = html || "";
+  }
+
+  function renderQueue() {
+    adminList.innerHTML = "";
+    adminQueue.forEach(f => {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.textContent = f.name;
+      const size = document.createElement("span");
+      size.textContent = humanSize(f.size);
+      li.append(name, size);
+      adminList.appendChild(li);
+    });
+    adminUpload.disabled = adminQueue.length === 0;
+    adminDropText.textContent = adminQueue.length
+      ? `${adminQueue.length} فایل انتخاب شد — برای تغییر کلیک کنید`
+      : "فایل‌ها را اینجا رها کنید یا کلیک کنید";
+  }
+
+  function acceptFiles(fileList) {
+    adminQueue = [...fileList].filter(f =>
+      ADMIN_EXTS.includes((f.name.split(".").pop() || "").toLowerCase()));
+    const skipped = fileList.length - adminQueue.length;
+    renderQueue();
+    setAdminMsg(skipped ? `${skipped} فایل با پسوند نامعتبر نادیده گرفته شد.` : "", skipped ? "error" : "");
+  }
+
+  adminBtn.addEventListener("click", () => {
+    adminQueue = [];
+    renderQueue();
+    setAdminMsg("");
+    adminOverlay.classList.remove("hidden");
+  });
+  adminClose.addEventListener("click", () => adminOverlay.classList.add("hidden"));
+  adminOverlay.addEventListener("click", e => {
+    if (e.target === adminOverlay) adminOverlay.classList.add("hidden");
+  });
+
+  adminDrop.addEventListener("click", () => adminFiles.click());
+  adminFiles.addEventListener("change", () => acceptFiles(adminFiles.files));
+  ["dragenter", "dragover"].forEach(ev =>
+    adminDrop.addEventListener(ev, e => { e.preventDefault(); adminDrop.classList.add("is-over"); }));
+  ["dragleave", "drop"].forEach(ev =>
+    adminDrop.addEventListener(ev, e => { e.preventDefault(); adminDrop.classList.remove("is-over"); }));
+  adminDrop.addEventListener("drop", e => {
+    if (e.dataTransfer?.files?.length) acceptFiles(e.dataTransfer.files);
+  });
+
+  const readAsBase64 = file => new Promise((resolve, reject) => {
+    const r = new FileReader();
+    // result is a data: URL; the payload starts after the comma.
+    r.onload = () => resolve(String(r.result).split(",")[1] || "");
+    r.onerror = () => reject(new Error(`خواندن ${file.name} ناموفق بود`));
+    r.readAsDataURL(file);
+  });
+
+  adminUpload.addEventListener("click", async () => {
+    if (!adminQueue.length) return;
+    adminUpload.disabled = true;
+    setAdminMsg("در حال خواندن فایل‌ها…");
+    try {
+      const files = [];
+      for (const f of adminQueue) {
+        files.push({ name: f.name, data: await readAsBase64(f) });
+      }
+      setAdminMsg("در حال افزودن به کتابخانه…");
+      const r = await api("/api/admin/upload", {
+        method: "POST",
+        body: JSON.stringify({ folder: adminBatch.value.trim(), files }),
+      });
+
+      const parts = [`<b>${r.added}</b> فایل افزوده شد.`];
+      if (r.duplicates) parts.push(`${r.duplicates} تکراری نادیده گرفته شد.`);
+      if (r.families?.length) {
+        parts.push(`خانواده‌ها: ${r.families.slice(0, 8).join("، ")}` +
+          (r.families.length > 8 ? ` و ${r.families.length - 8} مورد دیگر` : ""));
+      }
+      if (r.rejected?.length) {
+        parts.push(`<span style="color:#ff8f8f">${r.rejected.length} فایل رد شد.</span>`);
+      }
+      setAdminMsg(parts.join("<br>"), "ok");
+
+      adminQueue = [];
+      renderQueue();
+      await reloadCatalog();
+    } catch (e) {
+      setAdminMsg(e.message, "error");
+    } finally {
+      adminUpload.disabled = adminQueue.length === 0;
+    }
+  });
+
+  /** Re-fetch fonts.json after the library changes, keeping the current view. */
+  async function reloadCatalog() {
+    const data = await (await fetch("fonts.json", { cache: "no-store" })).json();
+    state.all = data.families;
+    prepareSearchIndex(state.all);
+    state.collections = data.collections || [];
+    renderCollectionChips();
+    applyFilters();
+  }
 
   /* --------------------- Likes & bookmarks ------------------------- */
 

@@ -18,6 +18,7 @@ const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
 const crypto = require("node:crypto");
+const { spawn } = require("node:child_process");
 const { DatabaseSync } = require("node:sqlite");
 
 const ROOT = __dirname;
@@ -50,8 +51,33 @@ const SESSION_SECRET = ENV.SESSION_SECRET || crypto.randomBytes(32).toString("he
 // this project. Calls are made from here, never from the browser.
 const OTP_API = (ENV.OTP_API_BASE || "https://otp.eldery.ir").replace(/\/+$/, "");
 
+// Interpreter used for the font-processing helpers. Override in .env if
+// "python" is not the one carrying fontTools on this machine.
+const PYTHON = ENV.PYTHON || "python";
+
 const OTP_RESEND_MS = 60 * 1000;       // shields the upstream service from spam
 const SESSION_TTL_MS = 30 * 24 * 3600 * 1000;
+
+// Numbers allowed into the admin panel. Comma-separated in .env to add more.
+const ADMIN_PHONES = new Set(
+  (ENV.ADMIN_PHONES || "09901046596").split(",").map((s) => s.trim()).filter(Boolean)
+);
+
+const UPLOAD_MAX_BYTES = 80 * 1024 * 1024;   // per request, before base64 overhead
+const UPLOAD_EXTS = new Set([".ttf", ".otf", ".woff", ".woff2"]);
+// First bytes that a real font file must start with. Checked so the upload
+// endpoint cannot be used to drop arbitrary content into the library.
+const FONT_MAGIC = [
+  [0x00, 0x01, 0x00, 0x00],                    // TrueType
+  [0x74, 0x72, 0x75, 0x65],                    // 'true'
+  [0x74, 0x74, 0x63, 0x66],                    // 'ttcf'
+  [0x4f, 0x54, 0x54, 0x4f],                    // 'OTTO'
+  [0x77, 0x4f, 0x46, 0x46],                    // 'wOFF'
+  [0x77, 0x4f, 0x46, 0x32],                    // 'wOF2'
+];
+
+const looksLikeFont = (buf) =>
+  buf.length >= 4 && FONT_MAGIC.some((m) => m.every((b, i) => buf[i] === b));
 
 /* ------------------------------ database ---------------------------- */
 
@@ -187,6 +213,22 @@ function requireUser(req, res) {
   return user;
 }
 
+const isAdmin = (user) => !!user && ADMIN_PHONES.has(user.phone);
+
+function requireAdmin(req, res) {
+  const user = requireUser(req, res);
+  if (!user) return null;
+  if (!isAdmin(user)) { json(res, 403, { error: "دسترسی مدیریت ندارید" }); return null; }
+  return user;
+}
+
+/** Reduce an uploaded name to a bare, safe filename. */
+function safeFileName(name) {
+  const base = String(name || "").split(/[\\/]/).pop() || "";
+  const cleaned = base.replace(/[\x00-\x1f<>:"|?*]/g, "").replace(/^\.+/, "").trim();
+  return cleaned.slice(0, 120);
+}
+
 /* --------------------------- static files --------------------------- */
 
 const MIME = {
@@ -312,7 +354,50 @@ async function handleApi(req, res, url) {
   if (p === "/api/me" && method === "GET") {
     const user = currentUser(req);
     if (!user) return json(res, 200, { user: null });
-    return json(res, 200, { user: { phone: user.phone }, ...userData(user.id) });
+    return json(res, 200, {
+      user: { phone: user.phone, admin: isAdmin(user) },
+      ...userData(user.id),
+    });
+  }
+
+  // --- admin: publish new fonts to the live library ---
+  if (p === "/api/admin/upload" && method === "POST") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const body = await readBody(req, UPLOAD_MAX_BYTES * 2);   // base64 inflates ~4/3
+    const items = Array.isArray(body.files) ? body.files : [];
+    if (!items.length) return json(res, 400, { error: "فایلی انتخاب نشده است" });
+
+    const batch = safeFileName(body.folder) || `upload-${Date.now()}`;
+    const dir = path.resolve(ROOT, "_Incoming", batch);
+    if (!dir.startsWith(path.resolve(ROOT, "_Incoming") + path.sep)) {
+      return json(res, 400, { error: "نام پوشه نامعتبر است" });
+    }
+
+    const rejected = [];
+    const staged = [];
+    let bytes = 0;
+    for (const item of items) {
+      const name = safeFileName(item.name);
+      const ext = path.extname(name).toLowerCase();
+      if (!name || !UPLOAD_EXTS.has(ext)) { rejected.push({ name, why: "پسوند مجاز نیست" }); continue; }
+      let buf;
+      try { buf = Buffer.from(String(item.data || ""), "base64"); }
+      catch { rejected.push({ name, why: "داده نامعتبر" }); continue; }
+      if (!buf.length) { rejected.push({ name, why: "فایل خالی" }); continue; }
+      if (!looksLikeFont(buf)) { rejected.push({ name, why: "فایل فونت معتبر نیست" }); continue; }
+      bytes += buf.length;
+      if (bytes > UPLOAD_MAX_BYTES) { rejected.push({ name, why: "حجم کل زیاد است" }); break; }
+      staged.push({ name, buf });
+    }
+    if (!staged.length) return json(res, 400, { error: "هیچ فایل فونت معتبری ارسال نشد", rejected });
+
+    await fsp.mkdir(dir, { recursive: true });
+    for (const f of staged) await fsp.writeFile(path.join(dir, f.name), f.buf);
+
+    // Hand off to the Python side, which owns font parsing and the taxonomy.
+    const report = await runAddFont(dir);
+    if (!report.ok) return json(res, 500, { error: report.error || "افزودن فونت ناموفق بود", rejected });
+    return json(res, 200, { ok: true, ...report, rejected });
   }
 
   // --- likes ---
@@ -369,6 +454,31 @@ async function handleApi(req, res, url) {
   }
 
   return json(res, 404, { error: "unknown endpoint" });
+}
+
+/** Run add_font.py over a staged upload folder and parse its JSON report. */
+function runAddFont(dir) {
+  return new Promise((resolve) => {
+    const child = spawn(PYTHON, [path.join(ROOT, "add_font.py"), dir], {
+      cwd: ROOT,
+      env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+    });
+    let out = "", err = "";
+    child.stdout.on("data", (d) => { out += d; });
+    child.stderr.on("data", (d) => { err += d; });
+    child.on("error", (e) => resolve({ ok: false, error: `python not found: ${e.message}` }));
+    child.on("close", () => {
+      // fontTools writes warnings to stdout for some files, so take the last
+      // line that parses as JSON rather than assuming the whole stream is it.
+      const line = out.trim().split(/\r?\n/).reverse().find((l) => l.trim().startsWith("{"));
+      if (!line) {
+        console.error("add_font.py produced no report:", err.slice(-400));
+        return resolve({ ok: false, error: "خروجی پردازش فونت خوانده نشد" });
+      }
+      try { resolve(JSON.parse(line)); }
+      catch { resolve({ ok: false, error: "گزارش پردازش نامعتبر بود" }); }
+    });
+  });
 }
 
 /** Everything the client needs to render like/bookmark state in one payload. */

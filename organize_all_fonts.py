@@ -31,14 +31,13 @@ ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "SmartOrganizedPlus"
 FONT_EXTS = {".ttf", ".otf", ".woff", ".woff2", ".eot"}
 
-# Every folder that may hold raw/imported font files. Generated output
-# folders (Organized, SmartOrganized, SmartOrganizedPlus, _downloads) are
-# deliberately excluded so re-runs never re-ingest their own output.
-RAW_SOURCES = [
-    "Arabic", "English", "Fonts", "+Mixed Fonts", "+Unsorted",
-    "384.Font.Farsi", "500.Font.Collection", "Farsi", "Iranfont", "NEW",
-    "downloads", "_Incoming",
-]
+# The scattered raw dumps have been consolidated and deleted, so the library
+# is now self-sustaining: the live tree is itself the source, plus whatever
+# is waiting in _Incoming. Re-running rebuilds from what already exists and
+# folds in new arrivals. This is safe because the build writes to a staging
+# folder and only swaps it in at the end — the source is never being deleted
+# while it is still being read.
+RAW_SOURCES = ["SmartOrganizedPlus", "_Incoming"]
 
 NON_FAMILY_DIR_NAMES = {
     "ttf", "otf", "woff", "woff2", "eot", "fonts", "font", "static",
@@ -60,6 +59,12 @@ def fallback_family(path: Path) -> str:
         if parent == ROOT:
             break
         name_lower = parent.name.lower()
+        # Skip this script's own taxonomy segments ("04-Latin", "02-Static",
+        # "01-TrueType", …). Now that the live tree is re-read as a source,
+        # a font with unreadable metadata would otherwise be filed under a
+        # format folder as if that were its family name.
+        if re.match(r"^\d{2}-", parent.name):
+            continue
         if name_lower in NON_FAMILY_DIR_NAMES:
             continue
         if name_lower in RAW_SOURCE_NAMES:

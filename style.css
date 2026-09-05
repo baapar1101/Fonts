@@ -228,6 +228,35 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
   background:var(--surface-inline-code); color:var(--ms-white);
 }
 
+/* ---------- Admin panel ---------- */
+.admin-label{
+  display:block; margin-bottom:2px; font-size:11px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ms-muted);
+}
+.admin-drop{
+  display:flex; align-items:center; justify-content:center; min-height:96px;
+  margin:6px 0 12px; padding:16px; cursor:pointer; text-align:center;
+  border:1px dashed var(--ms-line); background:var(--surface-subtle);
+  color:var(--ms-muted-2); font-size:13px;
+  transition:border-color .25s var(--ms-ease), background .25s var(--ms-ease), color .25s var(--ms-ease);
+}
+.admin-drop:hover, .admin-drop.is-over{
+  border-color:var(--ms-blue); background:rgba(36,92,255,.08); color:var(--ms-white);
+}
+.admin-list{
+  margin:0 0 12px; padding:0; list-style:none; max-height:190px; overflow:auto;
+  border:1px solid var(--ms-line-soft);
+}
+.admin-list:empty{display:none}
+.admin-list li{
+  display:flex; justify-content:space-between; gap:10px; padding:7px 10px;
+  font-size:12px; color:var(--ms-muted-2); border-bottom:1px solid var(--ms-line-soft);
+}
+.admin-list li:last-child{border-bottom:none}
+.admin-list li span:last-child{color:var(--ms-muted); flex-shrink:0}
+.admin-list li.bad{color:#ff8f8f}
+.admin-report{margin:6px 0 0; padding-left:16px; font-size:12px; line-height:1.7}
+
 /* ---------- Card like / bookmark ---------- */
 .icon-btn{
   flex:0 0 auto; width:42px; min-height:42px; padding:0;

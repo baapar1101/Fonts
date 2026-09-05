@@ -165530,6 +165530,39 @@
 "zip": null
 },
 {
+"slug": "tabliq",
+"family": "Tabliq",
+"langs": [
+"en",
+"fa"
+],
+"styles": [
+"General"
+],
+"collections": [],
+"variants": [
+{
+"weight": 700,
+"italic": false,
+"subfamily": "Bold",
+"fullName": "Tabliq Bold",
+"files": [
+{
+"format": "otf",
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tabliq-Bold.otf",
+"size": 76384
+},
+{
+"format": "ttf",
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tabliq-Bold.ttf",
+"size": 131933
+}
+]
+}
+],
+"zip": "_downloads/tabliq.zip"
+},
+{
 "slug": "tahamtan",
 "family": "Tahamtan",
 "langs": [
@@ -167766,8 +167799,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/02-Light/Tlesk/02-Static/01-TrueType/Tlesk-Light.ttf",
-"size": 108952
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Light.ttf",
+"size": 178036
 }
 ]
 },
@@ -167779,8 +167812,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/03-Regular/Tlesk/02-Static/01-TrueType/Tlesk.ttf",
-"size": 107880
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Regular.ttf",
+"size": 175760
 }
 ]
 },
@@ -167792,8 +167825,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/04-Medium/Tlesk/02-Static/01-TrueType/Tlesk-Medium.ttf",
-"size": 107900
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Medium.ttf",
+"size": 176228
 }
 ]
 },
@@ -167805,8 +167838,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/05-SemiBold/Tlesk/02-Static/01-TrueType/Tlesk-Semibold.ttf",
-"size": 104140
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Semibold.ttf",
+"size": 169668
 }
 ]
 },
@@ -167818,8 +167851,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/06-Bold/Tlesk/02-Static/01-TrueType/Tlesk-Bold.ttf",
-"size": 115736
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Bold.ttf",
+"size": 189220
 }
 ]
 },
@@ -167831,8 +167864,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/06-Bold/Tlesk/02-Static/01-TrueType/Tlesk-Extarbold.ttf",
-"size": 104144
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Extarbold.ttf",
+"size": 169680
 }
 ]
 },
@@ -167844,8 +167877,8 @@
 "files": [
 {
 "format": "ttf",
-"path": "SmartOrganizedPlus/03-Mixed/06-General/08-Black/Tlesk/02-Static/01-TrueType/Tlesk-Black.ttf",
-"size": 115012
+"path": "SmartOrganizedPlus/05-Other/06-General/09-Other/fonts/Tlesk-Black.ttf",
+"size": 191824
 }
 ]
 }

@@ -1,0 +1,19 @@
+Hashing final folder…
+  final: 14483 files, 14483 unique
+
+Checking sources against the final folder:
+  +Mixed Fonts                  628 files,   571 unique   OK
+  +Unsorted                    3340 files,  2512 unique   OK
+  384.Font.Farsi                619 files,   619 unique   OK
+  500.Font.Collection           492 files,   492 unique   OK
+  _Incoming                      64 files,    64 unique   OK
+  Arabic                         49 files,    49 unique   OK
+  downloads                      10 files,    10 unique   OK
+  English                      1591 files,  1586 unique   OK
+  Farsi                        1897 files,  1828 unique   OK
+  Fonts                        5011 files,  4157 unique   OK
+  Iranfont                     7143 files,  6954 unique   OK
+  NEW                           776 files,   772 unique   OK
+  NEXA font                      64 files,    64 unique   OK
+
+SAFE: every font in every source folder is present in SmartOrganizedPlus.

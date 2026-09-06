@@ -102,6 +102,40 @@
   <span>MarkFont · local font library · files served from your own collection</span>
 </footer>
 
+<div class="modal-overlay hidden" id="detailOverlay">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <div class="detail-heading">
+        <h3 id="detailTitle">Font</h3>
+        <div class="detail-meta" id="detailMeta"></div>
+      </div>
+      <button class="modal-close" id="detailClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-controls">
+        <input id="detailText" class="auth-input" type="text" placeholder="متن نمونه را بنویسید…">
+        <div class="size-control">
+          <label for="detailSize">Size</label>
+          <input id="detailSize" type="range" min="14" max="96" value="38">
+          <span id="detailSizeLabel">38px</span>
+        </div>
+      </div>
+
+      <div id="detailWeights" class="detail-weights"></div>
+
+      <div class="detail-actions">
+        <a id="detailZip" class="btn primary" download>دانلود همه وزن‌ها (ZIP)</a>
+      </div>
+
+      <p class="hint" style="margin-top:18px">کد <code>@font-face</code> برای همه وزن‌ها</p>
+      <div class="code-block">
+        <button class="copy-btn" id="detailCopy">Copy</button>
+        <pre id="detailCode"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay hidden" id="adminOverlay">
   <div class="modal">
     <div class="modal-head">
@@ -149,16 +183,6 @@
       </div>
       <p id="authMsg" class="auth-msg" hidden></p>
     </div>
-  </div>
-</div>
-
-<div class="modal-overlay hidden" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="modalTitle">Font</h3>
-      <button class="modal-close" id="modalClose">&times;</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 

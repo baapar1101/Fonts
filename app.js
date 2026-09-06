@@ -38,10 +38,6 @@
   const emptyState = document.getElementById("emptyState");
   const sentinel = document.getElementById("sentinel");
 
-  const modalOverlay = document.getElementById("modalOverlay");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalBody = document.getElementById("modalBody");
-  const modalClose = document.getElementById("modalClose");
 
   const loadedFonts = new Set(); // key -> loaded FontFace already added to document.fonts
 
@@ -98,6 +94,21 @@
     return `${own || fallback} (${v.weight})`;
   }
 
+  /**
+   * Index of the face that best represents a family on its card.
+   * Prefers Medium (500), then Regular (400), then whatever sits closest to
+   * 400, always favouring an upright over an italic at the same distance.
+   */
+  function defaultVariantIndex(fam) {
+    let best = 0, bestScore = Infinity;
+    fam.variants.forEach((v, i) => {
+      const distance = v.weight === 500 ? 0 : v.weight === 400 ? 1 : 2 + Math.abs(v.weight - 400) / 100;
+      const score = distance + (v.italic ? 0.5 : 0);
+      if (score < bestScore) { bestScore = score; best = i; }
+    });
+    return best;
+  }
+
   function humanSize(bytes) {
     if (!bytes) return "";
     const kb = bytes / 1024;
@@ -130,17 +141,6 @@
     previewBox.textContent = "Loading preview…";
     previewBox.style.fontSize = state.fontSize + "px";
 
-    const variantRow = document.createElement("div");
-    variantRow.className = "variant-row";
-    const select = document.createElement("select");
-    fam.variants.forEach((v, i) => {
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = `${variantLabel(v)} · ${v.files.map(f=>f.format).join("/")}`;
-      select.appendChild(opt);
-    });
-    variantRow.appendChild(select);
-
     const meta = document.createElement("div");
     meta.className = "card-meta";
     const fileCount = fam.variants.reduce((n, v) => n + v.files.length, 0);
@@ -149,13 +149,13 @@
 
     const actions = document.createElement("div");
     actions.className = "card-actions";
-    const dlBtn = document.createElement("a");
-    dlBtn.className = "btn primary";
-    dlBtn.textContent = "Download";
-    dlBtn.setAttribute("download", "");
-    const codeBtn = document.createElement("button");
-    codeBtn.className = "btn";
-    codeBtn.textContent = "Get code";
+    const openBtn = document.createElement("button");
+    openBtn.className = "btn primary";
+    openBtn.type = "button";
+    openBtn.textContent = fam.variants.length > 1
+      ? `مشاهده ${fam.variants.length} وزن`
+      : "مشاهده و دانلود";
+    openBtn.addEventListener("click", () => openFontDetail(fam));
 
     const likeBtn = document.createElement("button");
     likeBtn.className = "icon-btn like-btn" + (state.likes.has(fam.slug) ? " is-on" : "");
@@ -171,22 +171,16 @@
     bmBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></svg>`;
     bmBtn.addEventListener("click", e => { e.stopPropagation(); openBookmarkPopover(fam.slug, bmBtn); });
 
-    actions.appendChild(dlBtn);
-    actions.appendChild(codeBtn);
+    actions.appendChild(openBtn);
     actions.appendChild(likeBtn);
     actions.appendChild(bmBtn);
 
     let loaded = false;
+    // The card shows one representative face — Medium, else Regular, else the
+    // weight nearest 400 — rather than whichever variant happens to sort first
+    // (which was Thin, an unfair impression of the family).
     function currentVariant() {
-      return fam.variants[Number(select.value)];
-    }
-    function updateDownloadLink() {
-      const v = currentVariant();
-      const f = pickFormat(v.files, FORMAT_DOWNLOAD_PRIORITY);
-      if (f) {
-        dlBtn.href = encodePath(f.path);
-        dlBtn.title = `${f.format.toUpperCase()} · ${humanSize(f.size)}`;
-      }
+      return fam.variants[defaultVariantIndex(fam)];
     }
     async function renderPreview() {
       const v = currentVariant();
@@ -206,11 +200,6 @@
       }
     }
 
-    select.addEventListener("change", () => { updateDownloadLink(); renderPreview(); });
-    codeBtn.addEventListener("click", () => openCodeModal(fam, currentVariant()));
-
-    updateDownloadLink();
-
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !loaded) {
@@ -223,7 +212,6 @@
 
     card.appendChild(head);
     card.appendChild(previewBox);
-    card.appendChild(variantRow);
     card.appendChild(meta);
     card.appendChild(actions);
 
@@ -566,60 +554,157 @@
     });
   });
 
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-  }
+  /* ------------------------ Font detail view ------------------------ */
 
-  function openCodeModal(fam, variant) {
-    modalTitle.textContent = `${fam.family} — ${variantLabel(variant)}`;
-    const webFile = pickFormat(variant.files, FORMAT_WEB_PRIORITY);
-    const allFormats = variant.files.map(f => `url("${encodePath(f.path)}") format("${f.format === "ttf" ? "truetype" : f.format === "otf" ? "opentype" : f.format}")`).join(",\n       ");
-    const fontFaceCss = `@font-face {
-  font-family: "${fam.family.replace(/"/g,'\\"')}";
-  src: ${allFormats};
+  const detailOverlay = document.getElementById("detailOverlay");
+  const detailClose = document.getElementById("detailClose");
+  const detailTitle = document.getElementById("detailTitle");
+  const detailMeta = document.getElementById("detailMeta");
+  const detailText = document.getElementById("detailText");
+  const detailSize = document.getElementById("detailSize");
+  const detailSizeLabel = document.getElementById("detailSizeLabel");
+  const detailWeights = document.getElementById("detailWeights");
+  const detailZip = document.getElementById("detailZip");
+  const detailCode = document.getElementById("detailCode");
+  const detailCopy = document.getElementById("detailCopy");
+
+  let detailFam = null;
+
+  function fontFaceBlock(fam, variant) {
+    const src = variant.files
+      .map(f => `url("${encodePath(f.path)}") format("${
+        f.format === "ttf" ? "truetype" : f.format === "otf" ? "opentype" : f.format}")`)
+      .join(",\n       ");
+    return `@font-face {
+  font-family: "${fam.family.replace(/"/g, '\\"')}";
+  src: ${src};
   font-weight: ${variant.weight};
   font-style: ${variant.italic ? "italic" : "normal"};
   font-display: swap;
 }`;
-    const usageCss = `.your-element {
-  font-family: "${fam.family.replace(/"/g,'\\"')}", ${fam.langs.includes("fa") ? "'Vazirmatn', Tahoma, " : ""}sans-serif;
-  font-weight: ${variant.weight};
-  ${variant.italic ? "font-style: italic;\n  " : ""}}`;
-
-    modalBody.innerHTML = `
-      <p class="hint">Copy this @font-face block into your CSS, then copy the font file(s) alongside your project (paths are relative to this library).</p>
-      <div class="code-block">
-        <button class="copy-btn" data-copy="fontface">Copy</button>
-        <pre id="codeFontFace">${escapeHtml(fontFaceCss)}</pre>
-      </div>
-      <p class="hint">Use it like any other font family:</p>
-      <div class="code-block">
-        <button class="copy-btn" data-copy="usage">Copy</button>
-        <pre id="codeUsage">${escapeHtml(usageCss)}</pre>
-      </div>
-      <p class="hint">Files in this style</p>
-      <div class="modal-download-row">
-        ${variant.files.map(f => `<a class="btn" download href="${encodePath(f.path)}">${f.format.toUpperCase()} · ${humanSize(f.size)}</a>`).join("")}
-        ${fam.zip ? `<a class="btn primary" download href="${encodePath(fam.zip)}">Download all (.zip)</a>` : ""}
-      </div>
-    `;
-    modalBody.querySelectorAll(".copy-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.dataset.copy === "fontface" ? "codeFontFace" : "codeUsage";
-        const text = document.getElementById(targetId).textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          btn.textContent = "Copied!";
-          btn.classList.add("copied");
-          setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 1400);
-        });
-      });
-    });
-    modalOverlay.classList.remove("hidden");
   }
 
-  modalClose.addEventListener("click", () => modalOverlay.classList.add("hidden"));
-  modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) modalOverlay.classList.add("hidden"); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") modalOverlay.classList.add("hidden"); });
+  function renderDetailPreviews() {
+    if (!detailFam) return;
+    const isFa = detailFam.langs.includes("fa");
+    const isEn = detailFam.langs.includes("en");
+    const text = detailText.value.trim() ||
+      (isFa && !isEn ? DEFAULT_TEXT_FA : DEFAULT_TEXT_EN);
+    detailWeights.querySelectorAll(".weight-preview").forEach(el => {
+      el.textContent = text;
+      el.style.fontSize = detailSize.value + "px";
+    });
+  }
+
+  async function openFontDetail(fam, { push = true } = {}) {
+    detailFam = fam;
+    const isFa = fam.langs.includes("fa");
+    const isEn = fam.langs.includes("en");
+
+    detailTitle.textContent = fam.family;
+    const fileCount = fam.variants.reduce((n, v) => n + v.files.length, 0);
+    const totalBytes = fam.variants.reduce(
+      (n, v) => n + v.files.reduce((m, f) => m + (f.size || 0), 0), 0);
+    detailMeta.textContent = [
+      (fam.styles || []).join(" / "),
+      `${fam.variants.length} وزن`,
+      `${fileCount} فایل`,
+      humanSize(totalBytes),
+    ].filter(Boolean).join(" · ");
+
+    detailZip.hidden = !fam.zip;
+    if (fam.zip) detailZip.href = encodePath(fam.zip);
+
+    detailCode.textContent = fam.variants.map(v => fontFaceBlock(fam, v)).join("\n\n");
+
+    // One row per weight, each previewing in its own face.
+    detailWeights.innerHTML = "";
+    fam.variants.forEach(v => {
+      const row = document.createElement("div");
+      row.className = "weight-row";
+
+      const head = document.createElement("div");
+      head.className = "weight-head";
+      const name = document.createElement("span");
+      name.className = "weight-name";
+      name.textContent = variantLabel(v);
+      const dl = document.createElement("div");
+      dl.className = "weight-dl";
+      v.files.forEach(f => {
+        const a = document.createElement("a");
+        a.className = "btn btn-mini";
+        a.setAttribute("download", "");
+        a.href = encodePath(f.path);
+        a.textContent = f.format.toUpperCase();
+        a.title = `${f.format.toUpperCase()} · ${humanSize(f.size)}`;
+        dl.appendChild(a);
+      });
+      head.append(name, dl);
+
+      const preview = document.createElement("div");
+      preview.className = "weight-preview" + (isFa ? " rtl" : "");
+      preview.textContent = "…";
+      preview.style.fontSize = detailSize.value + "px";
+
+      row.append(head, preview);
+      detailWeights.appendChild(row);
+
+      // Load this face, then let it render in its own weight.
+      ensureVariantLoaded(fam, v).then(ok => {
+        if (ok) {
+          preview.style.fontFamily =
+            `"${cssFamilyName(fam.slug, v)}", ${isFa ? "'Vazirmatn', Tahoma," : ""} sans-serif`;
+        }
+        renderDetailPreviews();
+      });
+    });
+
+    renderDetailPreviews();
+    detailOverlay.classList.remove("hidden");
+    // A hash makes the view linkable and lets the back button close it.
+    if (push && location.hash !== `#font/${fam.slug}`) {
+      history.pushState({ font: fam.slug }, "", `#font/${fam.slug}`);
+    }
+  }
+
+  function closeFontDetail({ back = true } = {}) {
+    detailOverlay.classList.add("hidden");
+    detailFam = null;
+    if (back && location.hash.startsWith("#font/")) history.back();
+  }
+
+  detailClose.addEventListener("click", () => closeFontDetail());
+  detailOverlay.addEventListener("click", e => {
+    if (e.target === detailOverlay) closeFontDetail();
+  });
+  detailText.addEventListener("input", debounce(renderDetailPreviews, 120));
+  detailSize.addEventListener("input", () => {
+    detailSizeLabel.textContent = detailSize.value + "px";
+    renderDetailPreviews();
+  });
+  detailCopy.addEventListener("click", () => {
+    navigator.clipboard.writeText(detailCode.textContent).then(() => {
+      detailCopy.textContent = "Copied!";
+      detailCopy.classList.add("copied");
+      setTimeout(() => { detailCopy.textContent = "Copy"; detailCopy.classList.remove("copied"); }, 1400);
+    });
+  });
+
+  /** Open or close the detail view to match the current URL hash. */
+  function syncDetailWithHash() {
+    const m = location.hash.match(/^#font\/(.+)$/);
+    if (!m) { if (detailFam) closeFontDetail({ back: false }); return; }
+    const slug = decodeURIComponent(m[1]);
+    if (detailFam && detailFam.slug === slug) return;
+    const fam = state.all.find(f => f.slug === slug);
+    if (fam) openFontDetail(fam, { push: false });
+  }
+  window.addEventListener("popstate", syncDetailWithHash);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (detailFam) closeFontDetail();
+  });
 
   /* ------------------------- Accounts ------------------------------ */
 
@@ -1016,6 +1101,8 @@
     renderCollectionChips();
     previewInput.placeholder = DEFAULT_TEXT_EN;
     applyFilters();
+    // A shared #font/<slug> link should land straight on that font.
+    syncDetailWithHash();
   }
 
   init();

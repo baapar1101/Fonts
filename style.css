@@ -228,6 +228,39 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
   background:var(--surface-inline-code); color:var(--ms-white);
 }
 
+/* ---------- Font detail view ---------- */
+.modal-wide{max-width:860px}
+.detail-heading{min-width:0}
+.detail-meta{margin-top:4px; font-size:12px; color:var(--ms-muted)}
+.detail-controls{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px;
+}
+.detail-controls .auth-input{flex:1 1 260px; margin:0}
+.detail-controls .size-control{flex:0 0 auto}
+
+.detail-weights{display:flex; flex-direction:column}
+.weight-row{padding:14px 0; border-top:1px solid var(--ms-line-soft)}
+.weight-row:first-child{border-top:none; padding-top:0}
+.weight-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; margin-bottom:8px;
+}
+.weight-name{font-size:12px; font-weight:500; letter-spacing:.04em; color:var(--ms-muted-2)}
+.weight-dl{display:flex; gap:6px; flex-wrap:wrap}
+.btn-mini{
+  flex:0 0 auto; min-height:28px; padding:0 10px; font-size:10px; letter-spacing:.06em;
+}
+.weight-preview{
+  min-height:44px; line-height:1.35; word-break:break-word; color:var(--ms-white);
+}
+.weight-preview.rtl{direction:rtl; text-align:right}
+
+.detail-actions{
+  display:flex; gap:8px; flex-wrap:wrap;
+  margin-top:18px; padding-top:16px; border-top:1px solid var(--ms-line-soft);
+}
+.detail-actions .btn{flex:0 0 auto; min-width:220px}
+
 /* ---------- Admin panel ---------- */
 .admin-label{
   display:block; margin-bottom:2px; font-size:11px; letter-spacing:.08em;
@@ -519,10 +552,114 @@ footer.sitefoot{
 }
 footer.sitefoot .footer-logo{width:88px; height:auto; opacity:.7}
 
+/* =========================== Mobile ===========================
+   On a phone the chrome above the grid was running to roughly two full
+   screens, so a font could not be seen without scrolling twice. The fixes
+   below are mostly about height: the long intro paragraph goes, the filter
+   groups become one-line horizontal swipes instead of wrapping into many
+   rows, and padding tightens throughout.                              */
 @media (max-width:640px){
-  .nav-shell{padding:12px var(--ms-gutter)}
-  .search-wrap{margin-left:0}
-  .grid{padding:20px var(--ms-gutter) 60px; grid-template-columns:1fr}
-  .preview-box{font-size:24px}
-  footer.sitefoot{flex-direction:column; gap:8px}
+  :root{--ms-gutter:16px}
+
+  /* --- Header: logo + controls on one line, search beneath --- */
+  .nav-shell{padding:10px var(--ms-gutter); gap:10px; row-gap:8px}
+  .logo-link img{width:92px}
+  .logo-divider{display:none}
+  .logo-word{font-size:13px}
+  .theme-toggle{width:38px; height:38px; margin-left:auto}
+  .account-btn{min-height:38px; padding:0 10px; font-size:11px}
+  .search-wrap{order:3; flex:1 1 100%; min-width:0; margin-left:0}
+  /* 16px keeps iOS from zooming the page when a field takes focus. */
+  .search-wrap input{padding:11px 12px 11px 34px; font-size:16px}
+  .search-wrap svg{left:10px}
+
+  /* --- Hero: keep the label and headline, drop the paragraph --- */
+  .section{padding:20px var(--ms-gutter) 0}
+  .eyebrow{margin-bottom:10px; font-size:10px}
+  .eyebrow::before{width:20px}
+  .section-title{font-size:26px; margin-bottom:0}
+  .section-intro{display:none}
+
+  /* --- Controls: three tight rows, filters swipe sideways --- */
+  .controls-bar{margin-top:16px}
+  .controls-inner{padding:10px var(--ms-gutter); gap:8px}
+  .filters{
+    flex:1 1 100%; flex-wrap:nowrap; overflow-x:auto;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .seg, select#sortSelect, select#styleSelect{flex:0 0 auto}
+  .seg button{padding:9px 12px; font-size:11px}
+  select#sortSelect, select#styleSelect{padding:9px 10px; font-size:11px}
+
+  .preview-input-wrap{flex:1 1 100%; min-width:0; gap:0}
+  .preview-input-wrap label{display:none}   /* the placeholder already says it */
+  .preview-input-wrap input{font-size:16px; padding:11px 12px}
+
+  .size-control{flex:1 1 100%}
+  .size-control input[type=range]{flex:1; width:auto}
+
+  .stats-line{padding:8px var(--ms-gutter) 10px}
+
+  /* --- Collections: one swipeable line per group ---
+     align-items must be stretch here: with the bar in column direction the
+     inherited flex-start would size .chips to its content instead of the
+     screen, so the rows would widen the page rather than scroll. */
+  .collections-bar{
+    flex-direction:column; align-items:stretch; gap:6px;
+    padding:10px var(--ms-gutter);
+  }
+  .collections-label{padding-top:0; font-size:10px}
+  .chips{gap:6px; width:100%; min-width:0}
+  .chip-row{
+    flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; min-width:0;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .chip-row::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto; padding:7px 10px; font-size:11px}
+  .chip-group-label{flex:0 0 auto; min-width:auto}
+
+  /* --- Cards --- */
+  .grid{padding:14px var(--ms-gutter) 60px; grid-template-columns:1fr; gap:12px}
+  .card{padding:16px}
+  .card::before{left:16px; right:16px}
+  .preview-box{font-size:22px; min-height:54px}
+  .card-actions{gap:6px}
+  .card-actions .btn{padding:0 10px; font-size:11px}
+  .icon-btn{width:40px}
+
+  /* --- Modals behave as bottom sheets --- */
+  .modal-overlay{padding:0; align-items:flex-end}
+  .modal{max-width:none; max-height:92vh; border-left:0; border-right:0; border-bottom:0}
+  .modal-head{padding:15px var(--ms-gutter)}
+  .modal-body{padding:16px var(--ms-gutter) 22px}
+  .auth-input{font-size:16px}
+  .code-block{padding:12px 13px}
+  .code-block pre{font-size:11.5px}
+  .modal-download-row .btn{flex:1 1 100%}
+
+  /* Detail view: controls stack, weight header wraps above its downloads. */
+  .detail-controls{gap:10px; margin-bottom:14px}
+  .detail-controls .auth-input{flex:1 1 100%}
+  .detail-controls .size-control{flex:1 1 100%}
+  .weight-head{gap:8px}
+  .weight-dl{width:100%}
+  .btn-mini{flex:1 1 auto}
+  .detail-actions .btn{flex:1 1 100%; min-width:0}
+
+  /* The popover is positioned inline by script; on a phone it should simply
+     span the screen instead of hanging off the right edge. */
+  .bm-pop{
+    position:fixed !important;
+    left:8px !important; right:8px; top:auto !important; bottom:8px;
+    width:auto; min-width:0; max-height:60vh;
+  }
+
+  footer.sitefoot{flex-direction:column; gap:8px; padding:24px var(--ms-gutter) 46px}
+}
+
+/* Very narrow phones: drop the wordmark so the header never wraps oddly. */
+@media (max-width:380px){
+  .logo-word{display:none}
+  .account-btn{font-size:10px; padding:0 8px}
 }

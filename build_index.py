@@ -50,6 +50,10 @@ SOURCE_COLLECTIONS = [
     ("pack-arabic", "Arabic",       "مجموعه عربی",       "Arabic"),
     ("pack-incoming", "New Imports", "واردات جدید",      "_Incoming"),
     ("pack-downloads", "Downloads",  "دانلودها",          "downloads"),
+    # The Google Fonts library (github.com/google/fonts): every family under
+    # its ofl/, apache/ and ufl/ trees, i.e. the fonts that are free to use,
+    # modify and redistribute. Imported with add_font.py --source GoogleFonts.
+    ("pack-google", "Google Fonts",  "گوگل فونت",         "GoogleFonts"),
 ]
 
 # Named collections shown as chips on the site. Each entry is

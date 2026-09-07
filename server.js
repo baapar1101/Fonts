@@ -353,6 +353,7 @@ function buildFamilyZip(slug) {
 
     const used = new Set();
     const entries = [];
+    const unreadable = [];
     for (const f of files) {
       let name = path.basename(f.path);
       if (used.has(name)) name = `${f.format}_${name}`;
@@ -361,9 +362,22 @@ function buildFamilyZip(slug) {
       // way, so hold them to the same containment rule as any other request.
       const full = path.resolve(ROOT, f.path);
       if (!full.startsWith(ROOT + path.sep)) return false;
-      const [data, st] = await Promise.all([fsp.readFile(full), fsp.stat(full)]);
-      entries.push({ name, data, mtime: st.mtime });
+      try {
+        const [data, st] = await Promise.all([fsp.readFile(full), fsp.stat(full)]);
+        entries.push({ name, data, mtime: st.mtime });
+      } catch (e) {
+        // A file the catalog lists but this checkout does not have. Bundle
+        // what is here rather than failing the download outright, and say
+        // which files are missing — a catalog ahead of the tree is worth
+        // knowing about.
+        unreadable.push(`${f.path} (${e.code || e.message})`);
+      }
     }
+    if (unreadable.length) {
+      console.warn(`${slug}.zip: skipped ${unreadable.length} missing file(s):`,
+                   unreadable.join(", "));
+    }
+    if (entries.length < 2) return false;
 
     await fsp.mkdir(DOWNLOADS_DIR, { recursive: true });
     const out = path.join(DOWNLOADS_DIR, `${slug}.zip`);

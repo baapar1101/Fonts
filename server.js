@@ -20,6 +20,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { spawn } = require("node:child_process");
 const { DatabaseSync } = require("node:sqlite");
+const zlib = require("node:zlib");
 
 const ROOT = __dirname;
 
@@ -229,6 +230,165 @@ function safeFileName(name) {
   return cleaned.slice(0, 120);
 }
 
+/* ----------------------- family download bundles ---------------------- */
+
+// _downloads/ holds derived data and is not in version control, so a fresh
+// clone has a catalog full of links to bundles that were never shipped.
+// Rather than commit gigabytes of archives, build one the first time it is
+// asked for and leave it on disk — byte-for-byte the file build_index.py
+// would have written, so the two paths stay interchangeable.
+
+const DOWNLOADS_DIR = path.join(ROOT, "_downloads");
+const CATALOG_PATH = path.join(ROOT, "fonts.json");
+
+const CRC_TABLE = (() => {
+  const table = new Int32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    table[n] = c;
+  }
+  return table;
+})();
+
+function crc32(buf) {
+  let c = -1;
+  for (let i = 0; i < buf.length; i++) c = CRC_TABLE[(c ^ buf[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ -1) >>> 0;
+}
+
+const dosTime = (d) =>
+  ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)) & 0xffff;
+const dosDate = (d) =>
+  ((Math.max(0, d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()) & 0xffff;
+
+/** A deflated ZIP of {name, data, mtime} entries, as one buffer. */
+function zipArchive(entries) {
+  const body = [];
+  const central = [];
+  let offset = 0;
+
+  for (const e of entries) {
+    const name = Buffer.from(e.name, "utf8");
+    // Bit 11 marks the name as UTF-8. Without it a Persian filename opens
+    // as mojibake in Windows Explorer.
+    const flags = /^[\x20-\x7e]*$/.test(e.name) ? 0 : 0x800;
+    const data = zlib.deflateRawSync(e.data);
+    const crc = crc32(e.data);
+    const time = dosTime(e.mtime);
+    const date = dosDate(e.mtime);
+
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034b50, 0);
+    local.writeUInt16LE(20, 4);        // version needed
+    local.writeUInt16LE(flags, 6);
+    local.writeUInt16LE(8, 8);         // deflate
+    local.writeUInt16LE(time, 10);
+    local.writeUInt16LE(date, 12);
+    local.writeUInt32LE(crc, 14);
+    local.writeUInt32LE(data.length, 18);
+    local.writeUInt32LE(e.data.length, 22);
+    local.writeUInt16LE(name.length, 26);
+    body.push(local, name, data);
+
+    const dir = Buffer.alloc(46);
+    dir.writeUInt32LE(0x02014b50, 0);
+    dir.writeUInt16LE(20, 4);          // version made by
+    dir.writeUInt16LE(20, 6);          // version needed
+    dir.writeUInt16LE(flags, 8);
+    dir.writeUInt16LE(8, 10);
+    dir.writeUInt16LE(time, 12);
+    dir.writeUInt16LE(date, 14);
+    dir.writeUInt32LE(crc, 16);
+    dir.writeUInt32LE(data.length, 20);
+    dir.writeUInt32LE(e.data.length, 24);
+    dir.writeUInt16LE(name.length, 28);
+    dir.writeUInt32LE(offset, 42);     // where the local header sits
+    central.push(dir, name);
+
+    offset += local.length + name.length + data.length;
+  }
+
+  const cd = Buffer.concat(central);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(entries.length, 8);
+  end.writeUInt16LE(entries.length, 10);
+  end.writeUInt32LE(cd.length, 12);
+  end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...body, cd, end]);
+}
+
+let catalogCache = null;
+
+/** One family from fonts.json, re-reading the catalog only when it changes. */
+async function familyBySlug(slug) {
+  const stat = await fsp.stat(CATALOG_PATH);
+  if (!catalogCache || catalogCache.mtimeMs !== stat.mtimeMs) {
+    const data = JSON.parse(await fsp.readFile(CATALOG_PATH, "utf8"));
+    catalogCache = {
+      mtimeMs: stat.mtimeMs,
+      bySlug: new Map(data.families.map((f) => [f.slug, f])),
+    };
+  }
+  return catalogCache.bySlug.get(slug) || null;
+}
+
+const zipsInFlight = new Map();
+
+/**
+ * Write _downloads/<slug>.zip from the family's files. Returns false when
+ * there is nothing to build — unknown slug, or a family of a single file,
+ * which build_index.py deliberately leaves without a bundle.
+ */
+function buildFamilyZip(slug) {
+  const running = zipsInFlight.get(slug);
+  if (running) return running;   // two clicks, one build
+
+  const job = (async () => {
+    const fam = await familyBySlug(slug);
+    if (!fam) return false;
+    const files = fam.variants.flatMap((v) => v.files);
+    if (files.length < 2) return false;
+
+    const used = new Set();
+    const entries = [];
+    for (const f of files) {
+      let name = path.basename(f.path);
+      if (used.has(name)) name = `${f.format}_${name}`;
+      used.add(name);
+      // Catalog paths are ours, but they end up in a filesystem read either
+      // way, so hold them to the same containment rule as any other request.
+      const full = path.resolve(ROOT, f.path);
+      if (!full.startsWith(ROOT + path.sep)) return false;
+      const [data, st] = await Promise.all([fsp.readFile(full), fsp.stat(full)]);
+      entries.push({ name, data, mtime: st.mtime });
+    }
+
+    await fsp.mkdir(DOWNLOADS_DIR, { recursive: true });
+    const out = path.join(DOWNLOADS_DIR, `${slug}.zip`);
+    // Rename into place so a second reader never opens a half-written archive.
+    const tmp = `${out}.${process.pid}.tmp`;
+    await fsp.writeFile(tmp, zipArchive(entries));
+    await fsp.rename(tmp, out);
+    return true;
+  })()
+    .catch((e) => {
+      console.error(`could not build ${slug}.zip:`, e.message);
+      return false;
+    })
+    .finally(() => zipsInFlight.delete(slug));
+
+  zipsInFlight.set(slug, job);
+  return job;
+}
+
+/** The slug of a "/_downloads/<slug>.zip" request, or null for anything else. */
+function bundleSlug(rel) {
+  const m = /^\/_downloads\/([^/]+)\.zip$/.exec(rel);
+  return m ? m[1] : null;
+}
+
 /* --------------------------- static files --------------------------- */
 
 const MIME = {
@@ -259,7 +419,17 @@ async function serveStatic(req, res, urlPath) {
   }
 
   let stat;
-  try { stat = await fsp.stat(full); } catch { return json(res, 404, { error: "not found" }); }
+  try {
+    stat = await fsp.stat(full);
+  } catch {
+    // A family bundle nobody has asked for yet: build it, then serve it.
+    const slug = bundleSlug(rel);
+    if (!slug || !(await buildFamilyZip(slug))) {
+      return json(res, 404, { error: "not found" });
+    }
+    try { stat = await fsp.stat(full); }
+    catch { return json(res, 404, { error: "not found" }); }
+  }
   if (stat.isDirectory()) return json(res, 404, { error: "not found" });
 
   const ext = path.extname(full).toLowerCase();

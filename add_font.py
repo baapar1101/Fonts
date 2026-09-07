@@ -48,15 +48,25 @@ INDEX_CSV = FINAL / "INDEX.csv"
 INDEXABLE = {".ttf", ".otf", ".woff", ".woff2"}   # what the site can render
 
 
-def existing_hashes() -> set[str]:
-    """Content hashes already in the library, so re-uploads are not duplicated."""
+def existing_hashes(sizes: set[int]) -> set[str]:
+    """Content hashes already in the library, so re-uploads are not duplicated.
+
+    Only files whose byte length matches something in this batch are read:
+    two files with identical content necessarily have identical sizes, so
+    skipping the rest cannot miss a duplicate. Hashing the whole tree instead
+    costs minutes once the library runs to thousands of files, which is long
+    enough for the admin panel's upload request to time out.
+    """
     out = set()
     for p in FINAL.rglob("*"):
-        if p.is_file() and p.suffix.lower() in ORG.FONT_EXTS:
-            try:
-                out.add(hashlib.sha256(p.read_bytes()).hexdigest())
-            except OSError:
-                pass
+        if not p.is_file() or p.suffix.lower() not in ORG.FONT_EXTS:
+            continue
+        try:
+            if p.stat().st_size not in sizes:
+                continue
+            out.add(hashlib.sha256(p.read_bytes()).hexdigest())
+        except OSError:
+            pass
     return out
 
 
@@ -180,8 +190,8 @@ def main() -> int:
         print(json.dumps({"ok": False, "error": "no font files in upload"}))
         return 1
 
-    print(f"hashing the existing library…", file=sys.stderr, flush=True)
-    seen = existing_hashes()
+    print("scanning the existing library…", file=sys.stderr, flush=True)
+    seen = existing_hashes({p.stat().st_size for p in candidates})
     placed: list[Path] = []
     index_rows: list[dict] = []
     duplicates = 0

@@ -79,6 +79,7 @@ button, input, textarea, select {
 .portal {
   display: grid;
   grid-template-columns: 280px 1fr;
+  grid-template-rows: minmax(100vh, auto);
   min-height: 100vh;
 }
 
@@ -86,6 +87,8 @@ button, input, textarea, select {
    Sidebar Navigation
 ---------------------------------------------------- */
 .side {
+  grid-column: 1;
+  grid-row: 1;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -97,6 +100,12 @@ button, input, textarea, select {
   flex-direction: column;
   z-index: 50;
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* The backdrop is only a mobile drawer overlay. If it participates in the
+   desktop grid it consumes column two and pushes .main into an implicit row. */
+.side-backdrop {
+  display: none;
 }
 
 .brand {
@@ -322,6 +331,8 @@ button, input, textarea, select {
    Main Content Area
 ---------------------------------------------------- */
 .main {
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
   padding: 34px clamp(20px, 4vw, 48px) 80px;
 }

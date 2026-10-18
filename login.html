@@ -1,0 +1,44 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07080d"><title>ورود به MarkFont</title><link rel="stylesheet" href="login.css"></head><body>
+<main class="login-shell">
+  <section class="type-stage" aria-hidden="true">
+    <a class="stage-brand" href="/"><span>M</span> MarkFont</a>
+    <div class="orb orb-one"></div><div class="orb orb-two"></div>
+    <div class="kinetic" id="kinetic">
+      <div class="type-word serif" data-word="قلم">قلم</div>
+      <div class="type-word black" data-word="TYPE">TYPE</div>
+      <div class="type-word outline" data-word="فونت">فونت</div>
+      <div class="type-word mono" data-word="Aa 01">Aa 01</div>
+    </div>
+    <div class="stage-copy"><span class="eyebrow">THE PRIVATE TYPE LIBRARY</span><h1>هر حرف،<br><em>یک شخصیت.</em></h1><p>کتابخانه‌ای برای کشف، مقایسه و انتخاب دقیق فونت‌ها.</p></div>
+    <div class="ticker"><div>وزن نازک · وزن معمولی · وزن سنگین · فارسی · لاتین · نمایش · متن · MONO · SERIF · SANS · </div></div>
+  </section>
+
+  <section class="auth-side">
+    <a class="mobile-brand" href="/"><span>M</span> MarkFont</a>
+    <div class="auth-card">
+      <div class="auth-heading"><span id="stepNumber">01</span><div><h2 id="title">خوش آمدید</h2><p id="subtitle">برای ورود به کتابخانه، روش ورود را انتخاب کنید.</p></div></div>
+      <div class="method-tabs" id="tabs"><button class="active" data-method="password">رمز عبور</button><button data-method="otp">کد یک‌بارمصرف</button></div>
+
+      <form id="passwordForm" class="auth-form">
+        <label>شماره موبایل<div class="input-wrap"><span>+98</span><input id="passwordPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required></div></label>
+        <label>رمز عبور<div class="input-wrap"><input id="password" type="password" autocomplete="current-password" dir="ltr" placeholder="حداقل ۸ نویسه" required minlength="8"><button class="peek" id="peek" type="button">نمایش</button></div></label>
+        <button class="submit" type="submit"><span>ورود به کتابخانه</span><b>←</b></button>
+      </form>
+
+      <form id="otpPhoneForm" class="auth-form" hidden>
+        <label>شماره موبایل<div class="input-wrap"><span>+98</span><input id="otpPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required></div></label>
+        <p class="form-note">اگر حسابی ندارید، با تأیید شماره ثبت‌نام می‌شوید و پس از تأیید مدیر امکان ورود خواهید داشت.</p>
+        <button class="submit" type="submit"><span>ارسال کد ورود</span><b>←</b></button>
+      </form>
+
+      <form id="otpCodeForm" class="auth-form" hidden>
+        <p class="code-sent">کد ۶ رقمی برای <strong id="phoneEcho" dir="ltr"></strong> ارسال شد.</p>
+        <label>کد تأیید<input class="code-input" id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="— — — — — —" required></label>
+        <label>تنظیم رمز عبور <small>اختیاری برای ورودهای بعدی</small><div class="input-wrap"><input id="newPassword" type="password" autocomplete="new-password" dir="ltr" placeholder="حداقل ۸ نویسه"></div></label>
+        <button class="submit" type="submit"><span>تأیید و ورود</span><b>←</b></button><button id="changePhone" class="text-btn" type="button">اصلاح شماره موبایل</button>
+      </form>
+      <div id="message" class="message" role="status"></div>
+      <div class="secure"><span>◆</span> اطلاعات ورود شما امن و رمزنگاری‌شده نگهداری می‌شود.</div>
+    </div>
+  </section>
+</main><script src="login.js"></script></body></html>

@@ -771,9 +771,8 @@
   }
 
   function openAuth() {
-    showAuthStep("phone");
-    authOverlay.classList.remove("hidden");
-    authPhone.focus();
+    const back = `${location.pathname}${location.search}${location.hash}`;
+    location.href = `/login?return=${encodeURIComponent(back)}`;
   }
   const closeAuth = () => authOverlay.classList.add("hidden");
 

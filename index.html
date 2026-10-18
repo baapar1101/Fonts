@@ -137,26 +137,57 @@
 </div>
 
 <div class="modal-overlay hidden" id="adminOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>پنل مدیریت — افزودن فونت</h3>
+  <div class="modal admin-console" dir="rtl">
+    <div class="modal-head admin-console-head">
+      <div>
+        <span class="admin-kicker">MARKFONT CONTROL ROOM</span>
+        <h3>پنل مدیریت</h3>
+        <p>کاربران و کتابخانه فونت را از یک‌جا مدیریت کنید.</p>
+      </div>
       <button class="modal-close" id="adminClose">&times;</button>
     </div>
     <div class="modal-body">
-      <p class="hint">فایل‌های فونت را انتخاب کنید. پشتیبانی از TTF، OTF، WOFF و WOFF2. فونت‌های تکراری خودکار نادیده گرفته می‌شوند.</p>
+      <div class="admin-stats">
+        <div class="admin-stat"><strong id="adminUserCount">—</strong><span>کل کاربران</span></div>
+        <div class="admin-stat is-warn"><strong id="adminPendingCount">—</strong><span>در انتظار تأیید</span></div>
+        <div class="admin-stat"><strong id="adminFontCount">—</strong><span>خانواده فونت</span></div>
+        <div class="admin-stat is-muted"><strong id="adminHiddenCount">—</strong><span>مخفی</span></div>
+      </div>
 
-      <label class="admin-label" for="adminBatch">نام دسته (اختیاری)</label>
-      <input id="adminBatch" class="auth-input" type="text" placeholder="مثلاً: Nexa" maxlength="60">
+      <nav class="admin-tabs" aria-label="بخش‌های مدیریت">
+        <button class="admin-tab is-active" data-admin-tab="users" type="button">کاربران <span id="adminPendingBadge"></span></button>
+        <button class="admin-tab" data-admin-tab="fonts" type="button">مدیریت فونت‌ها</button>
+        <button class="admin-tab" data-admin-tab="upload" type="button">افزودن فونت</button>
+      </nav>
 
-      <label class="admin-drop" id="adminDrop">
-        <input id="adminFiles" type="file" multiple accept=".ttf,.otf,.woff,.woff2" hidden>
-        <span id="adminDropText">فایل‌ها را اینجا رها کنید یا کلیک کنید</span>
-      </label>
+      <section class="admin-panel is-active" data-admin-panel="users">
+        <div class="admin-toolbar">
+          <div><h4>کاربران</h4><p>عضویت‌های تازه فقط پس از تأیید شما فعال می‌شوند.</p></div>
+          <input id="adminUserSearch" class="admin-search" type="search" placeholder="جست‌وجوی شماره موبایل…" dir="ltr">
+        </div>
+        <div id="adminUsers" class="admin-rows"><div class="admin-loading">در حال دریافت کاربران…</div></div>
+      </section>
 
-      <ul id="adminList" class="admin-list"></ul>
+      <section class="admin-panel" data-admin-panel="fonts" hidden>
+        <div class="admin-toolbar">
+          <div><h4>کتابخانه فونت</h4><p>فونت مخفی برای کاربران نمایش داده یا دانلود نمی‌شود.</p></div>
+          <input id="adminFontSearch" class="admin-search" type="search" placeholder="جست‌وجوی نام فونت…">
+        </div>
+        <div id="adminFonts" class="admin-rows"><div class="admin-loading">در حال دریافت فونت‌ها…</div></div>
+      </section>
 
-      <button id="adminUpload" class="btn primary auth-submit" type="button" disabled>افزودن به کتابخانه</button>
-      <p id="adminMsg" class="auth-msg" hidden></p>
+      <section class="admin-panel admin-upload-panel" data-admin-panel="upload" hidden>
+        <div class="admin-toolbar"><div><h4>افزودن فونت</h4><p>TTF، OTF، WOFF و WOFF2 پشتیبانی می‌شوند.</p></div></div>
+        <label class="admin-label" for="adminBatch">نام دسته (اختیاری)</label>
+        <input id="adminBatch" class="auth-input" type="text" placeholder="مثلاً: Nexa" maxlength="60">
+        <label class="admin-drop" id="adminDrop">
+          <input id="adminFiles" type="file" multiple accept=".ttf,.otf,.woff,.woff2" hidden>
+          <span id="adminDropText">فایل‌ها را اینجا رها کنید یا کلیک کنید</span>
+        </label>
+        <ul id="adminList" class="admin-list"></ul>
+        <button id="adminUpload" class="btn primary auth-submit" type="button" disabled>افزودن به کتابخانه</button>
+        <p id="adminMsg" class="auth-msg" hidden></p>
+      </section>
     </div>
   </div>
 </div>

@@ -90,7 +90,10 @@ CREATE TABLE IF NOT EXISTS users (
   phone      TEXT UNIQUE NOT NULL,
   password_salt TEXT,
   password_hash TEXT,
-  created_at INTEGER NOT NULL
+  created_at INTEGER NOT NULL,
+  status     TEXT NOT NULL DEFAULT 'pending',
+  approved_at INTEGER,
+  approved_by INTEGER
 );
 -- A resend clock plus short-lived, hashed OTP challenges.
 CREATE TABLE IF NOT EXISTS otp_throttle (
@@ -127,11 +130,25 @@ CREATE TABLE IF NOT EXISTS collection_items (
   added_at      INTEGER NOT NULL,
   PRIMARY KEY (collection_id, slug)
 );
+CREATE TABLE IF NOT EXISTS hidden_fonts (
+  slug       TEXT PRIMARY KEY,
+  hidden_at  INTEGER NOT NULL,
+  hidden_by  INTEGER REFERENCES users(id) ON DELETE SET NULL
+);
 `);
 
 const userColumns = new Set(db.prepare("PRAGMA table_info(users)").all().map((c) => c.name));
 if (!userColumns.has("password_salt")) db.exec("ALTER TABLE users ADD COLUMN password_salt TEXT");
 if (!userColumns.has("password_hash")) db.exec("ALTER TABLE users ADD COLUMN password_hash TEXT");
+// Existing installations predate approval. Keep their users active while all
+// accounts created from this release onward start in the pending state.
+if (!userColumns.has("status")) db.exec("ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'approved'");
+if (!userColumns.has("approved_at")) db.exec("ALTER TABLE users ADD COLUMN approved_at INTEGER");
+if (!userColumns.has("approved_by")) db.exec("ALTER TABLE users ADD COLUMN approved_by INTEGER");
+for (const phone of ADMIN_PHONES) {
+  db.prepare("UPDATE users SET status = 'approved', approved_at = COALESCE(approved_at, ?) WHERE phone = ?")
+    .run(Date.now(), phone);
+}
 
 /* ------------------------------ helpers ----------------------------- */
 
@@ -175,8 +192,8 @@ function openSession(res, user) {
   });
 }
 
-/** Send one OTP through Payam Resan V3. Credentials never reach the browser. */
-async function sendOtpSms(phone, code) {
+/** Send one SMS through Payam Resan V3. Credentials never reach the browser. */
+async function sendSms(phone, text) {
   if (!SMS_API_KEY || !SMS_SENDER) return { ok: false, error: "SMS credentials are not configured" };
   const destination = Number(phone.slice(1));
   try {
@@ -186,7 +203,7 @@ async function sendOtpSms(phone, code) {
       body: JSON.stringify({
         ApiKey: SMS_API_KEY,
         Sender: SMS_SENDER,
-        Text: `کد ورود مارک‌فونت: ${code}\nاعتبار: ۵ دقیقه`,
+        Text: text,
         Recipients: [{ Destination: destination, UserTraceId: Date.now() }],
       }),
       signal: AbortSignal.timeout(15000),
@@ -200,6 +217,19 @@ async function sendOtpSms(phone, code) {
   } catch (e) {
     const timedOut = e.name === "TimeoutError" || e.name === "AbortError";
     return { ok: false, error: timedOut ? "SMS service timed out" : e.message };
+  }
+}
+
+const sendOtpSms = (phone, code) =>
+  sendSms(phone, `کد ورود مارک‌فونت: ${code}\nاعتبار: ۵ دقیقه`);
+
+async function notifyAdminsOfNewUser(phone) {
+  const text = `کاربر جدید مارک‌فونت با شماره ${phone} ثبت‌نام کرد و در انتظار تأیید شماست.`;
+  const results = await Promise.allSettled([...ADMIN_PHONES].map((adminPhone) => sendSms(adminPhone, text)));
+  for (const result of results) {
+    if (result.status === "rejected" || !result.value?.ok) {
+      console.error("Admin notification SMS failed:", result.reason?.message || result.value?.error);
+    }
   }
 }
 
@@ -244,9 +274,9 @@ function currentUser(req) {
   const token = parseCookies(req).mf_session;
   if (!token) return null;
   const row = db.prepare(
-    `SELECT u.id, u.phone FROM sessions s
+    `SELECT u.id, u.phone, u.status FROM sessions s
        JOIN users u ON u.id = s.user_id
-      WHERE s.token = ? AND s.expires_at > ?`
+      WHERE s.token = ? AND s.expires_at > ? AND u.status = 'approved'`
   ).get(token, now());
   return row || null;
 }
@@ -364,17 +394,39 @@ function zipArchive(entries) {
 
 let catalogCache = null;
 
-/** One family from fonts.json, re-reading the catalog only when it changes. */
-async function familyBySlug(slug) {
+/** fonts.json, re-read only when the generated catalog changes. */
+async function readCatalog() {
   const stat = await fsp.stat(CATALOG_PATH);
   if (!catalogCache || catalogCache.mtimeMs !== stat.mtimeMs) {
     const data = JSON.parse(await fsp.readFile(CATALOG_PATH, "utf8"));
     catalogCache = {
       mtimeMs: stat.mtimeMs,
+      data,
       bySlug: new Map(data.families.map((f) => [f.slug, f])),
+      pathToSlug: new Map(data.families.flatMap((family) =>
+        family.variants.flatMap((variant) => variant.files.map((file) => [
+          file.path.replace(/^\/+/, ""), family.slug,
+        ]))
+      )),
     };
   }
-  return catalogCache.bySlug.get(slug) || null;
+  return catalogCache;
+}
+
+async function familyBySlug(slug) {
+  return (await readCatalog()).bySlug.get(slug) || null;
+}
+
+function hiddenFontSlugs() {
+  return new Set(db.prepare("SELECT slug FROM hidden_fonts").all().map((r) => r.slug));
+}
+
+async function hiddenAssetSlug(rel) {
+  const bundle = bundleSlug(rel);
+  if (bundle) return bundle;
+  const normalized = rel.replace(/^\/+/, "");
+  const catalog = await readCatalog();
+  return catalog.pathToSlug.get(normalized) || null;
 }
 
 const zipsInFlight = new Map();
@@ -471,6 +523,16 @@ async function serveStatic(req, res, urlPath) {
     /\.(?:ttf|otf|woff2?|eot|zip)$/i.test(rel);
   if (protectedAsset && !currentUser(req)) {
     return json(res, 401, { error: "sign in first" });
+  }
+  const user = protectedAsset ? currentUser(req) : null;
+  if (rel === "/fonts.json" && user && !isAdmin(user)) {
+    return json(res, 403, { error: "forbidden" });
+  }
+  if (protectedAsset && user && !isAdmin(user)) {
+    const slug = await hiddenAssetSlug(rel);
+    if (slug && db.prepare("SELECT 1 FROM hidden_fonts WHERE slug = ?").get(slug)) {
+      return json(res, 404, { error: "not found" });
+    }
   }
 
   // Resolve then confirm containment, so "../" cannot escape the library.
@@ -579,15 +641,26 @@ async function handleApi(req, res, url) {
     db.prepare("DELETE FROM otp_throttle WHERE phone = ?").run(num);
     db.prepare("DELETE FROM otp_challenges WHERE phone = ?").run(num);
 
-    let user = db.prepare("SELECT id, phone FROM users WHERE phone = ?").get(num);
+    let user = db.prepare("SELECT id, phone, status FROM users WHERE phone = ?").get(num);
+    let created = false;
     if (!user) {
-      db.prepare("INSERT INTO users (phone, created_at) VALUES (?, ?)").run(num, now());
-      user = db.prepare("SELECT id, phone FROM users WHERE phone = ?").get(num);
+      const status = ADMIN_PHONES.has(num) ? "approved" : "pending";
+      db.prepare("INSERT INTO users (phone, created_at, status, approved_at) VALUES (?, ?, ?, ?)")
+        .run(num, now(), status, status === "approved" ? now() : null);
+      user = db.prepare("SELECT id, phone, status FROM users WHERE phone = ?").get(num);
+      created = true;
     }
     if (password !== undefined && password !== "") {
       const salt = crypto.randomBytes(16).toString("hex");
       db.prepare("UPDATE users SET password_salt = ?, password_hash = ? WHERE id = ?")
         .run(salt, passwordDigest(password, salt), user.id);
+    }
+    if (user.status !== "approved") {
+      if (created) await notifyAdminsOfNewUser(num);
+      return json(res, 403, {
+        pending: true,
+        error: "ثبت‌نام شما انجام شد و پس از تأیید مدیر می‌توانید وارد شوید.",
+      });
     }
     return openSession(res, user);
   }
@@ -599,11 +672,17 @@ async function handleApi(req, res, url) {
       return json(res, 400, { error: "شماره موبایل یا رمز عبور نامعتبر است" });
     }
     const user = db.prepare(
-      "SELECT id, phone, password_salt, password_hash FROM users WHERE phone = ?"
+      "SELECT id, phone, password_salt, password_hash, status FROM users WHERE phone = ?"
     ).get(num);
     if (!user?.password_salt || !user?.password_hash ||
         !safeEqualHex(user.password_hash, passwordDigest(password, user.password_salt))) {
       return json(res, 401, { error: "شماره موبایل یا رمز عبور نادرست است" });
+    }
+    if (user.status === "pending") {
+      return json(res, 403, { pending: true, error: "حساب شما هنوز توسط مدیر تأیید نشده است." });
+    }
+    if (user.status !== "approved") {
+      return json(res, 403, { error: "دسترسی این حساب غیرفعال شده است." });
     }
     return openSession(res, user);
   }
@@ -623,6 +702,82 @@ async function handleApi(req, res, url) {
       user: { phone: user.phone, admin: isAdmin(user) },
       ...userData(user.id),
     });
+  }
+
+  // --- authenticated catalog; hidden families are excluded for members ---
+  if (p === "/api/catalog" && method === "GET") {
+    const user = requireUser(req, res); if (!user) return;
+    const catalog = (await readCatalog()).data;
+    const hidden = hiddenFontSlugs();
+    return json(res, 200, {
+      ...catalog,
+      families: catalog.families.filter((family) => !hidden.has(family.slug)),
+    });
+  }
+
+  // --- admin: users and approval workflow ---
+  if (p === "/api/admin/users" && method === "GET") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const users = db.prepare(`
+      SELECT u.id, u.phone, u.status, u.created_at, u.approved_at,
+             (SELECT COUNT(*) FROM likes l WHERE l.user_id = u.id) AS likes,
+             (SELECT COUNT(*) FROM collections c WHERE c.user_id = u.id) AS collections
+        FROM users u ORDER BY CASE u.status WHEN 'pending' THEN 0 ELSE 1 END, u.created_at DESC
+    `).all().map((row) => ({ ...row, admin: ADMIN_PHONES.has(row.phone) }));
+    return json(res, 200, { users });
+  }
+
+  let adminMatch = p.match(/^\/api\/admin\/users\/(\d+)$/);
+  if (adminMatch && method === "PATCH") {
+    const admin = requireAdmin(req, res); if (!admin) return;
+    const target = db.prepare("SELECT id, phone, status FROM users WHERE id = ?").get(Number(adminMatch[1]));
+    if (!target) return json(res, 404, { error: "کاربر پیدا نشد" });
+    if (ADMIN_PHONES.has(target.phone)) return json(res, 400, { error: "حساب مدیر قابل غیرفعال‌سازی نیست" });
+    const { status } = await readBody(req);
+    if (!["approved", "pending", "suspended"].includes(status)) {
+      return json(res, 400, { error: "وضعیت نامعتبر است" });
+    }
+    db.prepare("UPDATE users SET status = ?, approved_at = ?, approved_by = ? WHERE id = ?")
+      .run(status, status === "approved" ? now() : null, status === "approved" ? admin.id : null, target.id);
+    if (status !== "approved") db.prepare("DELETE FROM sessions WHERE user_id = ?").run(target.id);
+    if (status === "approved" && target.status !== "approved") {
+      const sent = await sendSms(target.phone, "حساب شما در مارک‌فونت تأیید شد و اکنون می‌توانید وارد شوید.");
+      if (!sent.ok) console.error("Approval SMS failed:", sent.error);
+    }
+    return json(res, 200, { ok: true });
+  }
+
+  // --- admin: catalog visibility management ---
+  if (p === "/api/admin/fonts" && method === "GET") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const catalog = (await readCatalog()).data;
+    const hidden = hiddenFontSlugs();
+    const fonts = catalog.families.map((family) => ({
+      slug: family.slug,
+      family: family.family,
+      languages: family.langs || [],
+      styles: family.styles || [],
+      variants: family.variants.length,
+      files: family.variants.reduce((sum, variant) => sum + variant.files.length, 0),
+      hidden: hidden.has(family.slug),
+    }));
+    return json(res, 200, { fonts });
+  }
+
+  adminMatch = p.match(/^\/api\/admin\/fonts\/([^/]+)$/);
+  if (adminMatch && method === "PATCH") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const slug = decodeURIComponent(adminMatch[1]);
+    if (!(await familyBySlug(slug))) return json(res, 404, { error: "فونت پیدا نشد" });
+    const { hidden } = await readBody(req);
+    if (typeof hidden !== "boolean") return json(res, 400, { error: "وضعیت نامعتبر است" });
+    if (hidden) {
+      db.prepare("INSERT OR REPLACE INTO hidden_fonts (slug, hidden_at, hidden_by) VALUES (?, ?, ?)")
+        .run(slug, now(), user.id);
+    } else {
+      db.prepare("DELETE FROM hidden_fonts WHERE slug = ?").run(slug);
+    }
+    return json(res, 200, { ok: true, hidden });
   }
 
   // --- admin: publish new fonts to the live library ---

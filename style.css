@@ -266,6 +266,57 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 .detail-actions .btn{flex:0 0 auto; min-width:220px}
 
 /* ---------- Admin panel ---------- */
+.admin-console{
+  width:min(1040px, calc(100vw - 28px)); max-width:none; max-height:min(88vh, 900px);
+  overflow:hidden; border:1px solid rgba(105,135,255,.28);
+  background:linear-gradient(145deg, rgba(25,29,44,.98), rgba(12,14,22,.99));
+  box-shadow:0 34px 100px rgba(0,0,0,.58), 0 0 80px rgba(36,92,255,.08);
+}
+.admin-console .modal-body{overflow:auto; max-height:calc(88vh - 96px); padding:20px 24px 28px}
+.admin-console-head{padding:20px 24px; background:linear-gradient(90deg, rgba(36,92,255,.13), transparent 65%)}
+.admin-console-head h3{margin:2px 0 0; font-size:24px}
+.admin-console-head p{margin:5px 0 0; color:var(--ms-muted); font-size:12px}
+.admin-kicker{font-size:9px; letter-spacing:.22em; color:#7898ff; direction:ltr; display:block}
+.admin-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px}
+.admin-stat{padding:16px; border:1px solid var(--ms-line-soft); background:rgba(255,255,255,.025)}
+.admin-stat strong{display:block; font-size:28px; line-height:1; color:var(--ms-white); font-variant-numeric:tabular-nums}
+.admin-stat span{display:block; margin-top:8px; font-size:11px; color:var(--ms-muted)}
+.admin-stat.is-warn{border-color:rgba(255,173,51,.28); background:rgba(255,173,51,.055)}
+.admin-stat.is-warn strong{color:#ffbd59}
+.admin-stat.is-muted strong{color:#9aa4bc}
+.admin-tabs{display:flex; gap:6px; padding:5px; margin-bottom:18px; border:1px solid var(--ms-line-soft); background:rgba(0,0,0,.18)}
+.admin-tab{border:0; padding:10px 15px; color:var(--ms-muted); background:transparent; cursor:pointer; font:inherit; font-size:12px}
+.admin-tab:hover{color:var(--ms-white)}
+.admin-tab.is-active{color:#fff; background:var(--ms-blue); box-shadow:0 8px 26px rgba(36,92,255,.25)}
+.admin-tab span:not(:empty){display:inline-flex; min-width:19px; height:19px; align-items:center; justify-content:center; margin-right:5px; border-radius:10px; background:#ffb342; color:#15120d; font-size:10px; font-weight:800}
+.admin-panel{animation:admin-in .22s ease}
+@keyframes admin-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.admin-toolbar{display:flex; align-items:end; justify-content:space-between; gap:18px; margin-bottom:12px}
+.admin-toolbar h4{margin:0 0 4px; font-size:16px}
+.admin-toolbar p{margin:0; color:var(--ms-muted); font-size:11px}
+.admin-search{width:min(280px,40%); padding:10px 12px; border:1px solid var(--ms-line); outline:0; color:var(--ms-white); background:rgba(0,0,0,.2); font:inherit; font-size:12px}
+.admin-search:focus{border-color:var(--ms-blue)}
+.admin-rows{border:1px solid var(--ms-line-soft); max-height:440px; overflow:auto; background:rgba(0,0,0,.12)}
+.admin-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 15px; border-bottom:1px solid var(--ms-line-soft)}
+.admin-row:last-child{border-bottom:0}
+.admin-row:hover{background:rgba(255,255,255,.025)}
+.admin-row.status-pending{box-shadow:inset -3px 0 #ffb342}
+.admin-row.is-hidden-font{opacity:.64}
+.admin-row-main{min-width:0; display:flex; flex-direction:column; gap:5px}
+.admin-row-main strong{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ms-white); font-size:13px}
+.admin-row-main span{color:var(--ms-muted); font-size:10px}
+.admin-row-actions{display:flex; align-items:center; gap:8px; flex-shrink:0}
+.admin-status{padding:4px 8px; border-radius:20px; font-size:9px; white-space:nowrap; background:rgba(255,255,255,.07); color:var(--ms-muted-2)}
+.admin-status.status-approved{color:#73e4a3; background:rgba(50,200,115,.1)}
+.admin-status.status-pending{color:#ffc66d; background:rgba(255,173,51,.1)}
+.admin-status.status-suspended{color:#ff8d96; background:rgba(255,80,95,.1)}
+.admin-action{border:1px solid var(--ms-line); padding:7px 10px; cursor:pointer; color:var(--ms-muted-2); background:transparent; font:inherit; font-size:10px}
+.admin-action:hover,.admin-action.is-approve{border-color:rgba(50,200,115,.4); color:#73e4a3}
+.admin-action.is-danger:hover{border-color:rgba(255,80,95,.45); color:#ff8d96}
+.admin-action:disabled{opacity:.45; cursor:wait}
+.admin-loading,.admin-empty{padding:42px 18px; text-align:center; color:var(--ms-muted); font-size:12px}
+.admin-empty.is-error{color:#ff8d96}
+.admin-upload-panel{max-width:650px; margin:0 auto}
 .admin-label{
   display:block; margin-bottom:2px; font-size:11px; letter-spacing:.08em;
   text-transform:uppercase; color:var(--ms-muted);
@@ -293,6 +344,18 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 .admin-list li span:last-child{color:var(--ms-muted); flex-shrink:0}
 .admin-list li.bad{color:#ff8f8f}
 .admin-report{margin:6px 0 0; padding-left:16px; font-size:12px; line-height:1.7}
+
+@media(max-width:700px){
+  .admin-console{width:calc(100vw - 14px); max-height:94vh}
+  .admin-console .modal-body{max-height:calc(94vh - 90px); padding:14px}
+  .admin-stats{grid-template-columns:repeat(2,1fr)}
+  .admin-tabs{overflow:auto}
+  .admin-tab{white-space:nowrap; flex:1}
+  .admin-toolbar{align-items:stretch; flex-direction:column}
+  .admin-search{width:100%}
+  .admin-row{align-items:flex-start; flex-direction:column}
+  .admin-row-actions{width:100%; justify-content:flex-end}
+}
 
 /* ---------- Card like / bookmark ---------- */
 .icon-btn{

@@ -902,9 +902,147 @@
   const adminUpload = document.getElementById("adminUpload");
   const adminMsg = document.getElementById("adminMsg");
   const adminBatch = document.getElementById("adminBatch");
+  const adminUsers = document.getElementById("adminUsers");
+  const adminFonts = document.getElementById("adminFonts");
+  const adminUserSearch = document.getElementById("adminUserSearch");
+  const adminFontSearch = document.getElementById("adminFontSearch");
+  const adminTabs = [...document.querySelectorAll("[data-admin-tab]")];
+  const adminPanels = [...document.querySelectorAll("[data-admin-panel]")];
 
   const ADMIN_EXTS = ["ttf", "otf", "woff", "woff2"];
   let adminQueue = [];
+  let adminUserData = [];
+  let adminFontData = [];
+
+  const faNumber = value => Number(value || 0).toLocaleString("fa-IR");
+  const faDate = value => value
+    ? new Intl.DateTimeFormat("fa-IR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value))
+    : "—";
+
+  function setAdminTab(name) {
+    adminTabs.forEach(tab => tab.classList.toggle("is-active", tab.dataset.adminTab === name));
+    adminPanels.forEach(panel => {
+      const active = panel.dataset.adminPanel === name;
+      panel.classList.toggle("is-active", active);
+      panel.hidden = !active;
+    });
+  }
+
+  function renderAdminSummary() {
+    const pending = adminUserData.filter(user => user.status === "pending").length;
+    document.getElementById("adminUserCount").textContent = faNumber(adminUserData.length);
+    document.getElementById("adminPendingCount").textContent = faNumber(pending);
+    document.getElementById("adminFontCount").textContent = faNumber(adminFontData.length);
+    document.getElementById("adminHiddenCount").textContent = faNumber(adminFontData.filter(font => font.hidden).length);
+    document.getElementById("adminPendingBadge").textContent = pending ? faNumber(pending) : "";
+  }
+
+  function statusLabel(status) {
+    return status === "approved" ? "تأییدشده" : status === "suspended" ? "غیرفعال" : "در انتظار";
+  }
+
+  function renderAdminUsers() {
+    const query = adminUserSearch.value.trim();
+    const rows = adminUserData.filter(user => !query || user.phone.includes(query));
+    adminUsers.innerHTML = "";
+    if (!rows.length) {
+      adminUsers.innerHTML = '<div class="admin-empty">کاربری پیدا نشد.</div>';
+      return;
+    }
+    rows.forEach(user => {
+      const row = document.createElement("article");
+      row.className = `admin-row status-${user.status}`;
+      const info = document.createElement("div");
+      info.className = "admin-row-main";
+      const title = document.createElement("strong");
+      title.dir = "ltr";
+      title.textContent = user.phone + (user.admin ? "  ·  ADMIN" : "");
+      const meta = document.createElement("span");
+      meta.textContent = `عضویت ${faDate(user.created_at)}  ·  ${faNumber(user.likes)} علاقه‌مندی  ·  ${faNumber(user.collections)} مجموعه`;
+      info.append(title, meta);
+      const actions = document.createElement("div");
+      actions.className = "admin-row-actions";
+      const badge = document.createElement("span");
+      badge.className = `admin-status status-${user.status}`;
+      badge.textContent = statusLabel(user.status);
+      actions.appendChild(badge);
+      if (!user.admin) {
+        if (user.status !== "approved") {
+          const approve = document.createElement("button");
+          approve.className = "admin-action is-approve";
+          approve.type = "button";
+          approve.textContent = "تأیید کاربر";
+          approve.dataset.userId = user.id;
+          approve.dataset.status = "approved";
+          actions.appendChild(approve);
+        }
+        if (user.status === "approved") {
+          const suspend = document.createElement("button");
+          suspend.className = "admin-action is-danger";
+          suspend.type = "button";
+          suspend.textContent = "غیرفعال‌کردن";
+          suspend.dataset.userId = user.id;
+          suspend.dataset.status = "suspended";
+          actions.appendChild(suspend);
+        }
+      }
+      row.append(info, actions);
+      adminUsers.appendChild(row);
+    });
+  }
+
+  function renderAdminFonts() {
+    const query = adminFontSearch.value.trim().toLocaleLowerCase("fa");
+    const rows = adminFontData.filter(font => !query || `${font.family} ${font.slug}`.toLocaleLowerCase("fa").includes(query));
+    adminFonts.innerHTML = "";
+    if (!rows.length) {
+      adminFonts.innerHTML = '<div class="admin-empty">فونتی پیدا نشد.</div>';
+      return;
+    }
+    rows.forEach(font => {
+      const row = document.createElement("article");
+      row.className = "admin-row" + (font.hidden ? " is-hidden-font" : "");
+      const info = document.createElement("div");
+      info.className = "admin-row-main";
+      const title = document.createElement("strong");
+      title.textContent = font.family;
+      const meta = document.createElement("span");
+      meta.textContent = `${faNumber(font.variants)} وزن  ·  ${faNumber(font.files)} فایل  ·  ${(font.languages || []).join(" / ") || "—"}`;
+      info.append(title, meta);
+      const actions = document.createElement("div");
+      actions.className = "admin-row-actions";
+      const state = document.createElement("span");
+      state.className = `admin-status ${font.hidden ? "status-suspended" : "status-approved"}`;
+      state.textContent = font.hidden ? "مخفی" : "فعال";
+      const toggle = document.createElement("button");
+      toggle.className = `admin-action ${font.hidden ? "is-approve" : "is-danger"}`;
+      toggle.type = "button";
+      toggle.textContent = font.hidden ? "نمایش" : "مخفی‌کردن";
+      toggle.dataset.fontSlug = font.slug;
+      toggle.dataset.hidden = String(!font.hidden);
+      actions.append(state, toggle);
+      row.append(info, actions);
+      adminFonts.appendChild(row);
+    });
+  }
+
+  async function loadAdminData() {
+    adminUsers.innerHTML = '<div class="admin-loading">در حال دریافت کاربران…</div>';
+    adminFonts.innerHTML = '<div class="admin-loading">در حال دریافت فونت‌ها…</div>';
+    try {
+      const [usersResult, fontsResult] = await Promise.all([
+        api("/api/admin/users"), api("/api/admin/fonts"),
+      ]);
+      adminUserData = usersResult.users;
+      adminFontData = fontsResult.fonts;
+      renderAdminSummary();
+      renderAdminUsers();
+      renderAdminFonts();
+    } catch (error) {
+      adminUsers.innerHTML = `<div class="admin-empty is-error">${error.message}</div>`;
+      adminFonts.innerHTML = `<div class="admin-empty is-error">${error.message}</div>`;
+    }
+  }
 
   function setAdminMsg(html, kind) {
     adminMsg.hidden = !html;
@@ -941,11 +1079,44 @@
     adminQueue = [];
     renderQueue();
     setAdminMsg("");
+    setAdminTab("users");
     adminOverlay.classList.remove("hidden");
+    loadAdminData();
   });
   adminClose.addEventListener("click", () => adminOverlay.classList.add("hidden"));
   adminOverlay.addEventListener("click", e => {
     if (e.target === adminOverlay) adminOverlay.classList.add("hidden");
+  });
+  adminTabs.forEach(tab => tab.addEventListener("click", () => setAdminTab(tab.dataset.adminTab)));
+  adminUserSearch.addEventListener("input", renderAdminUsers);
+  adminFontSearch.addEventListener("input", renderAdminFonts);
+  adminUsers.addEventListener("click", async event => {
+    const button = event.target.closest("[data-user-id]");
+    if (!button) return;
+    button.disabled = true;
+    try {
+      await api(`/api/admin/users/${button.dataset.userId}`, {
+        method: "PATCH", body: JSON.stringify({ status: button.dataset.status }),
+      });
+      await loadAdminData();
+    } catch (error) {
+      button.disabled = false;
+      alert(error.message);
+    }
+  });
+  adminFonts.addEventListener("click", async event => {
+    const button = event.target.closest("[data-font-slug]");
+    if (!button) return;
+    button.disabled = true;
+    try {
+      await api(`/api/admin/fonts/${encodeURIComponent(button.dataset.fontSlug)}`, {
+        method: "PATCH", body: JSON.stringify({ hidden: button.dataset.hidden === "true" }),
+      });
+      await Promise.all([loadAdminData(), reloadCatalog()]);
+    } catch (error) {
+      button.disabled = false;
+      alert(error.message);
+    }
   });
 
   adminDrop.addEventListener("click", () => adminFiles.click());
@@ -994,7 +1165,7 @@
 
       adminQueue = [];
       renderQueue();
-      await reloadCatalog();
+      await Promise.all([reloadCatalog(), loadAdminData()]);
     } catch (e) {
       setAdminMsg(e.message, "error");
     } finally {
@@ -1002,9 +1173,9 @@
     }
   });
 
-  /** Re-fetch fonts.json after the library changes, keeping the current view. */
+  /** Re-fetch the authenticated catalog after the library changes. */
   async function reloadCatalog() {
-    const data = await (await fetch("fonts.json", { cache: "no-store" })).json();
+    const data = await api("/api/catalog");
     state.all = data.families;
     prepareSearchIndex(state.all);
     state.collections = data.collections || [];

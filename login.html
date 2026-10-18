@@ -1,44 +1,250 @@
-<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07080d"><title>ورود به MarkFont</title><link rel="stylesheet" href="login.css"></head><body>
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07080d">
+  <title>ورود به کتابخانه فونت | MarkFont</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
 <main class="login-shell">
+  <!-- Left Side: Interactive Typography Stage -->
   <section class="type-stage" aria-hidden="true">
-    <a class="stage-brand" href="/"><span>M</span> MarkFont</a>
-    <div class="orb orb-one"></div><div class="orb orb-two"></div>
-    <div class="kinetic" id="kinetic">
-      <div class="type-word serif" data-word="قلم">قلم</div>
-      <div class="type-word black" data-word="TYPE">TYPE</div>
-      <div class="type-word outline" data-word="فونت">فونت</div>
-      <div class="type-word mono" data-word="Aa 01">Aa 01</div>
+    <div class="stage-mesh"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+    <div class="orb orb-three"></div>
+
+    <header class="stage-nav">
+      <a class="stage-brand" href="/" title="بازگشت به کتابخانه MarkFont">
+        <span class="brand-badge">M</span>
+        <div class="brand-text">
+          <strong>MarkFont</strong>
+          <small>Typeface Studio</small>
+        </div>
+      </a>
+      <div class="live-pill">
+        <span class="pulse-dot"></span>
+        <span>بیش از ۴٬۰۰۰ قلم</span>
+      </div>
+    </header>
+
+    <!-- Kinetic Typography Specimen Display -->
+    <div class="kinetic-container">
+      <div class="glyph-chip chip-1">حرف و قلم</div>
+      <div class="glyph-chip chip-2">Aa 99</div>
+      <div class="glyph-chip chip-3">تایپوگرافی معاصر</div>
+
+      <div class="kinetic" id="kinetic">
+        <div class="type-word serif" data-word="قلم">قلم</div>
+        <div class="type-word black" data-word="TYPE">TYPE</div>
+        <div class="type-word outline" data-word="فونت">فونت</div>
+        <div class="type-word mono" data-word="Aa 01">Aa 01</div>
+      </div>
+
+      <div class="specimen-card">
+        <div class="specimen-header">
+          <span class="specimen-tag">پیش‌نمایش زنده قلم</span>
+          <div class="specimen-controls">
+            <button type="button" class="specimen-btn active" data-weight="300">نازک</button>
+            <button type="button" class="specimen-btn" data-weight="600">معمولی</button>
+            <button type="button" class="specimen-btn" data-weight="900">سیاه</button>
+          </div>
+        </div>
+        <div class="specimen-text" id="specimenText" contenteditable="true" spellcheck="false">
+          زیبایی، تناسب و خوانایی در تار و پود کلمات
+        </div>
+        <div class="specimen-footer">
+          <span>Persian & Latin Full Glyphs</span>
+          <code>Variable WOFF2 / TTF</code>
+        </div>
+      </div>
     </div>
-    <div class="stage-copy"><span class="eyebrow">THE PRIVATE TYPE LIBRARY</span><h1>هر حرف،<br><em>یک شخصیت.</em></h1><p>کتابخانه‌ای برای کشف، مقایسه و انتخاب دقیق فونت‌ها.</p></div>
-    <div class="ticker"><div>وزن نازک · وزن معمولی · وزن سنگین · فارسی · لاتین · نمایش · متن · MONO · SERIF · SANS · </div></div>
+
+    <!-- Stage Copy -->
+    <div class="stage-copy">
+      <span class="eyebrow">THE PRIVATE TYPE LIBRARY</span>
+      <h1>هر حرف،<br><em>یک شخصیت منحصر‌به‌فرد.</em></h1>
+      <p>مرجع حرفه‌ای و جامع کشف، مقایسه تخصصی و دریافت سریع فونت‌های فارسی و بین‌المللی برای طراحان و توسعه‌دهندگان پیشرو.</p>
+    </div>
+
+    <!-- Infinite Scrolling Ticker -->
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span>وزن بسیار نازک (Hairline)</span> • 
+        <span>وزن معمولی (Regular)</span> • 
+        <span>وزن سنگین (Black)</span> • 
+        <span>فارسی و عربی</span> • 
+        <span>طراحی متن و وب (UI/UX)</span> • 
+        <span>قلم‌های هندسی (Geometric)</span> • 
+        <span>قلم‌های سریف و نستعلیق</span> • 
+        <span>کدهای @font-face آماده</span> • 
+        <span>وزن بسیار نازک (Hairline)</span> • 
+        <span>وزن معمولی (Regular)</span> • 
+        <span>وزن سنگین (Black)</span> • 
+        <span>فارسی و عربی</span> • 
+        <span>طراحی متن و وب (UI/UX)</span> • 
+        <span>قلم‌های هندسی (Geometric)</span> • 
+        <span>قلم‌های سریف و نستعلیق</span> • 
+        <span>کدهای @font-face آماده</span>
+      </div>
+    </div>
   </section>
 
+  <!-- Right Side: Authentication Form -->
   <section class="auth-side">
-    <a class="mobile-brand" href="/"><span>M</span> MarkFont</a>
+    <div class="auth-top-bar">
+      <a class="mobile-brand" href="/">
+        <span class="brand-badge">M</span>
+        <span class="brand-title">MarkFont</span>
+      </a>
+      <a href="/" class="back-link">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>صفحه اصلی کتابخانه</span>
+      </a>
+    </div>
+
     <div class="auth-card">
-      <div class="auth-heading"><span id="stepNumber">01</span><div><h2 id="title">خوش آمدید</h2><p id="subtitle">برای ورود به کتابخانه، روش ورود را انتخاب کنید.</p></div></div>
-      <div class="method-tabs" id="tabs"><button class="active" data-method="password">رمز عبور</button><button data-method="otp">کد یک‌بارمصرف</button></div>
+      <div class="auth-heading">
+        <span class="step-badge" id="stepNumber">01</span>
+        <div>
+          <h2 id="title">خوش آمدید</h2>
+          <p id="subtitle">برای ورود به کتابخانه، روش ورود را انتخاب کنید.</p>
+        </div>
+      </div>
 
+      <!-- Mode Tabs -->
+      <div class="method-tabs" id="tabs">
+        <button class="active" data-method="password" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>رمز عبور</span>
+        </button>
+        <button data-method="otp" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>کد یک‌بارمصرف (پیامک)</span>
+        </button>
+      </div>
+
+      <!-- Form 1: Password Login -->
       <form id="passwordForm" class="auth-form">
-        <label>شماره موبایل<div class="input-wrap"><span>+98</span><input id="passwordPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required></div></label>
-        <label>رمز عبور<div class="input-wrap"><input id="password" type="password" autocomplete="current-password" dir="ltr" placeholder="حداقل ۸ نویسه" required minlength="8"><button class="peek" id="peek" type="button">نمایش</button></div></label>
-        <button class="submit" type="submit"><span>ورود به کتابخانه</span><b>←</b></button>
+        <div class="form-group">
+          <label for="passwordPhone">شماره موبایل</label>
+          <div class="input-wrap">
+            <span class="country-code">+98</span>
+            <input id="passwordPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password">رمز عبور</label>
+            <button type="button" class="text-link" id="forgotToOtp">فراموشی رمز عبور؟</button>
+          </div>
+          <div class="input-wrap">
+            <input id="password" type="password" autocomplete="current-password" dir="ltr" placeholder="حداقل ۸ نویسه" required minlength="8">
+            <button class="peek-btn" id="peek" type="button" aria-label="نمایش رمز">
+              <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="submit" type="submit">
+          <span class="submit-text">ورود به کتابخانه</span>
+          <span class="submit-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span class="spinner" style="display:none"></span>
+        </button>
       </form>
 
+      <!-- Form 2: Request OTP -->
       <form id="otpPhoneForm" class="auth-form" hidden>
-        <label>شماره موبایل<div class="input-wrap"><span>+98</span><input id="otpPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required></div></label>
-        <p class="form-note">اگر حسابی ندارید، با تأیید شماره ثبت‌نام می‌شوید و پس از تأیید مدیر امکان ورود خواهید داشت.</p>
-        <button class="submit" type="submit"><span>ارسال کد ورود</span><b>←</b></button>
+        <div class="form-group">
+          <label for="otpPhone">شماره موبایل</label>
+          <div class="input-wrap">
+            <span class="country-code">+98</span>
+            <input id="otpPhone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="09xxxxxxxxx" required>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <p>اگر هنوز حسابی ندارید، با تأیید شماره ثبت‌نام اولیه شما انجام شده و پس از تأیید مدیر کل، دسترسی شما فعال می‌شود.</p>
+        </div>
+
+        <button class="submit" type="submit">
+          <span class="submit-text">ارسال کد تایید پیامکی</span>
+          <span class="submit-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span class="spinner" style="display:none"></span>
+        </button>
       </form>
 
+      <!-- Form 3: Verify OTP Code -->
       <form id="otpCodeForm" class="auth-form" hidden>
-        <p class="code-sent">کد ۶ رقمی برای <strong id="phoneEcho" dir="ltr"></strong> ارسال شد.</p>
-        <label>کد تأیید<input class="code-input" id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="— — — — — —" required></label>
-        <label>تنظیم رمز عبور <small>اختیاری برای ورودهای بعدی</small><div class="input-wrap"><input id="newPassword" type="password" autocomplete="new-password" dir="ltr" placeholder="حداقل ۸ نویسه"></div></label>
-        <button class="submit" type="submit"><span>تأیید و ورود</span><b>←</b></button><button id="changePhone" class="text-btn" type="button">اصلاح شماره موبایل</button>
+        <div class="phone-echo-bar">
+          <div>
+            <span>کد ۶ رقمی به شماره زیر ارسال شد:</span>
+            <strong id="phoneEcho" dir="ltr"></strong>
+          </div>
+          <button id="changePhone" class="chip-btn" type="button">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>ویرایش شماره</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="otpCode">کد تأیید ۶ رقمی</label>
+          <input class="code-input" id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="• • • • • •" required>
+        </div>
+
+        <div class="otp-resend-row">
+          <button type="button" id="resendOtpBtn" class="resend-btn" disabled>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            <span id="resendTimerText">ارسال مجدد کد (60s)</span>
+          </button>
+        </div>
+
+        <div class="form-group optional-field">
+          <label for="newPassword">
+            <span>تنظیم رمز عبور دلخواه</span>
+            <small>اختیاری (جهت ورودهای سریع بعدی بدون نیاز به پیامک)</small>
+          </label>
+          <div class="input-wrap">
+            <input id="newPassword" type="password" autocomplete="new-password" dir="ltr" placeholder="حداقل ۸ نویسه">
+          </div>
+        </div>
+
+        <button class="submit" type="submit">
+          <span class="submit-text">تأیید و ورود به سیستم</span>
+          <span class="submit-arrow">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span class="spinner" style="display:none"></span>
+        </button>
       </form>
+
+      <!-- Feedback Notice -->
       <div id="message" class="message" role="status"></div>
-      <div class="secure"><span>◆</span> اطلاعات ورود شما امن و رمزنگاری‌شده نگهداری می‌شود.</div>
+
+      <!-- Security Trust Footer -->
+      <div class="secure-footer">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>اتصال امن، داده‌های رمزنگاری شده و احراز هویت مستقیم با سشن محافظت‌شده</span>
+      </div>
     </div>
   </section>
-</main><script src="login.js"></script></body></html>
+</main>
+
+<script src="login.js"></script>
+</body>
+</html>

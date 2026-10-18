@@ -1,9 +1,286 @@
-<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>مدیریت — MarkFont</title><link rel="stylesheet" href="portal.css"></head><body>
-<div class="portal"><aside class="side" id="side"><a class="brand" href="/"><span class="brand-mark">M</span><span>MarkFont</span></a><div class="side-label">CONTROL ROOM</div><nav class="nav"><button class="active" data-view="users">کاربران</button><button data-view="fonts">مدیریت فونت‌ها</button><button data-view="requests">درخواست‌ها</button><button data-view="upload">افزودن فونت</button><a href="/dashboard">پنل کاربری من</a><a href="/">مشاهده کتابخانه</a><button id="logout">خروج</button></nav><div class="side-user"><strong id="phone">—</strong><span>مدیر سیستم</span></div></aside>
-<main class="main"><header class="top"><div><h1>مرکز مدیریت</h1><p>مدیریت کاربران، فونت‌ها و درخواست‌های جدید</p></div><button class="btn mobile-menu" id="menu">منو</button></header>
-<section class="stats"><div class="stat"><strong id="userCount">—</strong><span>کل کاربران</span></div><div class="stat"><strong id="pendingCount">—</strong><span>در انتظار تأیید</span></div><div class="stat"><strong id="fontCount">—</strong><span>خانواده فونت</span></div><div class="stat"><strong id="requestCount">—</strong><span>درخواست باز</span></div></section>
-<section class="view active" data-panel="users"><div class="card"><div class="card-head"><div><h2>مدیریت کاربران</h2><p>تأیید عضویت یا غیرفعال‌سازی حساب‌ها</p></div><input id="userSearch" class="search" placeholder="جست‌وجوی شماره…" dir="ltr"></div><div id="users" class="rows"><div class="loading">در حال بارگذاری…</div></div></div></section>
-<section class="view" data-panel="fonts"><div class="card"><div class="card-head"><div><h2>کتابخانه فونت</h2><p>کنترل نمایش و دسترسی دانلود فونت‌ها</p></div><input id="fontSearch" class="search" placeholder="جست‌وجوی فونت…"></div><div id="fonts" class="rows"></div></div></section>
-<section class="view" data-panel="requests"><div class="card"><div class="card-head"><div><h2>درخواست‌های کاربران</h2><p>پیگیری درخواست افزودن فونت جدید</p></div></div><div id="requests" class="rows"></div></div></section>
-<section class="view" data-panel="upload"><div class="card"><div class="card-head"><div><h2>افزودن فونت</h2><p>فایل‌های TTF، OTF، WOFF و WOFF2</p></div></div><div class="form"><label>نام دسته<input id="batch" class="field" placeholder="اختیاری"></label><label class="upload-zone"><input id="files" type="file" multiple accept=".ttf,.otf,.woff,.woff2" hidden><span id="dropText">فایل‌ها را انتخاب کنید یا اینجا رها کنید</span></label><ul id="fileList" class="upload-list"></ul><button id="upload" class="btn primary" disabled>افزودن به کتابخانه</button><div id="uploadMsg" class="notice"></div></div></div></section>
-</main></div><script src="admin.js"></script></body></html>
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مرکز مدیریت و فرماندهی | MarkFont Control Room</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<div class="portal">
+  <!-- Admin Sidebar -->
+  <aside class="side" id="side">
+    <a class="brand" href="/" title="مشاهده کتابخانه">
+      <div class="brand-mark" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">MF</div>
+      <div class="brand-info">
+        <span class="brand-name">MarkFont</span>
+        <span class="side-label" style="color: #f59e0b;">CONTROL ROOM</span>
+      </div>
+    </a>
+
+    <nav class="nav-section">
+      <div class="nav-heading">بخش‌های مدیریتی</div>
+
+      <button class="nav-link active" data-view="users" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>مدیریت کاربران</span>
+        <span class="nav-badge alert" id="pendingUsersBadge" style="display:none">۰</span>
+      </button>
+
+      <button class="nav-link" data-view="fonts" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+        <span>کنترل کتابخانه فونت‌ها</span>
+        <span class="nav-badge" id="fontsNavBadge">۰</span>
+      </button>
+
+      <button class="nav-link" data-view="requests" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>درخواست‌های کاربران</span>
+        <span class="nav-badge" id="requestsNavBadge">۰</span>
+      </button>
+
+      <button class="nav-link" data-view="upload" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>افزودن و پردازش فونت</span>
+      </button>
+
+      <div class="nav-heading" style="margin-top: 14px;">درگاه‌های جانبی</div>
+      <a class="nav-link" href="/dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>پنل کاربری من</span>
+      </a>
+
+      <a class="nav-link" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>مشاهده کتابخانه اصلی</span>
+      </a>
+    </nav>
+
+    <!-- Admin User Profile -->
+    <div class="side-footer">
+      <div class="user-card" style="border-color: rgba(245, 158, 11, 0.3);">
+        <div class="user-avatar" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="user-details">
+          <strong class="user-phone" id="phone">—</strong>
+          <span class="user-role" style="color: #f59e0b;">
+            <span class="user-role-dot" style="background: #f59e0b; box-shadow: 0 0 6px #f59e0b;"></span>
+            <span>مدیر ارشد سیستم</span>
+          </span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout" type="button">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>خروج از پنل مدیریت</span>
+      </button>
+    </div>
+  </aside>
+  <div class="side-backdrop" id="sideBackdrop"></div>
+
+  <!-- Admin Main View -->
+  <main class="main">
+    <!-- Header Bar -->
+    <header class="top-bar">
+      <div class="page-intro">
+        <h1 id="pageTitle">مرکز مدیریت MarkFont</h1>
+        <p id="pageSubtitle">نظارت، تایید عضویت اعضا، کنترل نمایش فونت‌ها و انتشار دسته‌ای قلم‌ها</p>
+      </div>
+
+      <div class="top-actions">
+        <div class="date-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="todayDate">امروز</span>
+        </div>
+        <a href="/" class="btn primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>مشاهده کتابخانه</span>
+        </a>
+        <button class="btn mobile-menu-btn" id="menu" type="button" aria-label="منو">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Top KPI Metric Cards -->
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon blue">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <span class="stat-tag">USERS</span>
+        </div>
+        <div class="stat-value" id="userCount">—</div>
+        <div class="stat-label">کل کاربران ثبت‌نام‌شده</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon amber">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="stat-tag" style="color: var(--amber)">PENDING</span>
+        </div>
+        <div class="stat-value" id="pendingCount">—</div>
+        <div class="stat-label">کاربران در انتظار تأیید</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon purple">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          </div>
+          <span class="stat-tag">FAMILIES</span>
+        </div>
+        <div class="stat-value" id="fontCount">—</div>
+        <div class="stat-label">خانواده‌های قلم فعال</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon cyan">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <span class="stat-tag">REQUESTS</span>
+        </div>
+        <div class="stat-value" id="requestCount">—</div>
+        <div class="stat-label">درخواست‌های باز کاربران</div>
+      </div>
+    </section>
+
+    <!-- View 1: Users Management -->
+    <section class="view active" data-panel="users">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">
+            <h2>مدیریت کاربران و احراز هویت</h2>
+            <p>تأیید عضویت کاربران جدید، ارسال پیامک تأیید یا غیرفعال‌سازی دسترسی</p>
+          </div>
+
+          <div class="card-actions">
+            <div class="filter-chips" id="userStatusFilters">
+              <button class="filter-btn active" data-filter="all">همه</button>
+              <button class="filter-btn" data-filter="pending">در انتظار تأیید</button>
+              <button class="filter-btn" data-filter="approved">تأییدشده</button>
+              <button class="filter-btn" data-filter="suspended">غیرفعال</button>
+            </div>
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="userSearch" class="search-input" placeholder="جستجوی شماره موبایل…" dir="ltr">
+            </div>
+          </div>
+        </div>
+        <div id="users" class="rows">
+          <div class="empty-box"><p>در حال بارگذاری کاربران…</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- View 2: Fonts Catalog Management -->
+    <section class="view" data-panel="fonts">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">
+            <h2>کنترل و مدیریت قلم‌ها</h2>
+            <p>کنترل نمایش، مخفی‌سازی فونت‌های خاص و نظارت بر وزن‌ها و فایل‌های کتابخانه</p>
+          </div>
+
+          <div class="card-actions">
+            <div class="filter-chips" id="fontVisibilityFilters">
+              <button class="filter-btn active" data-filter="all">همه قلم‌ها</button>
+              <button class="filter-btn" data-filter="visible">فعال در کتابخانه</button>
+              <button class="filter-btn" data-filter="hidden">مخفی‌شده</button>
+            </div>
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="fontSearch" class="search-input" placeholder="جستجوی نام یا اسلاگ فونت…">
+            </div>
+          </div>
+        </div>
+        <div id="fonts" class="rows"></div>
+      </div>
+    </section>
+
+    <!-- View 3: Requests Management -->
+    <section class="view" data-panel="requests">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">
+            <h2>درخواست‌های ارسالی اعضا</h2>
+            <p>بررسی قلم‌های درخواستی و به‌روزرسانی وضعیت بررسی</p>
+          </div>
+
+          <div class="card-actions">
+            <div class="filter-chips" id="requestStatusFilters">
+              <button class="filter-btn active" data-filter="all">همه</button>
+              <button class="filter-btn" data-filter="pending">در انتظار</button>
+              <button class="filter-btn" data-filter="reviewing">در حال بررسی</button>
+              <button class="filter-btn" data-filter="completed">انجام‌شده</button>
+              <button class="filter-btn" data-filter="rejected">ردشده</button>
+            </div>
+          </div>
+        </div>
+        <div id="requests" class="rows"></div>
+      </div>
+    </section>
+
+    <!-- View 4: Upload & Ingestion Pipeline -->
+    <section class="view" data-panel="upload">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">
+            <h2>افزودن و پردازش فونت‌های جدید</h2>
+            <p>بارگذاری فایل‌های خام فونت جهت استخراج خودکار متادیتا، دسته‌بندی و الحاق به کتابخانه</p>
+          </div>
+        </div>
+
+        <div class="form">
+          <div class="form-group">
+            <label for="batch">نام دسته یا پوشه ذخیره‌سازی (اختیاری)</label>
+            <input id="batch" class="field" placeholder="مثلاً: new-persian-bundle-2026">
+          </div>
+
+          <label class="upload-dropzone" id="dropZone">
+            <input id="files" type="file" multiple accept=".ttf,.otf,.woff,.woff2" hidden>
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="dropzone-text">
+              <strong id="dropText">فایل‌های فونت را به این کادر بکشید یا برای انتخاب کلیک کنید</strong>
+              <span>پردازش خودکار وزن‌ها و استایل‌ها با Python fontTools</span>
+            </div>
+            <div class="upload-formats">
+              <span class="format-chip">TTF</span>
+              <span class="format-chip">OTF</span>
+              <span class="format-chip">WOFF</span>
+              <span class="format-chip">WOFF2</span>
+            </div>
+          </label>
+
+          <div id="queueSection" style="display:none">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <strong style="font-size:13px; color:#fff;">صف فایل‌های آماده آپلود:</strong>
+              <span id="queueStats" style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono);">۰ فایل</span>
+            </div>
+            <ul id="fileList" class="upload-queue-list"></ul>
+          </div>
+
+          <button id="upload" class="btn primary" disabled style="margin-top:10px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>شروع ارسال و پردازش در کتابخانه</span>
+          </button>
+
+          <div id="uploadMsg" class="notice"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toasts"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

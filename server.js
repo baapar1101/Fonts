@@ -533,6 +533,7 @@ async function serveStatic(req, res, urlPath) {
   let rel;
   try { rel = decodeURIComponent(urlPath); } catch { return json(res, 400, { error: "bad path" }); }
   if (rel === "/" || rel === "") rel = "/index.html";
+  if (rel === "/favicon.ico") rel = "/favicon.svg";
   if (rel === "/login") rel = "/login.html";
   if (rel === "/admin") rel = "/admin.html";
   if (rel === "/dashboard") rel = "/dashboard.html";

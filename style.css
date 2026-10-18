@@ -157,39 +157,35 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 /* ---------- Header ---------- */
 .ms-header{
   position:sticky; top:0; z-index:50;
-  border-bottom:1px solid transparent;
-  background:transparent;
-  transition:background .45s var(--ms-ease), border-color .45s var(--ms-ease), backdrop-filter .45s var(--ms-ease);
+  border-bottom:1px solid var(--ms-line-soft);
+  background:var(--header-bg);
+  backdrop-filter:blur(18px) saturate(135%);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+  transition:background .35s var(--ms-ease), box-shadow .35s var(--ms-ease), border-color .35s var(--ms-ease);
 }
 .ms-header.is-scrolled{
   background:var(--header-bg);
-  border-bottom-color:var(--ms-line-soft);
-  backdrop-filter:blur(20px);
+  border-bottom-color:var(--ms-line);
+  box-shadow:0 12px 36px rgba(0,0,0,.12);
 }
 .nav-shell{
-  max-width:var(--ms-max); margin:0 auto; padding:16px var(--ms-gutter);
-  display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+  max-width:var(--ms-max); margin:0 auto; padding:12px var(--ms-gutter);
+  min-height:76px; display:grid; grid-template-columns:auto minmax(260px,1fr) auto;
+  align-items:center; gap:clamp(18px,2.5vw,36px);
 }
-.logo-link{display:flex; align-items:center; gap:12px; min-width:0}
-.logo-link img{width:132px; height:auto; display:block; filter:invert(var(--logo-invert))}
-.logo-divider{width:1px; height:22px; background:var(--ms-line); flex-shrink:0}
-.logo-word{font-size:16px; font-weight:400; letter-spacing:-.01em; white-space:nowrap; color:var(--ms-muted-2)}
-.logo-word b{font-weight:700; color:var(--ms-white)}
-
-@media (max-width:640px){
-  .logo-link img{width:104px}
-  .logo-word{font-size:14px}
-}
+.logo-link{display:flex; align-items:center; min-width:0; padding:4px 0}
+.logo-link img{width:126px; height:auto; display:block; filter:invert(var(--logo-invert))}
+.nav-actions{display:flex; align-items:center; gap:8px; direction:rtl}
 
 /* ---------- Theme toggle ---------- */
 .theme-toggle{
-  flex-shrink:0; width:42px; height:42px; padding:0;
+  flex-shrink:0; width:44px; height:44px; padding:0;
   display:inline-flex; align-items:center; justify-content:center;
-  border:1px solid var(--ms-line); border-radius:0;
+  border:1px solid var(--ms-line-soft); border-radius:12px;
   background:var(--surface-btn); color:var(--ms-white); cursor:pointer;
-  transition:background .3s var(--ms-ease), border-color .3s var(--ms-ease), color .3s var(--ms-ease);
+  transition:transform .25s var(--ms-ease), background .25s ease, border-color .25s ease, color .25s ease;
 }
-.theme-toggle:hover{background:var(--surface-hover); border-color:var(--border-strong)}
+.theme-toggle:hover{transform:translateY(-1px); background:var(--surface-hover); border-color:var(--border-strong)}
 .theme-toggle svg{width:17px; height:17px}
 /* Show the icon for the theme you would switch TO. */
 .theme-toggle .icon-sun{display:none}
@@ -202,7 +198,12 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 }
 
 /* ---------- Account ---------- */
-.account-btn{flex:0 0 auto; min-height:42px; padding:0 14px; white-space:nowrap}
+.account-btn{flex:0 0 auto; min-height:44px; padding:0 16px; border-radius:12px; white-space:nowrap}
+.admin-nav-btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; color:var(--ms-white)}
+.admin-nav-btn[hidden]{display:none}
+.admin-nav-btn svg{width:17px; height:17px; color:var(--ms-blue)}
+.user-account{min-width:142px; border-color:rgba(36,92,255,.4); background:rgba(36,92,255,.09)}
+.user-account:hover{border-color:var(--ms-blue); background:rgba(36,92,255,.15)}
 .modal-narrow{max-width:400px}
 .auth-input{
   width:100%; padding:12px 14px; margin:4px 0 12px; border-radius:0;
@@ -394,15 +395,22 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 .bm-empty{padding:6px; font-size:12px; color:var(--ms-muted)}
 
 /* ---------- Search ---------- */
-.search-wrap{flex:1 1 320px; min-width:200px; position:relative; margin-left:auto}
+.search-wrap{width:100%; max-width:680px; min-width:0; position:relative; justify-self:center}
 .search-wrap input{
-  width:100%; padding:12px 14px 12px 38px; border-radius:0;
+  width:100%; min-height:46px; padding:12px 16px 12px 44px; border-radius:14px;
   border:1px solid var(--ms-line-soft); background:var(--surface-field); color:var(--ms-white);
-  font-family:inherit; font-size:14px; outline:none; transition:border-color .25s ease, background .25s ease;
+  font-family:inherit; font-size:14px; outline:none;
+  transition:border-color .25s ease, background .25s ease, box-shadow .25s ease;
 }
 .search-wrap input::placeholder{color:var(--ms-muted)}
-.search-wrap input:focus{border-color:rgba(36,92,255,.8); background:var(--surface-field-focus)}
-.search-wrap svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.55; width:16px; height:16px}
+.search-wrap input:focus{border-color:rgba(36,92,255,.8); background:var(--surface-field-focus); box-shadow:0 0 0 4px rgba(36,92,255,.1)}
+.search-wrap svg{position:absolute; left:15px; top:50%; transform:translateY(-50%); opacity:.55; width:17px; height:17px; pointer-events:none}
+
+@media (max-width:900px){
+  .nav-shell{grid-template-columns:auto 1fr; gap:10px 18px}
+  .nav-actions{justify-self:end}
+  .search-wrap{grid-column:1 / -1; grid-row:2; max-width:none}
+}
 
 /* ---------- Hero ---------- */
 .section{position:relative; padding:clamp(40px,6vw,72px) var(--ms-gutter) 0}
@@ -629,16 +637,18 @@ footer.sitefoot .footer-logo{width:88px; height:auto; opacity:.7}
   :root{--ms-gutter:16px}
 
   /* --- Header: logo + controls on one line, search beneath --- */
-  .nav-shell{padding:10px var(--ms-gutter); gap:10px; row-gap:8px}
-  .logo-link img{width:92px}
-  .logo-divider{display:none}
-  .logo-word{font-size:13px}
-  .theme-toggle{width:38px; height:38px; margin-left:auto}
-  .account-btn{min-height:38px; padding:0 10px; font-size:11px}
-  .search-wrap{order:3; flex:1 1 100%; min-width:0; margin-left:0}
+  .nav-shell{min-height:auto; padding:10px var(--ms-gutter); gap:9px 12px}
+  .logo-link img{width:96px}
+  .nav-actions{gap:6px}
+  .theme-toggle{width:40px; height:40px; border-radius:11px}
+  .account-btn{min-height:40px; padding:0 11px; border-radius:11px; font-size:11px}
+  .user-account{min-width:0}
+  .admin-nav-btn{width:40px; padding:0}
+  .admin-nav-btn span{display:none}
+  .search-wrap{min-width:0}
   /* 16px keeps iOS from zooming the page when a field takes focus. */
-  .search-wrap input{padding:11px 12px 11px 34px; font-size:16px}
-  .search-wrap svg{left:10px}
+  .search-wrap input{min-height:44px; padding:11px 12px 11px 38px; border-radius:12px; font-size:16px}
+  .search-wrap svg{left:12px}
 
   /* --- Hero: keep the label and headline, drop the paragraph --- */
   .section{padding:20px var(--ms-gutter) 0}
@@ -725,8 +735,8 @@ footer.sitefoot .footer-logo{width:88px; height:auto; opacity:.7}
   footer.sitefoot{flex-direction:column; gap:8px; padding:24px var(--ms-gutter) 46px}
 }
 
-/* Very narrow phones: drop the wordmark so the header never wraps oddly. */
+/* Very narrow phones: keep every primary action usable without crowding. */
 @media (max-width:380px){
-  .logo-word{display:none}
   .account-btn{font-size:10px; padding:0 8px}
+  .logo-link img{width:84px}
 }

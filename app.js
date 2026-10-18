@@ -598,6 +598,9 @@
 
   async function openFontDetail(fam, { push = true } = {}) {
     detailFam = fam;
+    api("/api/activity", {
+      method: "POST", body: JSON.stringify({ slug: fam.slug, kind: "view" }),
+    }).catch(() => {});
     const isFa = fam.langs.includes("fa");
     const isEn = fam.langs.includes("en");
 
@@ -613,7 +616,10 @@
     ].filter(Boolean).join(" · ");
 
     detailZip.hidden = !fam.zip;
-    if (fam.zip) detailZip.href = encodePath(fam.zip);
+    if (fam.zip) {
+      detailZip.href = encodePath(fam.zip);
+      detailZip.dataset.downloadSlug = fam.slug;
+    }
 
     detailCode.textContent = fam.variants.map(v => fontFaceBlock(fam, v)).join("\n\n");
 
@@ -635,6 +641,7 @@
         a.className = "btn btn-mini";
         a.setAttribute("download", "");
         a.href = encodePath(f.path);
+        a.dataset.downloadSlug = fam.slug;
         a.textContent = f.format.toUpperCase();
         a.title = `${f.format.toUpperCase()} · ${humanSize(f.size)}`;
         dl.appendChild(a);
@@ -786,7 +793,7 @@
   function renderAccount() {
     if (state.user) {
       accountBtn.textContent = state.user.phone;
-      accountBtn.title = "خروج از حساب / Sign out";
+      accountBtn.title = "پنل کاربری";
     } else {
       accountBtn.textContent = "ورود / Sign in";
       accountBtn.title = "ورود با شماره موبایل";
@@ -797,18 +804,15 @@
 
   accountBtn.addEventListener("click", async () => {
     if (!state.user) return openAuth();
-    if (!confirm("از حساب خارج می‌شوید؟")) return;
-    try { await api("/api/auth/logout", { method: "POST" }); } catch { /* sign out locally anyway */ }
-    state.user = null;
-    state.likes = new Set();
-    state.myCollections = [];
-    if (String(state.collection).startsWith("mine:")) state.collection = "all";
-    hideCatalog();
-    renderAccount();
-    refreshCardStates();
-    renderCollectionChips();
-    applyFilters();
-    openAuth();
+    location.href = "/dashboard";
+  });
+
+  document.addEventListener("click", event => {
+    const link = event.target.closest("[data-download-slug]");
+    if (!link) return;
+    api("/api/activity", {
+      method: "POST", body: JSON.stringify({ slug: link.dataset.downloadSlug, kind: "download" }),
+    }).catch(() => {});
   });
 
   authClose.addEventListener("click", closeAuth);
@@ -1075,14 +1079,7 @@
     setAdminMsg(skipped ? `${skipped} فایل با پسوند نامعتبر نادیده گرفته شد.` : "", skipped ? "error" : "");
   }
 
-  adminBtn.addEventListener("click", () => {
-    adminQueue = [];
-    renderQueue();
-    setAdminMsg("");
-    setAdminTab("users");
-    adminOverlay.classList.remove("hidden");
-    loadAdminData();
-  });
+  adminBtn.addEventListener("click", () => { location.href = "/admin"; });
   adminClose.addEventListener("click", () => adminOverlay.classList.add("hidden"));
   adminOverlay.addEventListener("click", e => {
     if (e.target === adminOverlay) adminOverlay.classList.add("hidden");

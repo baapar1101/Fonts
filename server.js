@@ -135,6 +135,24 @@ CREATE TABLE IF NOT EXISTS hidden_fonts (
   hidden_at  INTEGER NOT NULL,
   hidden_by  INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
+CREATE TABLE IF NOT EXISTS font_activity (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  slug       TEXT NOT NULL,
+  kind       TEXT NOT NULL CHECK(kind IN ('view', 'download')),
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_font_activity_user_time
+  ON font_activity(user_id, created_at DESC);
+CREATE TABLE IF NOT EXISTS font_requests (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  font_name  TEXT NOT NULL,
+  details    TEXT,
+  status     TEXT NOT NULL DEFAULT 'pending',
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
 `);
 
 const userColumns = new Set(db.prepare("PRAGMA table_info(users)").all().map((c) => c.name));
@@ -515,6 +533,13 @@ async function serveStatic(req, res, urlPath) {
   let rel;
   try { rel = decodeURIComponent(urlPath); } catch { return json(res, 400, { error: "bad path" }); }
   if (rel === "/" || rel === "") rel = "/index.html";
+  if (rel === "/admin") rel = "/admin.html";
+  if (rel === "/dashboard") rel = "/dashboard.html";
+
+  // Portal documents and their scripts are protected on the server too;
+  // hiding a navigation button is never treated as authorization.
+  if (["/admin.html", "/admin.js"].includes(rel) && !requireAdmin(req, res)) return;
+  if (["/dashboard.html", "/dashboard.js"].includes(rel) && !requireUser(req, res)) return;
 
   // The login shell stays public, but the catalog, downloads and raw font
   // binaries must never be obtainable before authentication.
@@ -715,6 +740,58 @@ async function handleApi(req, res, url) {
     });
   }
 
+  // --- member dashboard: activity and font requests ---
+  if (p === "/api/activity" && method === "POST") {
+    const user = requireUser(req, res); if (!user) return;
+    const { slug, kind } = await readBody(req);
+    if (typeof slug !== "string" || !["view", "download"].includes(kind) || !(await familyBySlug(slug))) {
+      return json(res, 400, { error: "فعالیت نامعتبر است" });
+    }
+    // Rapid repeated clicks/previews should not flood the user's timeline.
+    const recent = db.prepare(
+      "SELECT created_at FROM font_activity WHERE user_id = ? AND slug = ? AND kind = ? ORDER BY created_at DESC LIMIT 1"
+    ).get(user.id, slug, kind);
+    if (!recent || now() - recent.created_at > 30 * 1000) {
+      db.prepare("INSERT INTO font_activity (user_id, slug, kind, created_at) VALUES (?, ?, ?, ?)")
+        .run(user.id, slug, kind, now());
+    }
+    return json(res, 200, { ok: true });
+  }
+
+  if (p === "/api/dashboard" && method === "GET") {
+    const user = requireUser(req, res); if (!user) return;
+    const catalog = await readCatalog();
+    const activities = db.prepare(
+      "SELECT slug, kind, created_at FROM font_activity WHERE user_id = ? ORDER BY created_at DESC LIMIT 40"
+    ).all(user.id).map((item) => ({
+      ...item,
+      family: catalog.bySlug.get(item.slug)?.family || item.slug,
+    }));
+    const requests = db.prepare(
+      "SELECT id, font_name, details, status, created_at, updated_at FROM font_requests WHERE user_id = ? ORDER BY created_at DESC"
+    ).all(user.id);
+    const counts = db.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM font_activity WHERE user_id = ? AND kind = 'view') AS views,
+        (SELECT COUNT(*) FROM font_activity WHERE user_id = ? AND kind = 'download') AS downloads,
+        (SELECT COUNT(*) FROM likes WHERE user_id = ?) AS likes,
+        (SELECT COUNT(*) FROM collections WHERE user_id = ?) AS collections
+    `).get(user.id, user.id, user.id, user.id);
+    return json(res, 200, { user: { phone: user.phone }, counts, activities, requests });
+  }
+
+  if (p === "/api/font-requests" && method === "POST") {
+    const user = requireUser(req, res); if (!user) return;
+    const body = await readBody(req);
+    const fontName = String(body.fontName || "").trim().slice(0, 120);
+    const details = String(body.details || "").trim().slice(0, 1000);
+    if (fontName.length < 2) return json(res, 400, { error: "نام فونت را وارد کنید" });
+    db.prepare(
+      "INSERT INTO font_requests (user_id, font_name, details, status, created_at, updated_at) VALUES (?, ?, ?, 'pending', ?, ?)"
+    ).run(user.id, fontName, details, now(), now());
+    return json(res, 201, { ok: true });
+  }
+
   // --- admin: users and approval workflow ---
   if (p === "/api/admin/users" && method === "GET") {
     const user = requireAdmin(req, res); if (!user) return;
@@ -725,6 +802,29 @@ async function handleApi(req, res, url) {
         FROM users u ORDER BY CASE u.status WHEN 'pending' THEN 0 ELSE 1 END, u.created_at DESC
     `).all().map((row) => ({ ...row, admin: ADMIN_PHONES.has(row.phone) }));
     return json(res, 200, { users });
+  }
+
+  if (p === "/api/admin/requests" && method === "GET") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const requests = db.prepare(`
+      SELECT r.id, r.font_name, r.details, r.status, r.created_at, r.updated_at, u.phone
+        FROM font_requests r JOIN users u ON u.id = r.user_id
+       ORDER BY CASE r.status WHEN 'pending' THEN 0 ELSE 1 END, r.created_at DESC
+    `).all();
+    return json(res, 200, { requests });
+  }
+
+  let requestMatch = p.match(/^\/api\/admin\/requests\/(\d+)$/);
+  if (requestMatch && method === "PATCH") {
+    const user = requireAdmin(req, res); if (!user) return;
+    const { status } = await readBody(req);
+    if (!["pending", "reviewing", "completed", "rejected"].includes(status)) {
+      return json(res, 400, { error: "وضعیت نامعتبر است" });
+    }
+    const result = db.prepare("UPDATE font_requests SET status = ?, updated_at = ? WHERE id = ?")
+      .run(status, now(), Number(requestMatch[1]));
+    if (!result.changes) return json(res, 404, { error: "درخواست پیدا نشد" });
+    return json(res, 200, { ok: true });
   }
 
   let adminMatch = p.match(/^\/api\/admin\/users\/(\d+)$/);

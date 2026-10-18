@@ -770,6 +770,19 @@
   }
   const closeAuth = () => authOverlay.classList.add("hidden");
 
+  async function showCatalog() {
+    await reloadCatalog();
+    document.body.classList.remove("is-locked");
+    syncDetailWithHash();
+  }
+
+  function hideCatalog() {
+    document.body.classList.add("is-locked");
+    state.all = [];
+    state.collections = [];
+    grid.innerHTML = "";
+  }
+
   function renderAccount() {
     if (state.user) {
       accountBtn.textContent = state.user.phone;
@@ -790,10 +803,12 @@
     state.likes = new Set();
     state.myCollections = [];
     if (String(state.collection).startsWith("mine:")) state.collection = "all";
+    hideCatalog();
     renderAccount();
     refreshCardStates();
     renderCollectionChips();
     applyFilters();
+    openAuth();
   });
 
   authClose.addEventListener("click", closeAuth);
@@ -832,10 +847,11 @@
         body: JSON.stringify({ phone: authPhone.value.trim(), code, password: authNewPassword.value }),
       });
       state.user = r.user;
-      closeAuth();
       renderAccount();
       const me = await api("/api/me");
       adoptUserData(me);
+      await showCatalog();
+      closeAuth();
     } catch (e) {
       setAuthMsg(e.message, "error");
     } finally {
@@ -854,9 +870,10 @@
         method: "POST", body: JSON.stringify({ phone, password }),
       });
       state.user = r.user;
-      closeAuth();
       renderAccount();
       adoptUserData(await api("/api/me"));
+      await showCatalog();
+      closeAuth();
     } catch (e) {
       setAuthMsg(e.message, "error");
     } finally {
@@ -1115,13 +1132,6 @@
   onScroll();
 
   async function init() {
-    statsLine.textContent = "Loading font catalog…";
-    const res = await fetch("fonts.json");
-    const data = await res.json();
-    state.all = data.families;
-    prepareSearchIndex(state.all);
-    state.collections = data.collections || [];
-
     // Restore an existing session, if the cookie is still good.
     try {
       const me = await api("/api/me");
@@ -1130,14 +1140,17 @@
         if (Array.isArray(me.likes)) state.likes = new Set(me.likes);
         if (Array.isArray(me.collections)) state.myCollections = me.collections;
       }
-    } catch { /* offline or static hosting: browsing still works */ }
+    } catch { /* leave the catalog locked */ }
     renderAccount();
-
-    renderCollectionChips();
     previewInput.placeholder = DEFAULT_TEXT_EN;
-    applyFilters();
-    // A shared #font/<slug> link should land straight on that font.
-    syncDetailWithHash();
+    if (state.user) {
+      statsLine.textContent = "Loading font catalog…";
+      try { await showCatalog(); }
+      catch { hideCatalog(); openAuth(); }
+    } else {
+      hideCatalog();
+      openAuth();
+    }
   }
 
   init();

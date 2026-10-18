@@ -464,6 +464,15 @@ async function serveStatic(req, res, urlPath) {
   try { rel = decodeURIComponent(urlPath); } catch { return json(res, 400, { error: "bad path" }); }
   if (rel === "/" || rel === "") rel = "/index.html";
 
+  // The login shell stays public, but the catalog, downloads and raw font
+  // binaries must never be obtainable before authentication.
+  const protectedAsset = rel === "/fonts.json" ||
+    rel.startsWith("/_downloads/") ||
+    /\.(?:ttf|otf|woff2?|eot|zip)$/i.test(rel);
+  if (protectedAsset && !currentUser(req)) {
+    return json(res, 401, { error: "sign in first" });
+  }
+
   // Resolve then confirm containment, so "../" cannot escape the library.
   const full = path.resolve(ROOT, "." + rel);
   if (full !== ROOT && !full.startsWith(ROOT + path.sep)) {

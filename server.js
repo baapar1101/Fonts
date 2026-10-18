@@ -544,9 +544,10 @@ async function serveStatic(req, res, urlPath) {
 
   // The login shell stays public, but the catalog, downloads and raw font
   // binaries must never be obtainable before authentication.
-  const protectedAsset = rel === "/fonts.json" ||
+  const publicUiFont = rel === "/ui/vazirmatn.woff2";
+  const protectedAsset = !publicUiFont && (rel === "/fonts.json" ||
     rel.startsWith("/_downloads/") ||
-    /\.(?:ttf|otf|woff2?|eot|zip)$/i.test(rel);
+    /\.(?:ttf|otf|woff2?|eot|zip)$/i.test(rel));
   if (protectedAsset && !currentUser(req)) {
     return json(res, 401, { error: "sign in first" });
   }

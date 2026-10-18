@@ -50,21 +50,31 @@ function busy(form, on) {
   }
 }
 
-function show(method) {
+let otpPurpose = "signup";
+
+function show(method, purpose = method === "signup" ? "signup" : "login") {
   const isPassword = method === "password";
+  if (!isPassword) otpPurpose = purpose;
   $("#passwordForm").hidden = !isPassword;
   $("#otpPhoneForm").hidden = isPassword;
   $("#otpCodeForm").hidden = true;
 
   $$("[data-method]").forEach((b) =>
-    b.classList.toggle("active", b.dataset.method === method)
+    b.classList.toggle("active", isPassword
+      ? b.dataset.method === "password"
+      : b.dataset.method === "signup")
   );
 
   $("#stepNumber").textContent = "01";
-  $("#title").textContent = isPassword ? "خوش آمدید" : "ورود بدون رمز";
+  const otpTitle = otpPurpose === "signup" ? "ساخت حساب جدید" :
+    otpPurpose === "recovery" ? "بازیابی دسترسی" : "ورود با پیامک";
+  $("#title").textContent = isPassword ? "خوش آمدید" : otpTitle;
   $("#subtitle").textContent = isPassword
     ? "شماره موبایل و رمز عبور حساب خود را وارد کنید."
-    : "کد ورود یک‌بارمصرف به شماره موبایل شما پیامک خواهد شد.";
+    : "در این مرحله فقط شماره موبایل خود را وارد کنید.";
+  $("#otpHelp").textContent = otpPurpose === "signup"
+    ? "با تأیید شماره، ثبت‌نام اولیه انجام می‌شود و پس از تأیید مدیر دسترسی شما فعال خواهد شد."
+    : "یک کد یک‌بارمصرف برای ورود امن به حساب شما ارسال می‌شود.";
   message("");
 }
 
@@ -99,8 +109,8 @@ function showCode() {
   $("#otpCodeForm").hidden = false;
   $("#phoneEcho").textContent = $("#otpPhone").value.trim();
   $("#stepNumber").textContent = "02";
-  $("#title").textContent = "تأیید شماره تماس";
-  $("#subtitle").textContent = "کد ۶ رقمی ارسال‌شده به تلفن همراهتان را وارد کنید.";
+  $("#title").textContent = otpPurpose === "signup" ? "تکمیل ثبت‌نام" : "تأیید شماره تماس";
+  $("#subtitle").textContent = "فقط کد ۶ رقمی ارسال‌شده را وارد کنید.";
   $("#otpCode").value = "";
   $("#otpCode").focus();
   startResendCountdown(60);
@@ -116,14 +126,18 @@ function cleanPhone(val) {
 
 // Tab navigation
 $$("[data-method]").forEach((b) => {
-  b.onclick = () => show(b.dataset.method);
+  b.onclick = () => show(b.dataset.method,
+    b.dataset.method === "signup" ? "signup" : "login");
 });
 
 // Forgot password -> switch to OTP
 const forgotBtn = $("#forgotToOtp");
 if (forgotBtn) {
-  forgotBtn.onclick = () => show("otp");
+  forgotBtn.onclick = () => show("otp", "recovery");
 }
+
+const otpLoginBtn = $("#loginWithOtp");
+if (otpLoginBtn) otpLoginBtn.onclick = () => show("otp", "login");
 
 // Password visibility toggle
 const peekBtn = $("#peek");
@@ -226,7 +240,7 @@ $("#otpCodeForm").onsubmit = async (e) => {
 };
 
 // Change Phone action
-$("#changePhone").onclick = () => show("otp");
+$("#changePhone").onclick = () => show("otp", otpPurpose);
 
 // Specimen Live Weight Switcher
 $$(".specimen-btn").forEach((btn) => {

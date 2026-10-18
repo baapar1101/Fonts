@@ -616,6 +616,19 @@ html, body {
   gap: 18px;
 }
 
+/* Keep the authentication journey one step at a time. */
+.auth-form[hidden] { display: none !important; }
+.auth-form:not([hidden]) { animation: authStepIn .28s ease both; }
+@keyframes authStepIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.compact-alternative {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  margin-top:-3px; color:var(--text-muted); font-size:11px;
+}
+.compact-alternative .text-link { font-size:11px; }
+
 .form-group {
   display: grid;
   gap: 7px;

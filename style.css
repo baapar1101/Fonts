@@ -212,6 +212,9 @@ code{font-family:"Cascadia Code","Fira Code",Consolas,monospace}
 .auth-input:focus{border-color:rgba(36,92,255,.8)}
 .auth-code{letter-spacing:.5em; text-align:center; font-size:22px}
 .auth-submit{width:100%; min-height:46px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;padding:4px;background:rgba(255,255,255,.06);border-radius:12px}
+.auth-tab{border:0;border-radius:9px;padding:10px 8px;background:transparent;color:var(--muted);cursor:pointer;font:inherit}
+.auth-tab.is-active{background:var(--ms-blue);color:#fff}
 .auth-link{
   display:block; width:100%; margin-top:10px; padding:6px; background:none; border:none;
   color:var(--ms-muted); font-family:inherit; font-size:12px; cursor:pointer; text-decoration:underline;

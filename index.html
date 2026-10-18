@@ -164,10 +164,14 @@
 <div class="modal-overlay hidden" id="authOverlay">
   <div class="modal modal-narrow">
     <div class="modal-head">
-      <h3 id="authTitle">ورود با شماره موبایل</h3>
+      <h3 id="authTitle">ورود به حساب</h3>
       <button class="modal-close" id="authClose">&times;</button>
     </div>
     <div class="modal-body">
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab is-active" id="authOtpTab" type="button">کد یک‌بارمصرف</button>
+        <button class="auth-tab" id="authPasswordTab" type="button">رمز عبور</button>
+      </div>
       <div id="authStepPhone">
         <p class="hint">شماره موبایل خود را وارد کنید تا کد ورود برایتان پیامک شود.</p>
         <input id="authPhone" class="auth-input" type="tel" inputmode="numeric"
@@ -178,8 +182,18 @@
         <p class="hint">کد ۶ رقمی ارسال‌شده به <b id="authPhoneEcho" dir="ltr"></b> را وارد کنید.</p>
         <input id="authCode" class="auth-input auth-code" type="text" inputmode="numeric"
                maxlength="6" placeholder="------" autocomplete="one-time-code" dir="ltr">
+        <input id="authNewPassword" class="auth-input" type="password" minlength="8"
+               placeholder="تنظیم رمز برای ورودهای بعدی (اختیاری)" autocomplete="new-password" dir="ltr">
         <button id="authVerify" class="btn primary auth-submit" type="button">تأیید و ورود</button>
         <button id="authBack" class="auth-link" type="button">تغییر شماره</button>
+      </div>
+      <div id="authStepPassword" hidden>
+        <p class="hint">با شماره موبایل و رمزی که پس از تأیید پیامکی تنظیم کرده‌اید وارد شوید.</p>
+        <input id="authPasswordPhone" class="auth-input" type="tel" inputmode="numeric"
+               placeholder="09xxxxxxxxx" autocomplete="username" dir="ltr">
+        <input id="authPassword" class="auth-input" type="password" minlength="8"
+               placeholder="رمز عبور" autocomplete="current-password" dir="ltr">
+        <button id="authPasswordLogin" class="btn primary auth-submit" type="button">ورود با رمز عبور</button>
       </div>
       <p id="authMsg" class="auth-msg" hidden></p>
     </div>

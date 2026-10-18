@@ -4,10 +4,8 @@
  * Zero dependencies: node:http, node:sqlite and node:crypto only, so it runs
  * with a bare `node server.js` and no npm install.
  *
- * Accounts use mobile OTP. Codes are generated, texted and verified by the
- * external OTP service, so this project stores no SMS credentials and never
- * sees a code; a verified phone gets a session cookie. Signed-in users can
- * like fonts and file them into their own named collections.
+ * Accounts support mobile OTP and phone/password sign-in. OTP codes are
+ * generated here, stored only as short-lived hashes and sent server-side.
  *
  * The OTP service is only ever called from here, never from the browser.
  */
@@ -44,19 +42,20 @@ function loadEnv() {
 }
 
 const ENV = { ...loadEnv(), ...process.env };
-const PORT = Number(ENV.PORT || 8642);
+const PORT = Number(ENV.PORT || 8643);
 const SESSION_SECRET = ENV.SESSION_SECRET || crypto.randomBytes(32).toString("hex");
 
-// Codes are generated, delivered and checked by this external service. We
-// never see, store or hash a code, and no SMS credentials exist anywhere in
-// this project. Calls are made from here, never from the browser.
-const OTP_API = (ENV.OTP_API_BASE || "https://otp.eldery.ir").replace(/\/+$/, "");
+const SMS_API_BASE = (ENV.SMS_API_BASE || "https://api.sms-webservice.com/api/V3").replace(/\/+$/, "");
+const SMS_API_KEY = ENV.SMS_API_KEY || "";
+const SMS_SENDER = Number(ENV.SMS_SENDER || 0);
 
 // Interpreter used for the font-processing helpers. Override in .env if
 // "python" is not the one carrying fontTools on this machine.
 const PYTHON = ENV.PYTHON || "python";
 
 const OTP_RESEND_MS = 60 * 1000;       // shields the upstream service from spam
+const OTP_TTL_MS = 5 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
 const SESSION_TTL_MS = 30 * 24 * 3600 * 1000;
 
 // Numbers allowed into the admin panel. Comma-separated in .env to add more.
@@ -89,12 +88,20 @@ db.exec(`
 CREATE TABLE IF NOT EXISTS users (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   phone      TEXT UNIQUE NOT NULL,
+  password_salt TEXT,
+  password_hash TEXT,
   created_at INTEGER NOT NULL
 );
--- Only a resend clock. The codes themselves live with the OTP service.
+-- A resend clock plus short-lived, hashed OTP challenges.
 CREATE TABLE IF NOT EXISTS otp_throttle (
   phone        TEXT PRIMARY KEY,
   last_sent_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS otp_challenges (
+  phone       TEXT PRIMARY KEY,
+  code_hash   TEXT NOT NULL,
+  expires_at  INTEGER NOT NULL,
+  attempts    INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS sessions (
   token      TEXT PRIMARY KEY,
@@ -122,6 +129,10 @@ CREATE TABLE IF NOT EXISTS collection_items (
 );
 `);
 
+const userColumns = new Set(db.prepare("PRAGMA table_info(users)").all().map((c) => c.name));
+if (!userColumns.has("password_salt")) db.exec("ALTER TABLE users ADD COLUMN password_salt TEXT");
+if (!userColumns.has("password_hash")) db.exec("ALTER TABLE users ADD COLUMN password_hash TEXT");
+
 /* ------------------------------ helpers ----------------------------- */
 
 const now = () => Date.now();
@@ -139,24 +150,56 @@ function normalizePhone(input) {
   return /^09\d{9}$/.test(d) ? d : null;
 }
 
-/** POST to the OTP service and normalise its reply into {ok, data, error}. */
-async function otpCall(endpoint, payload) {
+function passwordDigest(password, salt) {
+  return crypto.scryptSync(String(password), salt, 64).toString("hex");
+}
+
+function validPassword(password) {
+  return typeof password === "string" && password.length >= 8 && password.length <= 128;
+}
+
+function safeEqualHex(a, b) {
   try {
-    const res = await fetch(`${OTP_API}${endpoint}`, {
+    const left = Buffer.from(String(a), "hex");
+    const right = Buffer.from(String(b), "hex");
+    return left.length === right.length && crypto.timingSafeEqual(left, right);
+  } catch { return false; }
+}
+
+function openSession(res, user) {
+  const token = crypto.randomBytes(32).toString("hex");
+  db.prepare("INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)")
+    .run(token, user.id, now() + SESSION_TTL_MS);
+  return json(res, 200, { ok: true, user: { phone: user.phone } }, {
+    "Set-Cookie": `mf_session=${token}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=${SESSION_TTL_MS / 1000}`,
+  });
+}
+
+/** Send one OTP through Payam Resan V3. Credentials never reach the browser. */
+async function sendOtpSms(phone, code) {
+  if (!SMS_API_KEY || !SMS_SENDER) return { ok: false, error: "SMS credentials are not configured" };
+  const destination = Number(phone.slice(1));
+  try {
+    const res = await fetch(`${SMS_API_BASE}/SendBulk`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ApiKey: SMS_API_KEY,
+        Sender: SMS_SENDER,
+        Text: `کد ورود مارک‌فونت: ${code}\nاعتبار: ۵ دقیقه`,
+        Recipients: [{ Destination: destination, UserTraceId: Date.now() }],
+      }),
       signal: AbortSignal.timeout(15000),
     });
     let data = {};
     try { data = await res.json(); } catch { /* non-JSON reply */ }
-    if (!res.ok || data.success === false) {
-      return { ok: false, error: data.error || `OTP service HTTP ${res.status}`, status: res.status };
+    if (data.Success !== true) {
+      return { ok: false, error: data.Error || `SMS service error ${data.ErrorCode ?? res.status}` };
     }
     return { ok: true, data };
   } catch (e) {
     const timedOut = e.name === "TimeoutError" || e.name === "AbortError";
-    return { ok: false, error: timedOut ? "OTP service timed out" : e.message, status: 503 };
+    return { ok: false, error: timedOut ? "SMS service timed out" : e.message };
   }
 }
 
@@ -483,7 +526,9 @@ async function handleApi(req, res, url) {
       return json(res, 429, { error: `${wait} ثانیه دیگر دوباره تلاش کنید`, retryAfter: wait });
     }
 
-    const sent = await otpCall("/otp/send", { phone: num });
+    const code = String(crypto.randomInt(100000, 1000000));
+    const codeHash = sha(`${SESSION_SECRET}:${num}:${code}`);
+    const sent = await sendOtpSms(num, code);
     if (!sent.ok) {
       console.error("OTP send failed:", sent.error);
       return json(res, 502, { error: "ارسال پیامک ناموفق بود" });
@@ -494,37 +539,64 @@ async function handleApi(req, res, url) {
       `INSERT INTO otp_throttle (phone, last_sent_at) VALUES (?, ?)
        ON CONFLICT(phone) DO UPDATE SET last_sent_at = excluded.last_sent_at`
     ).run(num, now());
+    db.prepare(
+      `INSERT INTO otp_challenges (phone, code_hash, expires_at, attempts) VALUES (?, ?, ?, 0)
+       ON CONFLICT(phone) DO UPDATE SET code_hash=excluded.code_hash,
+         expires_at=excluded.expires_at, attempts=0`
+    ).run(num, codeHash, now() + OTP_TTL_MS);
 
     return json(res, 200, { ok: true });
   }
 
   // --- verify the code, open a session ---
   if (p === "/api/auth/verify-otp" && method === "POST") {
-    const { phone, code } = await readBody(req);
+    const { phone, code, password } = await readBody(req);
     const num = normalizePhone(phone);
     if (!num || !/^\d{6}$/.test(String(code || ""))) {
       return json(res, 400, { error: "کد یا شماره نامعتبر است" });
     }
-    const check = await otpCall("/otp/verify", { phone: num, code: String(code) });
-    // Treat anything short of an explicit pass as a failure, so a malformed
-    // or unexpected reply can never open a session.
-    if (!check.ok || check.data.verified !== true) {
+    const challenge = db.prepare(
+      "SELECT code_hash, expires_at, attempts FROM otp_challenges WHERE phone = ?"
+    ).get(num);
+    const candidate = sha(`${SESSION_SECRET}:${num}:${String(code)}`);
+    if (!challenge || challenge.expires_at <= now() || challenge.attempts >= OTP_MAX_ATTEMPTS ||
+        !safeEqualHex(challenge.code_hash, candidate)) {
+      if (challenge) db.prepare("UPDATE otp_challenges SET attempts = attempts + 1 WHERE phone = ?").run(num);
       return json(res, 400, { error: "کد نادرست یا منقضی شده است" });
     }
+    if (password !== undefined && password !== "" && !validPassword(password)) {
+      return json(res, 400, { error: "رمز عبور باید حداقل ۸ نویسه باشد" });
+    }
     db.prepare("DELETE FROM otp_throttle WHERE phone = ?").run(num);
+    db.prepare("DELETE FROM otp_challenges WHERE phone = ?").run(num);
 
     let user = db.prepare("SELECT id, phone FROM users WHERE phone = ?").get(num);
     if (!user) {
       db.prepare("INSERT INTO users (phone, created_at) VALUES (?, ?)").run(num, now());
       user = db.prepare("SELECT id, phone FROM users WHERE phone = ?").get(num);
     }
-    const token = crypto.randomBytes(32).toString("hex");
-    db.prepare("INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)")
-      .run(token, user.id, now() + SESSION_TTL_MS);
+    if (password !== undefined && password !== "") {
+      const salt = crypto.randomBytes(16).toString("hex");
+      db.prepare("UPDATE users SET password_salt = ?, password_hash = ? WHERE id = ?")
+        .run(salt, passwordDigest(password, salt), user.id);
+    }
+    return openSession(res, user);
+  }
 
-    return json(res, 200, { ok: true, user: { phone: user.phone } }, {
-      "Set-Cookie": `mf_session=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${SESSION_TTL_MS / 1000}`,
-    });
+  if (p === "/api/auth/login-password" && method === "POST") {
+    const { phone, password } = await readBody(req);
+    const num = normalizePhone(phone);
+    if (!num || !validPassword(password)) {
+      return json(res, 400, { error: "شماره موبایل یا رمز عبور نامعتبر است" });
+    }
+    const user = db.prepare(
+      "SELECT id, phone, password_salt, password_hash FROM users WHERE phone = ?"
+    ).get(num);
+    if (!user?.password_salt || !user?.password_hash ||
+        !safeEqualHex(user.password_hash, passwordDigest(password, user.password_salt))) {
+      return json(res, 401, { error: "شماره موبایل یا رمز عبور نادرست است" });
+    }
+    return openSession(res, user);
   }
 
   if (p === "/api/auth/logout" && method === "POST") {
@@ -700,10 +772,11 @@ setInterval(() => {
   try {
     db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(now());
     db.prepare("DELETE FROM otp_throttle WHERE last_sent_at < ?").run(now() - 24 * 3600 * 1000);
+    db.prepare("DELETE FROM otp_challenges WHERE expires_at < ?").run(now());
   } catch { /* not worth crashing the server over */ }
 }, 3600 * 1000).unref();
 
 server.listen(PORT, () => {
   console.log(`MarkFont running at http://localhost:${PORT}`);
-  console.log(`OTP: codes sent and verified by ${OTP_API}`);
+  console.log(`OTP: codes sent by ${SMS_API_BASE}; verification is local and hashed`);
 });

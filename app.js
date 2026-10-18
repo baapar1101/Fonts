@@ -733,6 +733,9 @@
   const authClose = document.getElementById("authClose");
   const authStepPhone = document.getElementById("authStepPhone");
   const authStepCode = document.getElementById("authStepCode");
+  const authStepPassword = document.getElementById("authStepPassword");
+  const authOtpTab = document.getElementById("authOtpTab");
+  const authPasswordTab = document.getElementById("authPasswordTab");
   const authPhone = document.getElementById("authPhone");
   const authCode = document.getElementById("authCode");
   const authSend = document.getElementById("authSend");
@@ -740,6 +743,10 @@
   const authBack = document.getElementById("authBack");
   const authMsg = document.getElementById("authMsg");
   const authPhoneEcho = document.getElementById("authPhoneEcho");
+  const authNewPassword = document.getElementById("authNewPassword");
+  const authPasswordPhone = document.getElementById("authPasswordPhone");
+  const authPassword = document.getElementById("authPassword");
+  const authPasswordLogin = document.getElementById("authPasswordLogin");
 
   function setAuthMsg(text, kind) {
     authMsg.hidden = !text;
@@ -750,6 +757,9 @@
   function showAuthStep(step) {
     authStepPhone.hidden = step !== "phone";
     authStepCode.hidden = step !== "code";
+    authStepPassword.hidden = step !== "password";
+    authOtpTab.classList.toggle("is-active", step !== "password");
+    authPasswordTab.classList.toggle("is-active", step === "password");
     setAuthMsg("");
   }
 
@@ -819,7 +829,7 @@
     try {
       const r = await api("/api/auth/verify-otp", {
         method: "POST",
-        body: JSON.stringify({ phone: authPhone.value.trim(), code }),
+        body: JSON.stringify({ phone: authPhone.value.trim(), code, password: authNewPassword.value }),
       });
       state.user = r.user;
       closeAuth();
@@ -833,10 +843,35 @@
     }
   }
 
+  async function loginWithPassword() {
+    const phone = authPasswordPhone.value.trim();
+    const password = authPassword.value;
+    if (!phone || password.length < 8) return setAuthMsg("شماره و رمز عبور معتبر را وارد کنید", "error");
+    authPasswordLogin.disabled = true;
+    setAuthMsg("در حال ورود…");
+    try {
+      const r = await api("/api/auth/login-password", {
+        method: "POST", body: JSON.stringify({ phone, password }),
+      });
+      state.user = r.user;
+      closeAuth();
+      renderAccount();
+      adoptUserData(await api("/api/me"));
+    } catch (e) {
+      setAuthMsg(e.message, "error");
+    } finally {
+      authPasswordLogin.disabled = false;
+    }
+  }
+
   authSend.addEventListener("click", requestCode);
   authVerify.addEventListener("click", verifyCode);
   authPhone.addEventListener("keydown", e => { if (e.key === "Enter") requestCode(); });
   authCode.addEventListener("keydown", e => { if (e.key === "Enter") verifyCode(); });
+  authOtpTab.addEventListener("click", () => { showAuthStep("phone"); authPhone.focus(); });
+  authPasswordTab.addEventListener("click", () => { showAuthStep("password"); authPasswordPhone.focus(); });
+  authPasswordLogin.addEventListener("click", loginWithPassword);
+  authPassword.addEventListener("keydown", e => { if (e.key === "Enter") loginWithPassword(); });
 
   /* -------------------------- Admin -------------------------------- */
 
